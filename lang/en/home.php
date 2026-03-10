@@ -10,7 +10,7 @@ return [
     | The following language lines are used in home page.
     |
     */
-    'home' => 'Home',
+    'home' => 'Dashboard',
     'welcome_message' => 'Welcome :name',
     'total_sell' => 'Total Sales',
     'total_purchase' => 'Total purchase',
