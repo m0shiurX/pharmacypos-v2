@@ -42,7 +42,7 @@ class Unit extends Model
             $dropdown->prepend(__('messages.please_select'), '');
         }
 
-        return $dropdown;
+        return $dropdown->toArray();
     }
 
     public function sub_units()

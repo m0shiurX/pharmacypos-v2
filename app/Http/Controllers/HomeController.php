@@ -86,7 +86,7 @@ class HomeController extends Controller
         //get all sells
         $sells_this_fy = $this->transactionUtil->getSellsCurrentFy($business_id, $least_30_days, $fy['end']);
 
-        $all_locations = BusinessLocation::forDropdown($business_id)->toArray();
+        $all_locations = BusinessLocation::forDropdown($business_id);
 
         //Chart for sells last 30 days
         $labels = [];
@@ -553,7 +553,7 @@ class HomeController extends Controller
             return $events;
         }
 
-        $all_locations = BusinessLocation::forDropdown($business_id)->toArray();
+        $all_locations = BusinessLocation::forDropdown($business_id);
         $users = [];
         if ($is_admin) {
             $users = User::forDropdown($business_id, false);

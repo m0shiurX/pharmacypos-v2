@@ -169,7 +169,11 @@
                     $pp = $purchase_line->purchase_price_inc_tax;
                     $sp = $purchase_line->variations->sell_price_inc_tax;
                     if(!empty($purchase_line->sub_unit->base_unit_multiplier)) {
-                        $sp = $sp * $purchase_line->sub_unit->base_unit_multiplier;
+                        $product_multipliers = $purchase_line->product->sub_unit_multipliers ?? [];
+                        $sub_multiplier = !empty($product_multipliers[$purchase_line->sub_unit_id])
+                            ? $product_multipliers[$purchase_line->sub_unit_id]
+                            : $purchase_line->sub_unit->base_unit_multiplier;
+                        $sp = $sp * $sub_multiplier;
                     }
                     if($pp == 0){
                         $profit_percent = 100;

@@ -68,11 +68,29 @@
                 <select name="sub_unit_ids[]" class="form-control select2" multiple id="sub_unit_ids">
                   @foreach($sub_units as $sub_unit_id => $sub_unit_value)
                     <option value="{{$sub_unit_id}}" 
+                      data-multiplier="{{$sub_unit_value['multiplier']}}"
+                      data-unit_name="{{$sub_unit_value['name']}}"
                       @if(is_array($product->sub_unit_ids) &&in_array($sub_unit_id, $product->sub_unit_ids))   selected 
                       @endif>{{$sub_unit_value['name']}}</option>
                   @endforeach
                 </select>
               </div>
+            </div>
+            <div class="col-sm-12 @if(!session('business.enable_sub_units')) hide @endif" id="sub_unit_multipliers_container">
+              @if(!empty($product->sub_unit_ids))
+                @foreach($sub_units as $sub_unit_id => $sub_unit_value)
+                  @if($sub_unit_value['multiplier'] != 1 && is_array($product->sub_unit_ids) && in_array($sub_unit_id, $product->sub_unit_ids))
+                    <div class="col-sm-3 sub_unit_multiplier_row" data-unit_id="{{$sub_unit_id}}">
+                      <div class="form-group">
+                        <label>{{$sub_unit_value['name']}} @lang('lang_v1.multiplier'):</label>
+                        <input type="number" name="sub_unit_multipliers[{{$sub_unit_id}}]" class="form-control" 
+                          value="{{!empty($product->sub_unit_multipliers[$sub_unit_id]) ? $product->sub_unit_multipliers[$sub_unit_id] : $sub_unit_value['multiplier']}}" 
+                          min="0.0001" step="any">
+                      </div>
+                    </div>
+                  @endif
+                @endforeach
+              @endif
             </div>
 
             @if(!empty($common_settings['enable_secondary_unit']))

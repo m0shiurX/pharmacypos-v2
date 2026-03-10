@@ -56,7 +56,7 @@ class TaxRate extends Model
             })->all();
         }
 
-        $output = ['tax_rates' => $tax_rates, 'attributes' => $tax_attributes];
+        $output = ['tax_rates' => $tax_rates->toArray(), 'attributes' => $tax_attributes];
 
         return $output;
     }
@@ -69,9 +69,9 @@ class TaxRate extends Model
     public static function forBusiness($business_id)
     {
         $tax_rates = TaxRate::where('business_id', $business_id)
-                        ->select(['id', 'name', 'amount'])
-                        ->get()
-                        ->toArray();
+            ->select(['id', 'name', 'amount'])
+            ->get()
+            ->toArray();
 
         return $tax_rates;
     }
@@ -94,9 +94,9 @@ class TaxRate extends Model
     public static function groupTaxes($business_id)
     {
         $tax_rates = TaxRate::where('business_id', $business_id)
-                        ->where('is_tax_group', 1)
-                        ->with(['sub_taxes'])
-                        ->get();
+            ->where('is_tax_group', 1)
+            ->with(['sub_taxes'])
+            ->get();
 
         return $tax_rates;
     }

@@ -136,4 +136,5 @@ return [
     'invoice_settings' => 'চালান সেটিংস',
     'previous_due' => 'সাবেক',
     'cash' => 'নগদ',
+    'multiplier' => 'গুণক',
 ];

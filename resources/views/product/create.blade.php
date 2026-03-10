@@ -64,6 +64,8 @@
                 {!! Form::select('sub_unit_ids[]', [], !empty($duplicate_product->sub_unit_ids) ? $duplicate_product->sub_unit_ids : null, ['class' => 'form-control select2', 'multiple', 'id' => 'sub_unit_ids']); !!}
             </div>
         </div>
+        <div class="col-sm-12 @if(!session('business.enable_sub_units')) hide @endif" id="sub_unit_multipliers_container" style="display:none;">
+        </div>
         @if(!empty($common_settings['enable_secondary_unit']))
         <div class="col-sm-4">
             <div class="form-group">
@@ -101,7 +103,7 @@
         @php
         $default_location = null;
         if(count($business_locations) == 1){
-        $default_location = array_key_first($business_locations->toArray());
+        $default_location = array_key_first($business_locations);
         }
         @endphp
         <div class="col-sm-4">

@@ -65,6 +65,8 @@ class BusinessLocation extends Model
             $locations->prepend(__('report.all_locations'), '');
         }
 
+        $locations = $locations->toArray();
+
         if ($receipt_printer_type_attribute) {
             $attributes = collect($result)->mapWithKeys(function ($item) use ($price_groups) {
                 $default_payment_accounts = json_decode($item->default_payment_accounts, true);
@@ -73,14 +75,15 @@ class BusinessLocation extends Model
                     'account' => null,
                 ];
 
-                return [$item->id => [
-                    'data-receipt_printer_type' => $item->receipt_printer_type,
-                    'data-default_price_group' => ! empty($item->selling_price_group_id) && array_key_exists($item->selling_price_group_id, $price_groups) ? $item->selling_price_group_id : null,
-                    'data-default_payment_accounts' => json_encode($default_payment_accounts),
-                    'data-default_sale_invoice_scheme_id' => $item->sale_invoice_scheme_id,
-                    'data-default_invoice_scheme_id' => $item->invoice_scheme_id,
-                    'data-default_invoice_layout_id' => $item->invoice_layout_id,
-                ],
+                return [
+                    $item->id => [
+                        'data-receipt_printer_type' => $item->receipt_printer_type,
+                        'data-default_price_group' => ! empty($item->selling_price_group_id) && array_key_exists($item->selling_price_group_id, $price_groups) ? $item->selling_price_group_id : null,
+                        'data-default_payment_accounts' => json_encode($default_payment_accounts),
+                        'data-default_sale_invoice_scheme_id' => $item->sale_invoice_scheme_id,
+                        'data-default_invoice_scheme_id' => $item->invoice_scheme_id,
+                        'data-default_invoice_layout_id' => $item->invoice_layout_id,
+                    ],
                 ];
             })->all();
 
@@ -117,11 +120,11 @@ class BusinessLocation extends Model
             return [];
         }
         $query = Variation::whereIn('variations.id', $this->featured_products)
-                                    ->join('product_locations as pl', 'pl.product_id', '=', 'variations.product_id')
-                                    ->join('products as p', 'p.id', '=', 'variations.product_id')
-                                    ->where('p.not_for_selling', 0)
-                                    ->with(['product_variation', 'product', 'media'])
-                                    ->select('variations.*');
+            ->join('product_locations as pl', 'pl.product_id', '=', 'variations.product_id')
+            ->join('products as p', 'p.id', '=', 'variations.product_id')
+            ->where('p.not_for_selling', 0)
+            ->with(['product_variation', 'product', 'media'])
+            ->select('variations.*');
 
         if ($check_location) {
             $query->where('pl.location_id', $this->id);

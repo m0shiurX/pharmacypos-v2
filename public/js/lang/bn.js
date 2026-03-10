@@ -115,5 +115,6 @@ LANG = {
     'confirm_delete_invoice_scheme': 'এই ইনভয়েস স্কিম মুছে ফেলা হবে।',
     'confirm_delete_discount': 'এই ছাড় মুছে ফেলা হবে।',
     'confirm_delete_type_of_service': 'এই পরিষেবার ধরন মুছে ফেলা হবে।',
-    'confirm_delete_commission_agent': 'এই কমিশন এজেন্ট মুছে ফেলা হবে।'
+    'confirm_delete_commission_agent': 'এই কমিশন এজেন্ট মুছে ফেলা হবে।',
+    'multiplier': 'গুণক',
 };

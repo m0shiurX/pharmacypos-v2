@@ -40,6 +40,6 @@ class CustomerGroup extends Model
             $all_cg = $all_cg->prepend(__('report.all'), '');
         }
 
-        return $all_cg;
+        return $all_cg->toArray();
     }
 }

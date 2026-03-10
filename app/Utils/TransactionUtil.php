@@ -6269,7 +6269,12 @@ class TransactionUtil extends Util
             if (array_key_exists($sell_line->id, $returns)) {
                 $multiplier = 1;
                 if (! empty($sell_line->sub_unit)) {
-                    $multiplier = $sell_line->sub_unit->base_unit_multiplier;
+                    //Use per-product multiplier if available
+                    $product_for_multiplier = Product::find($sell_line->product_id);
+                    $product_multipliers = $product_for_multiplier->sub_unit_multipliers ?? [];
+                    $multiplier = ! empty($product_multipliers[$sell_line->sub_unit_id])
+                        ? $product_multipliers[$sell_line->sub_unit_id]
+                        : $sell_line->sub_unit->base_unit_multiplier;
                 }
 
                 $quantity = $returns[$sell_line->id] * $multiplier;

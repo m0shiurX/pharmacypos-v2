@@ -19,9 +19,9 @@ class InvoiceScheme extends Model
     public static function forDropdown($business_id)
     {
         $dropdown = InvoiceScheme::where('business_id', $business_id)
-                                ->pluck('name', 'id');
+            ->pluck('name', 'id');
 
-        return $dropdown;
+        return $dropdown->toArray();
     }
 
     /**
@@ -30,8 +30,8 @@ class InvoiceScheme extends Model
     public static function getDefault($business_id)
     {
         $default = InvoiceScheme::where('business_id', $business_id)
-                                ->where('is_default', 1)
-                                ->first();
+            ->where('is_default', 1)
+            ->first();
 
         return $default;
     }

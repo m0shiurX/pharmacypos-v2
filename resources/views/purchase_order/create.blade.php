@@ -73,7 +73,7 @@
 				
 			@if(count($business_locations) == 1)
 				@php 
-					$default_location = current(array_keys($business_locations->toArray()));
+					$default_location = current(array_keys($business_locations));
 					$search_disable = false; 
 				@endphp
 			@else

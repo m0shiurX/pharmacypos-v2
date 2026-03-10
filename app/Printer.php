@@ -67,6 +67,6 @@ class Printer extends Model
             $printers->prepend(__('messages.please_select'), '');
         }
 
-        return $printers;
+        return $printers->toArray();
     }
 }

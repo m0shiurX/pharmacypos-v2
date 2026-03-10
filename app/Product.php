@@ -22,6 +22,7 @@ class Product extends Model
      */
     protected $casts = [
         'sub_unit_ids' => 'array',
+        'sub_unit_multipliers' => 'array',
     ];
 
     /**
@@ -32,7 +33,7 @@ class Product extends Model
     public function getImageUrlAttribute()
     {
         if (! empty($this->image)) {
-            $image_url = asset('/uploads/img/'.rawurlencode($this->image));
+            $image_url = asset('/uploads/img/' . rawurlencode($this->image));
         } else {
             $image_url = asset('/img/default.png');
         }
@@ -48,7 +49,7 @@ class Product extends Model
     public function getImagePathAttribute()
     {
         if (! empty($this->image)) {
-            $image_path = public_path('uploads').'/'.config('constants.product_img_path').'/'.$this->image;
+            $image_path = public_path('uploads') . '/' . config('constants.product_img_path') . '/' . $this->image;
         } else {
             $image_path = null;
         }

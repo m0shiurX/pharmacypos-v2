@@ -200,7 +200,7 @@ class User extends Authenticatable
             $users = $users->prepend(__('lang_v1.all'), '');
         }
 
-        return $users;
+        return $users->toArray();
     }
 
     /**
@@ -223,7 +223,7 @@ class User extends Authenticatable
             $users = $users->prepend(__('lang_v1.none'), '');
         }
 
-        return $users;
+        return $users->toArray();
     }
 
     /**
@@ -251,7 +251,7 @@ class User extends Authenticatable
             $users = $users->prepend(__('lang_v1.all'), '');
         }
 
-        return $users;
+        return $users->toArray();
     }
 
     /**

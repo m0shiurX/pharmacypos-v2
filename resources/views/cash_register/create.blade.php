@@ -25,7 +25,7 @@
     <br><br><br>
     <input type="hidden" name="sub_type" value="{{$sub_type}}">
       <div class="row">
-        @if($business_locations->count() > 0)
+        @if(count($business_locations) > 0)
         <div class="col-sm-8 col-sm-offset-2">
           <div class="form-group">
             {!! Form::label('amount', __('cash_register.cash_in_hand') . ':*') !!}
@@ -43,7 +43,7 @@
           </div>
         </div>
         @else
-          {!! Form::hidden('location_id', array_key_first($business_locations->toArray()) ); !!}
+          {!! Form::hidden('location_id', array_key_first($business_locations) ); !!}
         @endif
         <div class="col-sm-8 col-sm-offset-2">
           <button type="submit" class="tw-dw-btn tw-dw-btn-primary tw-text-white pull-right">@lang('cash_register.open_register')</button>

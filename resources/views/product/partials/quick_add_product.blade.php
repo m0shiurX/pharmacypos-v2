@@ -119,7 +119,7 @@
         @php
           $default_location = null;
           if(count($business_locations) == 1){
-            $default_location = array_key_first($business_locations->toArray());
+            $default_location = array_key_first($business_locations);
           }
         @endphp
         <div class="col-sm-4">

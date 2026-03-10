@@ -664,9 +664,11 @@ class Util
 
         //Find related subunits for the product.
         $related_sub_units = [];
+        $product_multipliers = [];
         if (! empty($product_id)) {
             $product = Product::where('business_id', $business_id)->findOrFail($product_id);
             $related_sub_units = $product->sub_unit_ids;
+            $product_multipliers = $product->sub_unit_multipliers ?? [];
         }
 
         $sub_units = [];
@@ -678,7 +680,8 @@ class Util
                 'multiplier' => 1,
                 'allow_decimal' => $unit->allow_decimal,
             ];
-        } elseif (empty($related_sub_units) || in_array($unit->id, $related_sub_units)) {
+        } elseif (count($unit->sub_units) > 0) {
+            //Always include base unit when sub-units exist
             $sub_units[$unit->id] = [
                 'name' => $unit->actual_name,
                 'multiplier' => 1,
@@ -690,9 +693,14 @@ class Util
             foreach ($unit->sub_units as $sub_unit) {
                 //Check if subunit is related to the product or not.
                 if (empty($related_sub_units) || in_array($sub_unit->id, $related_sub_units)) {
+                    //Use per-product multiplier if set, otherwise fall back to unit's default
+                    $multiplier = ! empty($product_multipliers[$sub_unit->id])
+                        ? $product_multipliers[$sub_unit->id]
+                        : $sub_unit->base_unit_multiplier;
+
                     $sub_units[$sub_unit->id] = [
                         'name' => $sub_unit->actual_name,
-                        'multiplier' => $sub_unit->base_unit_multiplier,
+                        'multiplier' => $multiplier,
                         'allow_decimal' => $sub_unit->allow_decimal,
                     ];
                 }
@@ -702,10 +710,19 @@ class Util
         return $sub_units;
     }
 
-    public function getMultiplierOf2Units($base_unit_id, $unit_id)
+    public function getMultiplierOf2Units($base_unit_id, $unit_id, $product_id = null)
     {
         if ($base_unit_id == $unit_id || is_null($base_unit_id) || is_null($unit_id)) {
             return 1;
+        }
+
+        //Check per-product multiplier first
+        if (! empty($product_id)) {
+            $product = Product::find($product_id);
+            $product_multipliers = $product->sub_unit_multipliers ?? [];
+            if (! empty($product_multipliers[$unit_id])) {
+                return $product_multipliers[$unit_id];
+            }
         }
 
         $unit = Unit::where('base_unit_id', $base_unit_id)
@@ -976,7 +993,7 @@ class Util
                     } else {
                         $contact_id = null;
                     }
-                    
+
                     if ($contact_id) {
                         $due = $this->getContactDue($contact_id, $business->id);
                         $due_amount = $this->num_f($due, true, $business->currency);
@@ -987,7 +1004,7 @@ class Util
                     // Fallback to 0 if anything goes wrong
                     $due_amount = $this->num_f(0, true, $business->currency);
                 }
-                
+
                 $data[$key] = str_replace('{cumulative_due_amount}', $due_amount, $data[$key]);
             }
 
