@@ -10,7 +10,7 @@ return [
     | The following language lines are used in home page.
     |
     */
-    'home' => 'হোম',
+    'home' => 'ড্যাশবোর্ড',
     'welcome_message' => 'স্বাগতম :name',
     'total_sell' => 'মোট বিক্রয়',
     'total_purchase' => 'মোট ক্রয়',

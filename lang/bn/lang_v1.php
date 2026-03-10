@@ -108,7 +108,7 @@ return [
     'list_stock_transfers' => 'স্টক স্থানান্তরের তালিকা',
     'add_stock_transfer' => 'স্টক স্থানান্তর যোগ করুন',
     'notification_templates' => 'বিজ্ঞপ্তির টেমপ্লেটসমূহ',
-    'sales_commission_agents' => 'বিক্রয় কমিশন এজেন্টসমূহ',
+    'sales_commission_agents' => 'কমিশন এজেন্ট',
     'all_stock_transfers' => 'সব স্টক স্থানান্তর',
     'sign_out' => 'সাইন আউট',
     'signed_in_as' => 'আমার পরিচয়',

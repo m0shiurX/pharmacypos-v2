@@ -11,7 +11,7 @@ return [
     |
     */
 
-    'contacts' => 'যোগাযোগসমূহ',
+    'contacts' => 'পার্টি',
     'manage_your_contacts' => 'আপনার যোগাযোগসমূহ পরিচালনা করুন',
     'all_your_contacts' => 'আপনার সব যোগাযোগ',
     'contact' => 'যোগাযোগ',
