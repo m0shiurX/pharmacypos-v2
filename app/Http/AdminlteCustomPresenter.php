@@ -35,7 +35,7 @@ class AdminlteCustomPresenter extends Presenter
     /**
      * {@inheritdoc}.
      */
-    public function getActiveState($item, $state = ' tw-bg-gray-200 tw-text-primary-700')
+    public function getActiveState($item, $state = ' tw-bg-gray-200 tw-text-green-700')
     {
         return $item->isActive() ? $state : null;
     }
@@ -47,7 +47,7 @@ class AdminlteCustomPresenter extends Presenter
      * @param  string  $state
      * @return null|string
      */
-    public function getActiveStateOnChild($item, $state = 'tw-pb-1 tw-rounded-md tw-bg-gray-200 tw-text-primary-700')
+    public function getActiveStateOnChild($item, $state = 'tw-pb-1 tw-rounded-md tw-bg-gray-200 tw-text-green-700')
     {
         return $item->hasActiveOnChild() ? $state : null;
     }
@@ -131,7 +131,7 @@ class AdminlteCustomPresenter extends Presenter
 
             foreach ($item->getChilds() as $child) {
 
-                $isActive = $child->isActive() ? 'tw-text-primary-700' : '';
+                $isActive = $child->isActive() ? 'tw-text-green-700' : '';
 
                 $children .= '<a href="' . $child->getUrl() . '" title="" class="tw-flex tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-600 tw-truncate tw-transition-all tw-duration-200 hover:tw-text-gray-900 tw-whitespace-nowrap ' . $isActive . '"' . $isActive . ' "' . $child->getAttributes() . '"' . $child->hasActiveOnChild() . '>' .
                     $child->getIcon() . ' <span>' . $child->title . '</span>' .

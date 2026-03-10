@@ -3,7 +3,7 @@
 return [
     'enable_editing_product_from_purchase' => 'Enable editing product price from purchase screen',
     'sales_commission_agent' => 'Sales Commission Agent',
-    'sales_commission_agents' => 'Sales Commission Agents',
+    'sales_commission_agents' => 'Sales Agents',
     'disable' => 'Disable',
     'logged_in_user' => 'Logged in user',
     'select_from_users_list' => "Select from user's list",

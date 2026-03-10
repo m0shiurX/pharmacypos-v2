@@ -11,7 +11,7 @@ return [
     |
     */
 
-    'contacts' => 'Contacts',
+    'contacts' => 'Parties',
     'name' => 'Name',
     'contact' => 'Contact',
     'manage_your_contact' => 'Manage your :contacts',

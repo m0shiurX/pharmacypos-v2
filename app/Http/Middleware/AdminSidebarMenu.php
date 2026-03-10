@@ -28,16 +28,6 @@ class AdminSidebarMenu
             $pos_settings = !empty(session('business.pos_settings')) ? json_decode(session('business.pos_settings'), true) : [];
 
             $is_admin = auth()->user()->hasRole('Admin#' . session('business.id')) ? true : false;
-            //Home
-            //     $menu->url(action([\App\Http\Controllers\HomeController::class, 'index']), __('home.home'), ['icon' => '<svg aria-hidden="true" class="tw-size-5 tw-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            //     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            //     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            //     <path d="M5 12l-2 0l9 -9l9 9l-2 0"></path>
-            //     <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"></path>
-            //     <path d="M10 12h4v4h-4z"></path>
-            //   </svg>', 'active' => request()->segment(1) == 'home'])->order(5);
-
-
 
             $menu->url(action([\App\Http\Controllers\HomeController::class, 'index']), __('home.home'), ['icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="tw-size-5 tw-shrink-0" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -45,44 +35,6 @@ class AdminSidebarMenu
             <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
             <path d="M10 12h4v4h-4z" />
           </svg>', 'active' => request()->segment(1) == 'home'])->order(5);
-
-            //User management dropdown
-            if (auth()->user()->can('user.view') || auth()->user()->can('user.create') || auth()->user()->can('roles.view')) {
-                $menu->dropdown(
-                    __('user.user_management'),
-                    function ($sub) {
-                        if (auth()->user()->can('user.view')) {
-                            $sub->url(
-                                action([\App\Http\Controllers\ManageUserController::class, 'index']),
-                                __('user.users'),
-                                ['icon' => '', 'active' => request()->segment(1) == 'users']
-                            );
-                        }
-                        if (auth()->user()->can('roles.view')) {
-                            $sub->url(
-                                action([\App\Http\Controllers\RoleController::class, 'index']),
-                                __('user.roles'),
-                                ['icon' => '', 'active' => request()->segment(1) == 'roles']
-                            );
-                        }
-                        if (auth()->user()->can('user.create')) {
-                            $sub->url(
-                                action([\App\Http\Controllers\SalesCommissionAgentController::class, 'index']),
-                                __('lang_v1.sales_commission_agents'),
-                                ['icon' => '', 'active' => request()->segment(1) == 'sales-commission-agents']
-                            );
-                        }
-                    },
-                    ['icon' => '<svg aria-hidden="true" class="tw-size-5 tw-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                    <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
-                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
-                  </svg>',]
-                )->order(10);
-            }
 
             //Contacts dropdown
             if (auth()->user()->can('supplier.view') || auth()->user()->can('customer.view') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own')) {
@@ -421,6 +373,43 @@ class AdminSidebarMenu
                 $menu->url(action([\App\Http\Controllers\Restaurant\OrderController::class, 'index']), __('restaurant.orders'), ['icon' => '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="18"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-baseline-density-medium"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h16" /><path d="M4 12h16" /><path d="M4 4h16" /></svg>', 'active' => request()->segment(1) == 'modules' && request()->segment(2) == 'orders'])->order(75);
             }
 
+            //User management dropdown
+            if (auth()->user()->can('user.view') || auth()->user()->can('user.create') || auth()->user()->can('roles.view')) {
+                $menu->dropdown(
+                    __('user.user_management'),
+                    function ($sub) {
+                        if (auth()->user()->can('user.view')) {
+                            $sub->url(
+                                action([\App\Http\Controllers\ManageUserController::class, 'index']),
+                                __('user.users'),
+                                ['icon' => '', 'active' => request()->segment(1) == 'users']
+                            );
+                        }
+                        if (auth()->user()->can('roles.view')) {
+                            $sub->url(
+                                action([\App\Http\Controllers\RoleController::class, 'index']),
+                                __('user.roles'),
+                                ['icon' => '', 'active' => request()->segment(1) == 'roles']
+                            );
+                        }
+                        if (auth()->user()->can('user.create')) {
+                            $sub->url(
+                                action([\App\Http\Controllers\SalesCommissionAgentController::class, 'index']),
+                                __('lang_v1.sales_commission_agents'),
+                                ['icon' => '', 'active' => request()->segment(1) == 'sales-commission-agents']
+                            );
+                        }
+                    },
+                    ['icon' => '<svg aria-hidden="true" class="tw-size-5 tw-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
+                  </svg>',]
+                )->order(10);
+            }
 
             //Settings Dropdown
             if (

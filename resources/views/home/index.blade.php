@@ -3,7 +3,7 @@
 
 @section('content')
 
-    <div class="tw-pb-6 tw-bg-gradient-to-r tw-from-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'primary'}}@endif-800 tw-to-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'primary'}}@endif-900 xl:tw-pb-0 ">
+    <div class="tw-pb-6 tw-bg-gradient-to-r tw-from-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'green'}}@endif-800 tw-to-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'green'}}@endif-900 xl:tw-pb-0 ">
         <div class="tw-px-5 tw-pt-3">
             {{-- <div class="sm:tw-flex sm:tw-items-center sm:tw-justify-between sm:tw-gap-12">
                 <h1 class="tw-text-2xl tw-font-medium tw-tracking-tight tw-text-white">
@@ -13,7 +13,7 @@
                     <div class="sm:tw-flex sm:tw-items-center sm:tw-justify-between sm:tw-gap-12">
                         <div class="tw-mt-2 sm:tw-w-1/2 md:tw-w-1/2">
                             <h1
-                                class="tw-text-2xl md:tw-text-4xl tw-tracking-tight tw-text-primary-800 tw-font-semibold text-white tw-mb-10 md:tw-mb-0">
+                                class="tw-text-2xl md:tw-text-4xl tw-tracking-tight tw-text-green-800 tw-font-semibold text-white tw-mb-10 md:tw-mb-0">
                                 {{ __('home.welcome_message', ['name' => Session::get('user.first_name')]) }}
                             </h1>
                         </div>
@@ -33,7 +33,7 @@
                                 <div class="tw-mt-2 sm:tw-w-1/3 md:tw-w-1/4 tw-text-right">
                                     @if ($is_admin)
                                         <button type="button" id="dashboard_date_filter"
-                                            class="tw-inline-flex tw-items-center tw-justify-center tw-w-full tw-gap-1 tw-px-3 tw-py-2 tw-text-sm tw-font-medium tw-text-gray-900 tw-transition-all tw-duration-200 tw-bg-white tw-rounded-lg sm:tw-w-auto hover:tw-bg-primary-50">
+                                            class="tw-inline-flex tw-items-center tw-justify-center tw-w-full tw-gap-1 tw-px-3 tw-py-2 tw-text-sm tw-font-medium tw-text-gray-900 tw-transition-all tw-duration-200 tw-bg-white tw-rounded-lg sm:tw-w-auto hover:tw-bg-green-50">
                                             <svg aria-hidden="true" class="tw-size-5" xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
                                                 stroke-linecap="round" stroke-linejoin="round">
@@ -213,8 +213,8 @@
             @if ($is_admin)
                 <div class="tw-relative">
                     <div class="tw-absolute tw-inset-0 tw-grid" aria-hidden="true">
-                        <div class="tw-bg-gradient-to-r tw-from-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'primary'}}@endif-800 tw-to-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'primary'}}@endif-900"></div>
-                        <div class="tw-bg-gradient-to-r tw-from-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'primary'}}@endif-800 tw-to-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'primary'}}@endif-900 xl:tw-bg-none xl:tw-bg-gray-100">
+                        <div class="tw-bg-gradient-to-r tw-from-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'green'}}@endif-800 tw-to-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'green'}}@endif-900"></div>
+                        <div class="tw-bg-gradient-to-r tw-from-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'green'}}@endif-800 tw-to-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'green'}}@endif-900 xl:tw-bg-none xl:tw-bg-gray-100">
                         </div>
                     </div>
                     <div class="tw-px-5 tw-isolate">
@@ -410,39 +410,6 @@
                             {!! $widget !!}
                         @endforeach
                     @endif --}}
-                    @if (!empty($all_locations))
-                        <div
-                            class="tw-transition-all lg:tw-col-span-2 xl:tw-col-span-2 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw--translate-y-0.5 tw-ring-gray-200">
-                            <div class="tw-p-4 sm:tw-p-5">
-                                <div class="tw-flex tw-items-center tw-gap-2.5">
-                                    <div
-                                        class="tw-border-2 tw-flex tw-items-center tw-justify-center tw-rounded-full tw-w-10 tw-h-10">
-                                        <svg aria-hidden="true" class="tw-size-5 tw-text-sky-500 tw-shrink-0"
-                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                                            <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                                            <path d="M17 17h-11v-14h-2"></path>
-                                            <path d="M6 5l14 1l-1 7h-13"></path>
-                                        </svg>
-                                    </div>
-                                    <h3 class="tw-font-bold tw-text-base lg:tw-text-xl">
-                                        {{ __('home.sells_current_fy') }}
-                                    </h3>
-                                </div>
-                                <div class="tw-mt-5">
-                                    <div
-                                        class="tw-grid tw-w-full tw-h-100 tw-border tw-border-gray-200 tw-border-dashed tw-rounded-xl tw-bg-gray-50 ">
-                                        <p class="tw-text-sm tw-italic tw-font-normal tw-text-gray-400">
-                                            {!! $sells_chart_2->container() !!}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
                 @endif
                 {{-- @if (!empty($widgets['after_sales_current_fy']))
                     @foreach ($widgets['after_sales_current_fy'] as $widget)
@@ -615,119 +582,7 @@
                             </div>
                         </div>
                     </div>
-                    @if (session('business.enable_product_expiry') == 1)
-                        <div
-                            class="tw-transition-all lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw--translate-y-0.5 tw-ring-gray-200">
-                            <div class="tw-p-4 sm:tw-p-5">
-                                <div class="tw-flex tw-items-center tw-gap-2.5">
-                                    <div
-                                        class="tw-border-2 tw-flex tw-items-center tw-justify-center tw-rounded-full tw-w-10 tw-h-10">
-                                        <svg aria-hidden="true" class="tw-text-yellow-500 tw-size-5 tw-shrink-0"
-                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M12 9v4"></path>
-                                            <path
-                                                d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z">
-                                            </path>
-                                            <path d="M12 16h.01"></path>
-                                        </svg>
-                                    </div>
-                                    <div class="tw-flex tw-items-center tw-flex-1 tw-min-w-0 tw-gap-1">
-                                        <div class="tw-w-full sm:tw-w-1/2 md:tw-w-1/2">
-                                            <h3 class="tw-font-bold tw-text-base lg:tw-text-xl">
-                                                {{ __('home.stock_expiry_alert') }}
-                                                @show_tooltip(
-                                                __('tooltip.stock_expiry_alert', [
-                                                'days'
-                                                =>session('business.stock_expiry_alert_days', 30) ]) )
-                                            </h3>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tw-flow-root tw-mt-5  tw-border-gray-200">
-                                    <div class="tw--mx-4 tw--my-2 tw-overflow-x-auto sm:tw--mx-5">
-                                        <div class="tw-inline-block tw-min-w-full tw-py-2 tw-align-middle sm:tw-px-5">
-                                            <input type="hidden" id="stock_expiry_alert_days"
-                                                value="{{ \Illuminate\Support\Carbon::now()->addDays(session('business.stock_expiry_alert_days', 30))->format('Y-m-d') }}">
-                                            <table class="table table-bordered table-striped" id="stock_expiry_alert_table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>@lang('business.product')</th>
-                                                        <th>@lang('business.location')</th>
-                                                        <th>@lang('report.stock_left')</th>
-                                                        <th>@lang('product.expires_in')</th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
                 @endcan
-                @if (auth()->user()->can('so.view_all') || auth()->user()->can('so.view_own'))
-                    <div
-                        class="tw-transition-all lg:tw-col-span-2 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw--translate-y-0.5 tw-ring-gray-200">
-                        <div class="tw-p-4 sm:tw-p-5">
-                            <div class="tw-flex tw-items-center tw-gap-2.5">
-                                <div
-                                    class="tw-border-2 tw-flex tw-items-center tw-justify-center tw-rounded-full tw-w-10 tw-h-10">
-                                    <svg aria-hidden="true" class="tw-text-yellow-500 tw-size-5 tw-shrink-0"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"
-                                        stroke="currentColor" fill="none" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                                        <path d="M12 8v4"></path>
-                                        <path d="M12 16h.01"></path>
-                                    </svg>
-                                </div>
-                                <div class="tw-flex tw-items-center tw-flex-1 tw-min-w-0 tw-gap-1">
-                                    <div class="tw-w-full sm:tw-w-1/2 md:tw-w-1/2">
-                                        <h3 class="tw-font-bold tw-text-base lg:tw-text-xl">
-                                            {{ __('lang_v1.sales_order') }}
-                                        </h3>
-                                    </div>
-                                    <div class="tw-w-full sm:tw-w-1/2 md:tw-w-1/2">
-                                        @if (count($all_locations) > 1)
-                                            {!! Form::select('so_location', $all_locations, null, [
-                                                'class' => 'form-control select2',
-                                                'placeholder' => __('lang_v1.select_location'),
-                                                'id' => 'so_location',
-                                            ]) !!}
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tw-flow-root tw-mt-5  tw-border-gray-200">
-                                <div class="tw--mx-4 tw--my-2 tw-overflow-x-auto sm:tw--mx-5">
-                                    <div class="tw-inline-block tw-min-w-full tw-py-2 tw-align-middle sm:tw-px-5">
-                                        <table class="table table-bordered table-striped ajax_view"
-                                            id="sales_order_table">
-                                            <thead>
-                                                <tr>
-                                                    <th>@lang('messages.action')</th>
-                                                    <th>@lang('messages.date')</th>
-                                                    <th>@lang('restaurant.order_no')</th>
-                                                    <th>@lang('sale.customer_name')</th>
-                                                    <th>@lang('lang_v1.contact_no')</th>
-                                                    <th>@lang('sale.location')</th>
-                                                    <th>@lang('sale.status')</th>
-                                                    <th>@lang('lang_v1.shipping_status')</th>
-                                                    <th>@lang('lang_v1.quantity_remaining')</th>
-                                                    <th>@lang('lang_v1.added_by')</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
                 @if (
                     !empty($common_settings['enable_purchase_requisition']) &&
                         (auth()->user()->can('purchase_requisition.view_all') || auth()->user()->can('purchase_requisition.view_own')))
@@ -857,92 +712,6 @@
                     </div>
 
                 @endif
-                @if (auth()->user()->can('access_pending_shipments_only') ||
-                        auth()->user()->can('access_shipping') ||
-                        auth()->user()->can('access_own_shipping'))
-                    <div
-                        class="tw-transition-all lg:tw-col-span-2 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw--translate-y-0.5 tw-ring-gray-200">
-                        <div class="tw-p-4 sm:tw-p-5">
-                            <div class="tw-flex tw-items-center tw-gap-2.5">
-                                <div
-                                    class="tw-border-2 tw-flex tw-items-center tw-justify-center tw-rounded-full tw-w-10 tw-h-10">
-                                    <svg aria-hidden="true" class="tw-text-yellow-500 tw-size-5 tw-shrink-0"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"
-                                        stroke="currentColor" fill="none" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                                        <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                                        <path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5"></path>
-                                        <path d="M3 9l4 0"></path>
-                                    </svg>
-                                </div>
-                                <div class="tw-flex tw-items-center tw-flex-1 tw-min-w-0 tw-gap-1">
-                                    <div class="tw-w-full sm:tw-w-1/2 md:tw-w-1/2">
-                                        <h3 class="tw-font-bold tw-text-base lg:tw-text-xl">
-                                            @lang('lang_v1.pending_shipments')
-                                        </h3>
-                                    </div>
-                                    <div class="tw-w-full sm:tw-w-1/2 md:tw-w-1/2">
-                                        @if (count($all_locations) > 1)
-                                            {!! Form::select('pending_shipments_location', $all_locations, null, [
-                                                'class' => 'form-control select2 ',
-                                                'placeholder' => __('lang_v1.select_location'),
-                                                'id' => 'pending_shipments_location',
-                                            ]) !!}
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tw-flow-root tw-mt-5  tw-border-gray-200">
-                                <div class="tw--mx-4 tw--my-2 tw-overflow-x-auto sm:tw--mx-5">
-                                    <div class="tw-inline-block tw-min-w-full tw-py-2 tw-align-middle sm:tw-px-5">
-                                        <table class="table table-bordered table-striped ajax_view" id="shipments_table">
-                                            <thead>
-                                                <tr>
-                                                    <th>@lang('messages.action')</th>
-                                                    <th>@lang('messages.date')</th>
-                                                    <th>@lang('sale.invoice_no')</th>
-                                                    <th>@lang('sale.customer_name')</th>
-                                                    <th>@lang('lang_v1.contact_no')</th>
-                                                    <th>@lang('sale.location')</th>
-                                                    <th>@lang('lang_v1.shipping_status')</th>
-                                                    @if (!empty($custom_labels['shipping']['custom_field_1']))
-                                                        <th>
-                                                            {{ $custom_labels['shipping']['custom_field_1'] }}
-                                                        </th>
-                                                    @endif
-                                                    @if (!empty($custom_labels['shipping']['custom_field_2']))
-                                                        <th>
-                                                            {{ $custom_labels['shipping']['custom_field_2'] }}
-                                                        </th>
-                                                    @endif
-                                                    @if (!empty($custom_labels['shipping']['custom_field_3']))
-                                                        <th>
-                                                            {{ $custom_labels['shipping']['custom_field_3'] }}
-                                                        </th>
-                                                    @endif
-                                                    @if (!empty($custom_labels['shipping']['custom_field_4']))
-                                                        <th>
-                                                            {{ $custom_labels['shipping']['custom_field_4'] }}
-                                                        </th>
-                                                    @endif
-                                                    @if (!empty($custom_labels['shipping']['custom_field_5']))
-                                                        <th>
-                                                            {{ $custom_labels['shipping']['custom_field_5'] }}
-                                                        </th>
-                                                    @endif
-                                                    <th>@lang('sale.payment_status')</th>
-                                                    <th>@lang('restaurant.service_staff')</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
                 @if (auth()->user()->can('account.access') && config('constants.show_payments_recovered_today') == true)
                     <div
                         class="tw-transition-all lg:tw-col-span-2 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw--translate-y-0.5 tw-ring-gray-200">
@@ -1032,82 +801,12 @@
 @section('javascript')
     <script src="{{ asset('js/home.js?v=' . $asset_v) }}"></script>
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
-    @includeIf('sales_order.common_js')
     @includeIf('purchase_order.common_js')
     @if (!empty($all_locations))
         {!! $sells_chart_1->script() !!}
-        {!! $sells_chart_2->script() !!}
     @endif
     <script type="text/javascript">
         $(document).ready(function() {
-            sales_order_table = $('#sales_order_table').DataTable({
-                processing: true,
-                serverSide: true,
-                fixedHeader:false,
-                scrollY: "75vh",
-                scrollX: true,
-                scrollCollapse: true,
-                aaSorting: [
-                    [1, 'desc']
-                ],
-                "ajax": {
-                    "url": '{{ action([\App\Http\Controllers\SellController::class, 'index']) }}?sale_type=sales_order',
-                    "data": function(d) {
-                        d.for_dashboard_sales_order = true;
-
-                        if ($('#so_location').length > 0) {
-                            d.location_id = $('#so_location').val();
-                        }
-                    }
-                },
-                columnDefs: [{
-                    "targets": 7,
-                    "orderable": false,
-                    "searchable": false
-                }],
-                columns: [{
-                        data: 'action',
-                        name: 'action'
-                    },
-                    {
-                        data: 'transaction_date',
-                        name: 'transaction_date'
-                    },
-                    {
-                        data: 'invoice_no',
-                        name: 'invoice_no'
-                    },
-                    {
-                        data: 'conatct_name',
-                        name: 'conatct_name'
-                    },
-                    {
-                        data: 'mobile',
-                        name: 'contacts.mobile'
-                    },
-                    {
-                        data: 'business_location',
-                        name: 'bl.name'
-                    },
-                    {
-                        data: 'status',
-                        name: 'status'
-                    },
-                    {
-                        data: 'shipping_status',
-                        name: 'shipping_status'
-                    },
-                    {
-                        data: 'so_qty_remaining',
-                        name: 'so_qty_remaining',
-                        "searchable": false
-                    },
-                    {
-                        data: 'added_by',
-                        name: 'u.first_name'
-                    },
-                ]
-            });
 
             @if (auth()->user()->can('account.access') && config('constants.show_payments_recovered_today') == true)
 
@@ -1173,263 +872,6 @@
                     }
                 });
             @endif
-
-            $('#so_location').change(function() {
-                sales_order_table.ajax.reload();
-            });
-            @if (!empty($common_settings['enable_purchase_order']))
-                //Purchase table
-                purchase_order_table = $('#purchase_order_table').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    fixedHeader:false,
-                    aaSorting: [
-                        [1, 'desc']
-                    ],
-                    scrollY: "75vh",
-                    scrollX: true,
-                    scrollCollapse: true,
-                    ajax: {
-                        url: '{{ action([\App\Http\Controllers\PurchaseOrderController::class, 'index']) }}',
-                        data: function(d) {
-                            d.from_dashboard = true;
-
-                            if ($('#po_location').length > 0) {
-                                d.location_id = $('#po_location').val();
-                            }
-                        },
-                    },
-                    columns: [{
-                            data: 'action',
-                            name: 'action',
-                            orderable: false,
-                            searchable: false
-                        },
-                        {
-                            data: 'transaction_date',
-                            name: 'transaction_date'
-                        },
-                        {
-                            data: 'ref_no',
-                            name: 'ref_no'
-                        },
-                        {
-                            data: 'location_name',
-                            name: 'BS.name'
-                        },
-                        {
-                            data: 'name',
-                            name: 'contacts.name'
-                        },
-                        {
-                            data: 'status',
-                            name: 'transactions.status'
-                        },
-                        {
-                            data: 'po_qty_remaining',
-                            name: 'po_qty_remaining',
-                            "searchable": false
-                        },
-                        {
-                            data: 'added_by',
-                            name: 'u.first_name'
-                        }
-                    ]
-                })
-
-                $('#po_location').change(function() {
-                    purchase_order_table.ajax.reload();
-                });
-            @endif
-
-            @if (!empty($common_settings['enable_purchase_requisition']))
-                //Purchase table
-                purchase_requisition_table = $('#purchase_requisition_table').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    fixedHeader:false,
-                    aaSorting: [
-                        [1, 'desc']
-                    ],
-                    scrollY: "75vh",
-                    scrollX: true,
-                    scrollCollapse: true,
-                    ajax: {
-                        url: '{{ action([\App\Http\Controllers\PurchaseRequisitionController::class, 'index']) }}',
-                        data: function(d) {
-                            d.from_dashboard = true;
-
-                            if ($('#pr_location').length > 0) {
-                                d.location_id = $('#pr_location').val();
-                            }
-                        },
-                    },
-                    columns: [{
-                            data: 'action',
-                            name: 'action',
-                            orderable: false,
-                            searchable: false
-                        },
-                        {
-                            data: 'transaction_date',
-                            name: 'transaction_date'
-                        },
-                        {
-                            data: 'ref_no',
-                            name: 'ref_no'
-                        },
-                        {
-                            data: 'location_name',
-                            name: 'BS.name'
-                        },
-                        {
-                            data: 'status',
-                            name: 'status'
-                        },
-                        {
-                            data: 'delivery_date',
-                            name: 'delivery_date'
-                        },
-                        {
-                            data: 'added_by',
-                            name: 'u.first_name'
-                        },
-                    ]
-                })
-
-                $('#pr_location').change(function() {
-                    purchase_requisition_table.ajax.reload();
-                });
-
-                $(document).on('click', 'a.delete-purchase-requisition', function(e) {
-                    e.preventDefault();
-                    swal({
-                        title: LANG.sure,
-                        icon: 'warning',
-                        buttons: true,
-                        dangerMode: true,
-                    }).then(willDelete => {
-                        if (willDelete) {
-                            var href = $(this).attr('href');
-                            $.ajax({
-                                method: 'DELETE',
-                                url: href,
-                                dataType: 'json',
-                                success: function(result) {
-                                    if (result.success == true) {
-                                        toastr.success(result.msg);
-                                        purchase_requisition_table.ajax.reload();
-                                    } else {
-                                        toastr.error(result.msg);
-                                    }
-                                },
-                            });
-                        }
-                    });
-                });
-            @endif
-
-            sell_table = $('#shipments_table').DataTable({
-                processing: true,
-                serverSide: true,
-                fixedHeader:false,
-                aaSorting: [
-                    [1, 'desc']
-                ],
-                scrollY: "75vh",
-                scrollX: true,
-                scrollCollapse: true,
-                "ajax": {
-                    "url": '{{ action([\App\Http\Controllers\SellController::class, 'index']) }}',
-                    "data": function(d) {
-                        d.only_pending_shipments = true;
-                        if ($('#pending_shipments_location').length > 0) {
-                            d.location_id = $('#pending_shipments_location').val();
-                        }
-                    }
-                },
-                columns: [{
-                        data: 'action',
-                        name: 'action',
-                        searchable: false,
-                        orderable: false
-                    },
-                    {
-                        data: 'transaction_date',
-                        name: 'transaction_date'
-                    },
-                    {
-                        data: 'invoice_no',
-                        name: 'invoice_no'
-                    },
-                    {
-                        data: 'conatct_name',
-                        name: 'conatct_name'
-                    },
-                    {
-                        data: 'mobile',
-                        name: 'contacts.mobile'
-                    },
-                    {
-                        data: 'business_location',
-                        name: 'bl.name'
-                    },
-                    {
-                        data: 'shipping_status',
-                        name: 'shipping_status'
-                    },
-                    @if (!empty($custom_labels['shipping']['custom_field_1']))
-                        {
-                            data: 'shipping_custom_field_1',
-                            name: 'shipping_custom_field_1'
-                        },
-                    @endif
-                    @if (!empty($custom_labels['shipping']['custom_field_2']))
-                        {
-                            data: 'shipping_custom_field_2',
-                            name: 'shipping_custom_field_2'
-                        },
-                    @endif
-                    @if (!empty($custom_labels['shipping']['custom_field_3']))
-                        {
-                            data: 'shipping_custom_field_3',
-                            name: 'shipping_custom_field_3'
-                        },
-                    @endif
-                    @if (!empty($custom_labels['shipping']['custom_field_4']))
-                        {
-                            data: 'shipping_custom_field_4',
-                            name: 'shipping_custom_field_4'
-                        },
-                    @endif
-                    @if (!empty($custom_labels['shipping']['custom_field_5']))
-                        {
-                            data: 'shipping_custom_field_5',
-                            name: 'shipping_custom_field_5'
-                        },
-                    @endif {
-                        data: 'payment_status',
-                        name: 'payment_status'
-                    },
-                    {
-                        data: 'waiter',
-                        name: 'ss.first_name',
-                        @if (empty($is_service_staff_enabled))
-                            visible: false
-                        @endif
-                    }
-                ],
-                "fnDrawCallback": function(oSettings) {
-                    __currency_convert_recursively($('#sell_table'));
-                },
-                createdRow: function(row, data, dataIndex) {
-                    $(row).find('td:eq(4)').attr('class', 'clickable_td');
-                }
-            });
-
-            $('#pending_shipments_location').change(function() {
-                sell_table.ajax.reload();
-            });
         });
     </script>
     
