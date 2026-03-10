@@ -48,6 +48,7 @@ return [
     'search' => 'অনুসন্ধান',
     'filter' => 'ফিল্টার',
     'export' => 'রপ্তানি',
+    'language' => 'ভাষা',
     'language_word_management' => 'ভাষা শব্দ ব্যবস্থাপনা',
     'select_language' => 'ভাষা নির্বাচন করুন',
     'select_module' => 'মডিউল নির্বাচন করুন',

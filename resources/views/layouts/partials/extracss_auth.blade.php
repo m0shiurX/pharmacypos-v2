@@ -33,10 +33,6 @@
             margin: 0;
             padding: 0;
         }
-
-        h1 {
-            color: #fff;
-        }
     </style>
 
     <style type="text/css">

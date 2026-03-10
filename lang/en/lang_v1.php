@@ -89,6 +89,7 @@ return [
     'success' => 'Success',
 
     // Language Word Management
+    'language' => 'Language',
     'language_word_management' => 'Language Word Management',
     'select_language' => 'Select Language',
     'add_single_word' => 'Add Single Word',

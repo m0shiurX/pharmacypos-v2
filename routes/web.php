@@ -102,6 +102,17 @@ Route::middleware(['setData'])->group(function () {
 
 //Routes for authenticated users only
 Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 'AdminSidebarMenu', 'CheckUserLogin'])->group(function () {
+    Route::post('change-language', function (\Illuminate\Http\Request $request) {
+        $lang = $request->input('language');
+        if (array_key_exists($lang, config('constants.langs'))) {
+            $user = \Illuminate\Support\Facades\Auth::user();
+            $user->language = $lang;
+            $user->save();
+            $request->session()->put('user.language', $lang);
+        }
+        return redirect()->back();
+    })->name('change-language');
+
     Route::get('pos/payment/{id}', [SellPosController::class, 'edit'])->name('edit-pos-payment');
     Route::get('service-staff-availability', [SellPosController::class, 'showServiceStaffAvailibility']);
     Route::get('pause-resume-service-staff-timer/{user_id}', [SellPosController::class, 'pauseResumeServiceStaffTimer']);

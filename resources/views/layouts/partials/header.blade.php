@@ -230,6 +230,29 @@
                                 @lang('lang_v1.profile')
                             </a>
                         </li>
+                        <li class="tw-border-t tw-border-gray-100 tw-my-1"></li>
+                        <li class="tw-px-3 tw-pt-1 tw-pb-0.5">
+                            <span class="tw-text-[10px] tw-font-semibold tw-uppercase tw-tracking-wider tw-text-gray-400">@lang('lang_v1.language')</span>
+                        </li>
+                        @foreach (config('constants.langs') as $langKey => $langVal)
+                            @php $isActiveLang = session('user.language', config('app.locale')) == $langKey; @endphp
+                            <li>
+                                <form method="POST" action="{{ route('change-language') }}">
+                                    @csrf
+                                    <input type="hidden" name="language" value="{{ $langKey }}">
+                                    <button type="submit"
+                                        class="tw-flex tw-items-center tw-justify-between tw-px-3 tw-py-2 tw-text-sm tw-font-medium tw-w-full tw-text-left tw-transition-all tw-duration-200 tw-rounded-lg hover:tw-bg-gray-100 {{ $isActiveLang ? 'tw-text-emerald-700 tw-bg-emerald-50' : 'tw-text-gray-600 hover:tw-text-gray-900' }}">
+                                        <span>{{ $langVal['full_name'] }}</span>
+                                        @if($isActiveLang)
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="tw-w-4 tw-h-4 tw-text-emerald-600" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" />
+                                            </svg>
+                                        @endif
+                                    </button>
+                                </form>
+                            </li>
+                        @endforeach
+                        <li class="tw-border-t tw-border-gray-100 tw-my-1"></li>
                         <li>
                             <a href="{{ action([\App\Http\Controllers\Auth\LoginController::class, 'logout']) }}"
                                 class="tw-flex tw-items-center tw-gap-2 tw-px-3 tw-py-2 tw-text-sm tw-font-medium tw-text-gray-600 tw-transition-all tw-duration-200 tw-rounded-lg hover:tw-text-gray-900 hover:tw-bg-gray-100"
