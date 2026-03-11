@@ -185,11 +185,10 @@
 			</select>
 		@endif
 	@endif
-	@if(!empty($is_direct_sell))
-  		<br>
-  		<textarea class="form-control" name="products[{{$row_count}}][sell_line_note]" rows="2">{{$sell_line_note}}</textarea>
+	{{-- @if(!empty($is_direct_sell))
+  		<textarea class="form-control tw-mt-3" name="products[{{$row_count}}][sell_line_note]" rows="2">{{$sell_line_note}}</textarea>
   		<p class="help-block"><small>@lang('lang_v1.sell_line_description_help')</small></p>
-	@endif
+	@endif --}}
 	</td>
 
 	<td style="overflow:hidden">
@@ -271,9 +270,8 @@
 		@endif
 
 		@if(!empty($product->second_unit))
-            <br>
-            <span style="white-space: nowrap;">
-            @lang('lang_v1.quantity_in_second_unit', ['unit' => $product->second_unit])*:</span><br>
+            <span style="white-space: nowrap; display:block; margin-top:5px;">
+            @lang('lang_v1.quantity_in_second_unit', ['unit' => $product->second_unit])*:</span>
             <input type="text" 
             name="products[{{$row_count}}][secondary_unit_quantity]" 
             value="{{@format_quantity($product->secondary_unit_quantity)}}"
@@ -346,20 +344,16 @@
 			<input type="text" name="products[{{$row_count}}][unit_price]" class="form-control pos_unit_price input_number mousetrap" value="{{@num_format($pos_unit_price)}}" @if(!empty($pos_settings['enable_msp'])) data-rule-min-value="{{$pos_unit_price}}" data-msg-min-value="{{__('lang_v1.minimum_selling_price_error_msg', ['price' => @num_format($pos_unit_price)])}}" @endif> 
 
 			@if(!empty($last_sell_line))
-				<br>
-				<small class="text-muted">@lang('lang_v1.prev_unit_price'): @format_currency($last_sell_line->unit_price_before_discount)</small>
+
+				<small class="text-muted tw-mt-2">@lang('lang_v1.prev_unit_price'): @format_currency($last_sell_line->unit_price_before_discount)</small>
 			@endif
 		</td>
 		<td @if(!$edit_discount) class="hide" @endif>
-			{!! Form::text("products[$row_count][line_discount_amount]", @num_format($discount_amount), ['class' => 'form-control input_number row_discount_amount']); !!}<br>
-			{!! Form::select("products[$row_count][line_discount_type]", ['fixed' => __('lang_v1.fixed'), 'percentage' => __('lang_v1.percentage')], $discount_type , ['class' => 'form-control row_discount_type']); !!}
-			@if(!empty($discount))
-				<p class="help-block">{!! __('lang_v1.applied_discount_text', ['discount_name' => $discount->name, 'starts_at' => $discount->formated_starts_at, 'ends_at' => $discount->formated_ends_at]) !!}</p>
-			@endif
+			{!! Form::text("products[$row_count][line_discount_amount]", @num_format($discount_amount), ['class' => 'form-control input_number row_discount_amount']); !!}
+			{!! Form::select("products[$row_count][line_discount_type]", ['fixed' => __('lang_v1.fixed'), 'percentage' => __('lang_v1.percentage')], $discount_type , ['class' => 'form-control tw-mt-2 row_discount_type']); !!}
 
 			@if(!empty($last_sell_line))
-				<br>
-				<small class="text-muted">
+				<small class="text-muted tw-mt-2">
 					@lang('lang_v1.prev_discount'): 
 					@if($last_sell_line->line_discount_type == 'percentage')
 						{{@num_format($last_sell_line->line_discount_amount)}}%
