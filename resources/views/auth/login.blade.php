@@ -27,8 +27,8 @@
             }
         }
     @endphp
-    <div class="tw-flex tw-items-center tw-justify-center tw-min-h-[80vh]">
-        <div class="tw-w-full tw-max-w-md tw-mx-auto">
+    <div class="tw-flex tw-items-center tw-justify-center tw-min-h-[80vh] tw-w-full">
+        <div class="tw-w-full tw-mx-auto" style="max-width: 420px;">
             <div class="tw-p-8 md:tw-p-10 tw-rounded-2xl tw-bg-white tw-shadow-xl tw-ring-1 tw-ring-gray-100">
                 {{-- Header --}}
                 <div class="tw-text-center tw-mb-8">
