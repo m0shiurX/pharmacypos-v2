@@ -5,8 +5,8 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "tw:build": "npx tailwindcss@3 -i resources/css/app.css -o public/css/tailwind/app.css --minify",
-        "tw:watch": "npx tailwindcss@3 -i resources/css/app.css -o public/css/tailwind/app.css --watch"
+        "tw:build": "node_modules/daisyui/node_modules/.bin/tailwindcss -i resources/css/app.css -o public/css/tailwind/app.css --minify",
+        "tw:watch": "node_modules/daisyui/node_modules/.bin/tailwindcss -i resources/css/app.css -o public/css/tailwind/app.css --watch"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
