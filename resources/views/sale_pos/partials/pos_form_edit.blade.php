@@ -188,30 +188,30 @@
 				$hide_tax = 'hide';
 			}
 		@endphp
-		<table class="table table-condensed table-bordered table-striped table-responsive" id="pos_table">
+		<table class="table table-condensed table-bordered table-hover" id="pos_table" style="margin-bottom:0;table-layout:fixed">
 			<thead>
-				<tr>
-					<th class="tex-center @if(!empty($pos_settings['inline_service_staff'])) col-md-3 @else col-md-4 @endif">	
+				<tr style="background:#f8f9fa">
+					<th class="tw-text-xs tw-uppercase tw-tracking-wide tw-text-gray-600 tw-font-semibold tw-py-2" style="width:30%">	
 						@lang('sale.product') @show_tooltip(__('lang_v1.tooltip_sell_product_column'))
 					</th>
-					<th class="text-center col-md-3">
+					<th class="text-center tw-text-xs tw-uppercase tw-tracking-wide tw-text-gray-600 tw-font-semibold tw-py-2" style="width:18%">
 						@lang('sale.qty')
 					</th>
 					@if(!empty($pos_settings['inline_service_staff']))
-						<th class="text-center col-md-2">
+						<th class="text-center tw-text-xs tw-uppercase tw-tracking-wide tw-text-gray-600 tw-font-semibold tw-py-2" style="width:12%">
 							@lang('restaurant.service_staff')
 						</th>
 					@endif
-					<th class="text-center col-md-2">
+					<th class="text-center tw-text-xs tw-uppercase tw-tracking-wide tw-text-gray-600 tw-font-semibold tw-py-2" style="width:12%">
 						@lang('receipt.discount')
 					</th>
-					<th class="text-center col-md-2 {{$hide_tax}}">
+					<th class="text-center tw-text-xs tw-uppercase tw-tracking-wide tw-text-gray-600 tw-font-semibold tw-py-2 {{$hide_tax}}" style="width:18%">
 						@lang('sale.price_inc_tax')
 					</th>
-					<th class="text-center col-md-2">
+					<th class="text-center tw-text-xs tw-uppercase tw-tracking-wide tw-text-gray-600 tw-font-semibold tw-py-2" style="width:12%">
 						@lang('sale.subtotal')
 					</th>
-					<th class="text-center"><i class="fas fa-times" aria-hidden="true"></i></th>
+					<th class="text-center tw-py-2" style="width:30px"><i class="fas fa-times tw-text-gray-400" aria-hidden="true"></i></th>
 				</tr>
 			</thead>
 			<tbody>
