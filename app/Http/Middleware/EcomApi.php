@@ -10,12 +10,11 @@ class EcomApi
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        if (!class_exists(\Modules\Ecommerce\Entities\EcomApiSetting::class)) {
+        if (! class_exists(\Modules\Ecommerce\Entities\EcomApiSetting::class)) {
             abort(404);
         }
 

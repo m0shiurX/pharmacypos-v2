@@ -29,8 +29,8 @@ class Reminder extends Model
     public static function getReminders($data)
     {
         $reminders = Reminder::where('business_id', $data['business_id'])
-                   ->where('user_id', $data['user_id'])
-                   ->get();
+            ->where('user_id', $data['user_id'])
+            ->get();
 
         $events = [];
         foreach ($reminders as $reminder) {

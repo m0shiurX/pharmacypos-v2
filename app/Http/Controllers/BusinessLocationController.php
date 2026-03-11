@@ -22,7 +22,6 @@ class BusinessLocationController extends Controller
     /**
      * Constructor
      *
-     * @param  ModuleUtil  $moduleUtil
      * @return void
      */
     public function __construct(ModuleUtil $moduleUtil, Util $commonUtil)
@@ -108,7 +107,7 @@ class BusinessLocationController extends Controller
         }
         $business_id = request()->session()->get('user.business_id');
 
-        //Check if subscribed or not, then check for location quota
+        // Check if subscribed or not, then check for location quota
         if (! $this->moduleUtil->isSubscribed($business_id)) {
             return $this->moduleUtil->expiredResponse();
         } elseif (! $this->moduleUtil->isQuotaAvailable('locations', $business_id)) {
@@ -116,37 +115,36 @@ class BusinessLocationController extends Controller
         }
 
         $invoice_layouts = InvoiceLayout::where('business_id', $business_id)
-                            ->get()
-                            ->pluck('name', 'id');
+            ->get()
+            ->pluck('name', 'id');
 
         $invoice_schemes = InvoiceScheme::where('business_id', $business_id)
-                            ->get()
-                            ->pluck('name', 'id');
+            ->get()
+            ->pluck('name', 'id');
 
         $price_groups = SellingPriceGroup::forDropdown($business_id);
 
         $payment_types = $this->commonUtil->payment_types(null, false, $business_id);
 
-        //Accounts
+        // Accounts
         $accounts = [];
         if ($this->commonUtil->isModuleEnabled('account')) {
             $accounts = Account::forDropdown($business_id, true, false);
         }
 
         return view('business_location.create')
-                    ->with(compact(
-                        'invoice_layouts',
-                        'invoice_schemes',
-                        'price_groups',
-                        'payment_types',
-                        'accounts'
-                    ));
+            ->with(compact(
+                'invoice_layouts',
+                'invoice_schemes',
+                'price_groups',
+                'payment_types',
+                'accounts'
+            ));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -158,7 +156,7 @@ class BusinessLocationController extends Controller
         try {
             $business_id = $request->session()->get('user.business_id');
 
-            //Check if subscribed or not, then check for location quota
+            // Check if subscribed or not, then check for location quota
             if (! $this->moduleUtil->isSubscribed($business_id)) {
                 return $this->moduleUtil->expiredResponse();
             } elseif (! $this->moduleUtil->isQuotaAvailable('locations', $business_id)) {
@@ -172,7 +170,7 @@ class BusinessLocationController extends Controller
 
             $input['default_payment_accounts'] = ! empty($input['default_payment_accounts']) ? json_encode($input['default_payment_accounts']) : null;
 
-            //Update reference count
+            // Update reference count
             $ref_count = $this->moduleUtil->setAndGetReferenceCount('business_location');
 
             if (empty($input['location_id'])) {
@@ -181,7 +179,7 @@ class BusinessLocationController extends Controller
 
             $location = BusinessLocation::create($input);
 
-            //Create a new permission related to the created location
+            // Create a new permission related to the created location
             Permission::create(['name' => 'location.'.$location->id]);
 
             $output = ['success' => true,
@@ -223,19 +221,19 @@ class BusinessLocationController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $location = BusinessLocation::where('business_id', $business_id)
-                                    ->find($id);
+            ->find($id);
         $invoice_layouts = InvoiceLayout::where('business_id', $business_id)
-                            ->get()
-                            ->pluck('name', 'id');
+            ->get()
+            ->pluck('name', 'id');
         $invoice_schemes = InvoiceScheme::where('business_id', $business_id)
-                            ->get()
-                            ->pluck('name', 'id');
+            ->get()
+            ->pluck('name', 'id');
 
         $price_groups = SellingPriceGroup::forDropdown($business_id);
 
         $payment_types = $this->commonUtil->payment_types(null, false, $business_id);
 
-        //Accounts
+        // Accounts
         $accounts = [];
         if ($this->commonUtil->isModuleEnabled('account')) {
             $accounts = Account::forDropdown($business_id, true, false);
@@ -243,21 +241,20 @@ class BusinessLocationController extends Controller
         $featured_products = $location->getFeaturedProducts(true, false);
 
         return view('business_location.edit')
-                ->with(compact(
-                    'location',
-                    'invoice_layouts',
-                    'invoice_schemes',
-                    'price_groups',
-                    'payment_types',
-                    'accounts',
-                    'featured_products'
-                ));
+            ->with(compact(
+                'location',
+                'invoice_layouts',
+                'invoice_schemes',
+                'price_groups',
+                'payment_types',
+                'accounts',
+                'featured_products'
+            ));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\StoreFront  $storeFront
      * @return \Illuminate\Http\Response
      */
@@ -270,7 +267,7 @@ class BusinessLocationController extends Controller
         try {
             $input = $request->only(['name', 'landmark', 'city', 'state', 'country',
                 'zip_code', 'invoice_scheme_id',
-                'invoice_layout_id', 'mobile', 'alternate_number', 'email', 'website', 'custom_field1', 'custom_field2', 'custom_field3', 'custom_field4', 'location_id', 'selling_price_group_id', 'default_payment_accounts', 'featured_products', 'sale_invoice_layout_id', 'sale_invoice_scheme_id' ]);
+                'invoice_layout_id', 'mobile', 'alternate_number', 'email', 'website', 'custom_field1', 'custom_field2', 'custom_field3', 'custom_field4', 'location_id', 'selling_price_group_id', 'default_payment_accounts', 'featured_products', 'sale_invoice_layout_id', 'sale_invoice_scheme_id']);
 
             $business_id = $request->session()->get('user.business_id');
 
@@ -279,8 +276,8 @@ class BusinessLocationController extends Controller
             $input['featured_products'] = ! empty($input['featured_products']) ? json_encode($input['featured_products']) : null;
 
             BusinessLocation::where('business_id', $business_id)
-                            ->where('id', $id)
-                            ->update($input);
+                ->where('id', $id)
+                ->update($input);
 
             $output = ['success' => true,
                 'msg' => __('business.business_location_updated_success'),
@@ -310,7 +307,6 @@ class BusinessLocationController extends Controller
     /**
      * Checks if the given location id already exist for the current business.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function checkLocationId(Request $request)
@@ -323,7 +319,7 @@ class BusinessLocationController extends Controller
             $hidden_id = $request->input('hidden_id');
 
             $query = BusinessLocation::where('business_id', $business_id)
-                            ->where('location_id', $location_id);
+                ->where('location_id', $location_id);
             if (! empty($hidden_id)) {
                 $query->where('id', '!=', $hidden_id);
             }
@@ -352,7 +348,7 @@ class BusinessLocationController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $business_location = BusinessLocation::where('business_id', $business_id)
-                            ->findOrFail($location_id);
+                ->findOrFail($location_id);
 
             $business_location->is_active = ! $business_location->is_active;
             $business_location->save();

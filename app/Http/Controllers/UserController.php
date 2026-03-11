@@ -60,7 +60,7 @@ class UserController extends Controller
      */
     public function updateProfile(Request $request)
     {
-        //Disable in demo
+        // Disable in demo
         $notAllowed = $this->moduleUtil->notAllowedInDemo();
         if (! empty($notAllowed)) {
             return $notAllowed;
@@ -86,7 +86,7 @@ class UserController extends Controller
 
             Media::uploadMedia($user->business_id, $user, request(), 'profile_photo', true);
 
-            //update session
+            // update session
             $input['id'] = $user_id;
             $business_id = request()->session()->get('user.business_id');
             $input['business_id'] = $business_id;
@@ -113,7 +113,7 @@ class UserController extends Controller
      */
     public function updatePassword(Request $request)
     {
-        //Disable in demo
+        // Disable in demo
         $notAllowed = $this->moduleUtil->notAllowedInDemo();
         if (! empty($notAllowed)) {
             return $notAllowed;

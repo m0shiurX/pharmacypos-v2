@@ -20,8 +20,8 @@ class TransactionPaymentDeleted
     public function __construct($transactionPayment)
     {
         $this->transactionPayment = $transactionPayment;
-        
-        //used in accounting MapPaymentTransaction
+
+        // used in accounting MapPaymentTransaction
         $this->isDeleted = true;
     }
 }

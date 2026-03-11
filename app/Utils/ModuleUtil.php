@@ -16,7 +16,7 @@ class ModuleUtil extends Util
     /**
      * This function check if a module is installed or not.
      *
-     * @param  string  $module_name (Exact module name, with first letter capital)
+     * @param  string  $module_name  (Exact module name, with first letter capital)
      * @return bool
      */
     public function isModuleInstalled($module_name)
@@ -24,8 +24,8 @@ class ModuleUtil extends Util
         $is_available = Module::has($module_name);
 
         if ($is_available) {
-            //Check if installed by checking the system table {module_name}_version
-            $module_version = System::getProperty(strtolower($module_name) . '_version');
+            // Check if installed by checking the system table {module_name}_version
+            $module_version = System::getProperty(strtolower($module_name).'_version');
             if (empty($module_version)) {
                 return false;
             } else {
@@ -65,7 +65,7 @@ class ModuleUtil extends Util
         }
 
         // If specific module names are provided, filter the installed modules
-        if (!empty($get_data_from_modules) && is_array($get_data_from_modules)) {
+        if (! empty($get_data_from_modules) && is_array($get_data_from_modules)) {
             $installed_modules = array_filter($installed_modules, function ($module) use ($get_data_from_modules) {
                 return in_array($module['name'], $get_data_from_modules);
             });
@@ -74,10 +74,10 @@ class ModuleUtil extends Util
         $data = [];
         if (! empty($installed_modules)) {
             foreach ($installed_modules as $module) {
-                $class = 'Modules\\' . $module['name'] . '\Http\Controllers\DataController';
+                $class = 'Modules\\'.$module['name'].'\Http\Controllers\DataController';
 
                 if (class_exists($class)) {
-                    $class_object = new $class();
+                    $class_object = new $class;
                     if (method_exists($class_object, $function_name)) {
                         if (! empty($arguments)) {
                             $data[$module['name']] = call_user_func([$class_object, $function_name], $arguments);
@@ -140,7 +140,7 @@ class ModuleUtil extends Util
      *
      * @param  int  $business_id
      * @param  string  $permission
-     * @param  string  $callback_function = null
+     * @param  string  $callback_function  = null
      * @return bool
      */
     public function hasThePermissionInSubscription($business_id, $permission, $callback_function = null)
@@ -156,7 +156,7 @@ class ModuleUtil extends Util
                 return false;
             } elseif (isset($package['package_details'][$permission])) {
                 if (! is_null($callback_function)) {
-                    $obj = new ModuleUtil();
+                    $obj = new ModuleUtil;
                     $permissions = $obj->getModuleData($callback_function);
 
                     $permission_formatted = [];
@@ -295,7 +295,7 @@ class ModuleUtil extends Util
      *
      * @param  string  $type
      * @param  int  $business_id
-     * @param  int  $total_rows default 0
+     * @param  int  $total_rows  default 0
      * @return bool
      */
     public function isQuotaAvailable($type, $business_id, $total_rows = 0)
@@ -309,12 +309,12 @@ class ModuleUtil extends Util
                 return false;
             }
 
-            //Start
+            // Start
             $start_dt = $package->start_date->toDateTimeString();
             $end_dt = $package->end_date->endOfDay()->toDateTimeString();
 
             if ($type == 'locations') {
-                //Check for available location and max number allowed.
+                // Check for available location and max number allowed.
                 $max_allowed = isset($package->package_details['location_count']) ? $package->package_details['location_count'] : 0;
                 if ($max_allowed == 0) {
                     return true;
@@ -325,7 +325,7 @@ class ModuleUtil extends Util
                     }
                 }
             } elseif ($type == 'users') {
-                //Check for available location and max number allowed.
+                // Check for available location and max number allowed.
                 $max_allowed = isset($package->package_details['user_count']) ? $package->package_details['user_count'] : 0;
                 if ($max_allowed == 0) {
                     return true;
@@ -369,7 +369,7 @@ class ModuleUtil extends Util
      *
      * @param  string  $type
      * @param  int  $business_id
-     * @param  string  $redirect_url = null
+     * @param  string  $redirect_url  = null
      * @return \Illuminate\Http\Response
      */
     public function quotaExpiredResponse($type, $business_id, $redirect_url = null)
@@ -434,7 +434,7 @@ class ModuleUtil extends Util
      * required by any module which will be included during adding
      * or updating a resource
      *
-     * @param  string  $function_name function name to be called to get data from
+     * @param  string  $function_name  function name to be called to get data from
      * @return array
      */
     public function getModuleFormField($function_name)
@@ -454,7 +454,7 @@ class ModuleUtil extends Util
 
     public function getApiSettings($api_token)
     {
-        if (!class_exists(\Modules\Ecommerce\Entities\EcomApiSetting::class)) {
+        if (! class_exists(\Modules\Ecommerce\Entities\EcomApiSetting::class)) {
             return null;
         }
 
@@ -468,7 +468,7 @@ class ModuleUtil extends Util
      * This function returns the installed version, available version
      * and uses comparator to check if update is available or not.
      *
-     * @param  string  $module_name (Exact module name, with first letter capital)
+     * @param  string  $module_name  (Exact module name, with first letter capital)
      * @return array
      */
     public function getModuleVersionInfo($module_name)
@@ -482,11 +482,11 @@ class ModuleUtil extends Util
         $is_available = Module::has($module_name);
 
         if ($is_available) {
-            //Check if installed by checking the system table {module_name}_version
-            $module_version = System::getProperty(strtolower($module_name) . '_version');
+            // Check if installed by checking the system table {module_name}_version
+            $module_version = System::getProperty(strtolower($module_name).'_version');
 
             $output['installed_version'] = $module_version;
-            $output['available_version'] = config(strtolower($module_name) . '.module_version');
+            $output['available_version'] = config(strtolower($module_name).'.module_version');
 
             $output['is_update_available'] = Comparator::greaterThan($output['available_version'], $output['installed_version']);
         }
@@ -547,9 +547,9 @@ class ModuleUtil extends Util
 
         $module_data = [];
         foreach ($modules_data as $module => $data) {
-            foreach ($data  as $key => $value) {
-                //key is category type
-                //check if category type is duplicate
+            foreach ($data as $key => $value) {
+                // key is category type
+                // check if category type is duplicate
                 if (! in_array($key, $category_types)) {
                     $category_types[] = $key;
                 } else {

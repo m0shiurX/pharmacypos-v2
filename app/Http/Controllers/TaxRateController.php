@@ -18,7 +18,6 @@ class TaxRateController extends Controller
     /**
      * Constructor
      *
-     * @param  TaxUtil  $taxUtil
      * @return void
      */
     public function __construct(TaxUtil $taxUtil)
@@ -41,8 +40,8 @@ class TaxRateController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $tax_rates = TaxRate::where('business_id', $business_id)
-                        ->where('is_tax_group', '0')
-                        ->select(['name', 'amount', 'id', 'for_tax_group']);
+                ->where('is_tax_group', '0')
+                ->select(['name', 'amount', 'id', 'for_tax_group']);
 
             return Datatables::of($tax_rates)
                 ->addColumn(
@@ -83,7 +82,6 @@ class TaxRateController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -150,7 +148,6 @@ class TaxRateController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -171,9 +168,9 @@ class TaxRateController extends Controller
                 $tax_rate->for_tax_group = ! empty($request->for_tax_group) ? 1 : 0;
                 $tax_rate->save();
 
-                //update group tax amount
+                // update group tax amount
                 $group_taxes = GroupSubTax::where('tax_id', $id)
-                                            ->get();
+                    ->get();
 
                 foreach ($group_taxes as $group_tax) {
                     $this->taxUtil->updateGroupTaxAmount($group_tax->group_tax_id);
@@ -208,9 +205,9 @@ class TaxRateController extends Controller
 
         if (request()->ajax()) {
             try {
-                //update group tax amount
+                // update group tax amount
                 $group_taxes = GroupSubTax::where('tax_id', $id)
-                                            ->get();
+                    ->get();
                 if ($group_taxes->isEmpty()) {
                     $business_id = request()->user()->business_id;
 

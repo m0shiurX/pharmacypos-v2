@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Install;
 use App\Http\Controllers\Controller;
 use App\Utils\ModuleUtil;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Module;
 use ZipArchive;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Str;
 
 class ModulesController extends Controller
 {
@@ -18,7 +18,6 @@ class ModulesController extends Controller
     /**
      * Constructor
      *
-     * @param  ModuleUtil  $moduleUtil
      * @return void
      */
     public function __construct(ModuleUtil $moduleUtil)
@@ -42,33 +41,33 @@ class ModulesController extends Controller
             return $notAllowed;
         }
 
-        //Get list of all modules.
+        // Get list of all modules.
         $modules = Module::toCollection()->toArray();
-        //print_r($modules);exit;
+        // print_r($modules);exit;
 
         foreach ($modules as $module => $details) {
             $modules[$module]['is_installed'] = $this->moduleUtil->isModuleInstalled($details['name']) ? true : false;
 
-            //Get version information.
+            // Get version information.
             if ($modules[$module]['is_installed']) {
                 $modules[$module]['version'] = $this->moduleUtil->getModuleVersionInfo($details['name']);
             }
 
-            //Install Link.
+            // Install Link.
             try {
                 $modules[$module]['install_link'] = action('\Modules\\'.$details['name'].'\Http\Controllers\InstallController@index');
             } catch (\Exception $e) {
                 $modules[$module]['install_link'] = '#';
             }
 
-            //Update Link.
+            // Update Link.
             try {
                 $modules[$module]['update_link'] = action('\Modules\\'.$details['name'].'\Http\Controllers\InstallController@update');
             } catch (\Exception $e) {
                 $modules[$module]['update_link'] = '#';
             }
 
-            //Uninstall Link.
+            // Uninstall Link.
             try {
                 $modules[$module]['uninstall_link'] = action('\Modules\\'.$details['name'].'\Http\Controllers\InstallController@uninstall');
             } catch (\Exception $e) {
@@ -78,15 +77,15 @@ class ModulesController extends Controller
 
         $is_demo = (config('app.env') == 'demo');
         $mods = $this->__available_modules();
-        
+
         return view('install.modules.index')
             ->with(compact('modules', 'is_demo', 'mods'));
 
-        //Option to uninstall
+        // Option to uninstall
 
-        //Option to activate/deactivate
+        // Option to activate/deactivate
 
-        //Upload module.
+        // Upload module.
     }
 
     public function regenerate()
@@ -130,7 +129,6 @@ class ModulesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -163,7 +161,6 @@ class ModulesController extends Controller
     /**
      * Activate/Deaactivate the specified module.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -181,7 +178,7 @@ class ModulesController extends Controller
         try {
             $module = Module::find($module_name);
 
-            //php artisan module:disable Blog
+            // php artisan module:disable Blog
             if ($request->action_type == 'activate') {
                 $module->enable();
             } elseif ($request->action_type == 'deactivate') {
@@ -231,7 +228,7 @@ class ModulesController extends Controller
             // Clear module assets cache when module is deleted
             Cache::forget('module_assets');
 
-            die("To delete the module delete this folder <br/>" . $path . '<br/> Go back after deleting');
+            exit('To delete the module delete this folder <br/>'.$path.'<br/> Go back after deleting');
 
             $output = ['success' => true,
                 'msg' => __('lang_v1.success'),
@@ -260,36 +257,37 @@ class ModulesController extends Controller
                 'module' => 'required|file|mimes:zip|max:10240', // 10MB max
             ]);
 
-            //get zipped file
+            // get zipped file
             $module = $request->file('module');
             $module_name = Str::slug(str_replace('.zip', '', $module->getClientOriginalName()));
 
-            //check if 'Modules' folder exist or not, if not exist create
+            // check if 'Modules' folder exist or not, if not exist create
             $path = '../Modules';
             if (! is_dir($path)) {
                 mkdir($path, 0755, true);
             }
 
-            //extract the zipped file in given path
-            $zip = new ZipArchive();
+            // extract the zipped file in given path
+            $zip = new ZipArchive;
             if ($zip->open($module) === true) {
                 $zip->extractTo($path.'/');
                 $zip->close();
 
                 // Check for required files after extraction
-                $module_dir = $path . '/' . $module_name;
-                $data_controller_path = $module_dir . '/Http/Controllers/DataController.php';
-                if (!(file_exists($module_dir . '/composer.json')
-                    && file_exists($module_dir . '/module.json')
-                    && file_exists($module_dir . '/Config/config.php')
+                $module_dir = $path.'/'.$module_name;
+                $data_controller_path = $module_dir.'/Http/Controllers/DataController.php';
+                if (! (file_exists($module_dir.'/composer.json')
+                    && file_exists($module_dir.'/module.json')
+                    && file_exists($module_dir.'/Config/config.php')
                     && file_exists($data_controller_path))
                 ) {
                     \File::deleteDirectory($module_dir);
                     $output = ['success' => false,
                         'msg' => __('messages.something_went_wrong'),
 
-                        // 
+                        //
                     ];
+
                     return redirect()->back()->with(['status' => $output]);
                 }
 

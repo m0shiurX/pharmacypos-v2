@@ -78,20 +78,21 @@ class TaxonomyController extends Controller
                 ->addColumn('action', function ($row) use ($can_edit, $can_delete, $category_type) {
                     $html = '';
                     if ($can_edit) {
-                        $html .= '<button data-href="' . action([\App\Http\Controllers\TaxonomyController::class, 'edit'], [$row->id]) . '?type=' . $category_type . '" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary edit_category_button"><i class="glyphicon glyphicon-edit"></i> ' . __('messages.edit') . '</button>';
+                        $html .= '<button data-href="'.action([\App\Http\Controllers\TaxonomyController::class, 'edit'], [$row->id]).'?type='.$category_type.'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary edit_category_button"><i class="glyphicon glyphicon-edit"></i> '.__('messages.edit').'</button>';
                     }
 
                     if ($can_delete) {
-                        $html .= '&nbsp;<button data-href="' . action([\App\Http\Controllers\TaxonomyController::class, 'destroy'], [$row->id]) . '" class="tw-dw-btn tw-dw-btn-outline tw-dw-btn-xs tw-dw-btn-error delete_category_button"><i class="glyphicon glyphicon-trash"></i> ' . __('messages.delete') . '</button>';
+                        $html .= '&nbsp;<button data-href="'.action([\App\Http\Controllers\TaxonomyController::class, 'destroy'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-outline tw-dw-btn-xs tw-dw-btn-error delete_category_button"><i class="glyphicon glyphicon-trash"></i> '.__('messages.delete').'</button>';
                     }
 
                     return $html;
                 })
                 ->editColumn('name', function ($row) {
                     // If parent_name is set (means it's a child)
-                    if (!empty($row->parent_name)) {
-                        return $row->parent_name . ' -> ' . $row->name;
+                    if (! empty($row->parent_name)) {
+                        return $row->parent_name.' -> '.$row->name;
                     }
+
                     return $row->name;
                 })
                 ->removeColumn('id')
@@ -99,7 +100,7 @@ class TaxonomyController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
 
-            }
+        }
 
         $module_category_data = $this->moduleUtil->getTaxonomyData($category_type);
 
@@ -122,10 +123,10 @@ class TaxonomyController extends Controller
         $module_category_data = $this->moduleUtil->getTaxonomyData($category_type);
 
         $categories = Category::where('business_id', $business_id)
-                        ->where('parent_id', 0)
-                        ->where('category_type', $category_type)
-                        ->select(['name', 'short_code', 'id'])
-                        ->get();
+            ->where('parent_id', 0)
+            ->where('category_type', $category_type)
+            ->select(['name', 'short_code', 'id'])
+            ->get();
 
         $parent_categories = [];
         if (! empty($categories)) {
@@ -135,13 +136,12 @@ class TaxonomyController extends Controller
         }
 
         return view('taxonomy.create')
-                    ->with(compact('parent_categories', 'module_category_data', 'category_type'));
+            ->with(compact('parent_categories', 'module_category_data', 'category_type'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -180,7 +180,6 @@ class TaxonomyController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
     public function show(Category $category)
@@ -208,10 +207,10 @@ class TaxonomyController extends Controller
             $module_category_data = $this->moduleUtil->getTaxonomyData($category_type);
 
             $parent_categories = Category::where('business_id', $business_id)
-                                        ->where('parent_id', 0)
-                                        ->where('category_type', $category_type)
-                                        ->where('id', '!=', $id)
-                                        ->pluck('name', 'id');
+                ->where('parent_id', 0)
+                ->where('category_type', $category_type)
+                ->where('id', '!=', $id)
+                ->pluck('name', 'id');
             $is_parent = false;
 
             if ($category->parent_id == 0) {
@@ -229,7 +228,6 @@ class TaxonomyController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */

@@ -30,13 +30,13 @@ class System extends Model
     /**
      * Return the value of the property
      *
-     * @param $key string
+     * @param  $key  string
      * @return mixed
      */
     public static function getProperty($key)
     {
         $row = System::where('key', $key)
-                ->first();
+            ->first();
 
         if (isset($row->value)) {
             return $row->value;
@@ -48,7 +48,7 @@ class System extends Model
     /**
      * Return the value of the multiple properties
      *
-     * @param $keys array
+     * @param  $keys  array
      * @return array
      */
     public static function getProperties($keys, $pluck = false)
@@ -72,8 +72,8 @@ class System extends Model
     public static function getCurrency()
     {
         $c_id = System::where('key', 'app_currency_id')
-                ->first()
-                ->value;
+            ->first()
+            ->value;
 
         $currency = Currency::find($c_id);
 
@@ -83,8 +83,6 @@ class System extends Model
     /**
      * Set the property
      *
-     * @param $key
-     * @param $value
      * @return void
      */
     public static function setProperty($key, $value)
@@ -96,7 +94,6 @@ class System extends Model
     /**
      * Remove the specified property
      *
-     * @param $key
      * @return void
      */
     public static function removeProperty($key)
@@ -108,8 +105,6 @@ class System extends Model
     /**
      * Add a new property, if exist update the value
      *
-     * @param $key
-     * @param $value
      * @return void
      */
     public static function addProperty($key, $value)

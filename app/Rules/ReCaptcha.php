@@ -1,10 +1,10 @@
 <?php
-  
+
 namespace App\Rules;
-  
+
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Http;
-  
+
 class ReCaptcha implements Rule
 {
     /**
@@ -12,10 +12,8 @@ class ReCaptcha implements Rule
      *
      * @return void
      */
-    public function __construct()
-    {
-          
-    }
+    public function __construct() {}
+
     /**
      * Determine if the validation rule passes.
      *
@@ -25,13 +23,14 @@ class ReCaptcha implements Rule
      */
     public function passes($attribute, $value)
     {
-        $response = Http::get("https://www.google.com/recaptcha/api/siteverify",[
+        $response = Http::get('https://www.google.com/recaptcha/api/siteverify', [
             'secret' => config('constants.google_recaptcha_secret'),
-            'response' => $value
+            'response' => $value,
         ]);
-          
-        return $response->json()["success"];
+
+        return $response->json()['success'];
     }
+
     /**
      * Get the validation error message.
      *

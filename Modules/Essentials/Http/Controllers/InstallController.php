@@ -33,7 +33,7 @@ class InstallController extends Controller
 
         $this->installSettings();
 
-        //Check if installed or not.
+        // Check if installed or not.
         $is_installed = System::getProperty($this->module_name.'_version');
         if (empty($is_installed)) {
             DB::statement('SET default_storage_engine=INNODB;');
@@ -60,12 +60,12 @@ class InstallController extends Controller
         Artisan::call('config:clear');
     }
 
-    //Updating
+    // Updating
     public function update()
     {
-        //Check if essentials_version is same as appVersion then 404
-        //If appVersion > essentials_version - run update script.
-        //Else there is some problem.
+        // Check if essentials_version is same as appVersion then 404
+        // If appVersion > essentials_version - run update script.
+        // Else there is some problem.
         if (! auth()->user()->can('superadmin')) {
             abort(403, 'Unauthorized action.');
         }
@@ -99,8 +99,8 @@ class InstallController extends Controller
             ];
 
             return redirect()
-            ->action([\App\Http\Controllers\Install\ModulesController::class, 'index'])
-            ->with('status', $output);
+                ->action([\App\Http\Controllers\Install\ModulesController::class, 'index'])
+                ->with('status', $output);
         } catch (Exception $e) {
             DB::rollBack();
             exit($e->getMessage());

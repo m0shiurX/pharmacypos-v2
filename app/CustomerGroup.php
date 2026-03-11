@@ -20,9 +20,9 @@ class CustomerGroup extends Model
     /**
      * Return list of customer group for a business
      *
-     * @param $business_id int
-     * @param $prepend_none = true (boolean)
-     * @param $prepend_all = false (boolean)
+     * @param  $business_id  int
+     * @param  $prepend_none  = true (boolean)
+     * @param  $prepend_all  = false (boolean)
      * @return array
      */
     public static function forDropdown($business_id, $prepend_none = true, $prepend_all = false)
@@ -30,12 +30,12 @@ class CustomerGroup extends Model
         $all_cg = CustomerGroup::where('business_id', $business_id);
         $all_cg = $all_cg->pluck('name', 'id');
 
-        //Prepend none
+        // Prepend none
         if ($prepend_none) {
             $all_cg = $all_cg->prepend(__('lang_v1.none'), '');
         }
 
-        //Prepend none
+        // Prepend none
         if ($prepend_all) {
             $all_cg = $all_cg->prepend(__('report.all'), '');
         }

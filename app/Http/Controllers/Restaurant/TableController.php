@@ -26,9 +26,9 @@ class TableController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $tables = ResTable::where('res_tables.business_id', $business_id)
-                        ->join('business_locations AS BL', 'res_tables.location_id', '=', 'BL.id')
-                        ->select(['res_tables.name as name', 'BL.name as location',
-                            'res_tables.description', 'res_tables.id', ]);
+                ->join('business_locations AS BL', 'res_tables.location_id', '=', 'BL.id')
+                ->select(['res_tables.name as name', 'BL.name as location',
+                    'res_tables.description', 'res_tables.id', ]);
 
             return Datatables::of($tables)
                 ->addColumn(
@@ -70,7 +70,6 @@ class TableController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -138,7 +137,6 @@ class TableController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function update(Request $request, $id)

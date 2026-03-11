@@ -40,7 +40,7 @@ class BrandController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $brands = Brands::where('business_id', $business_id)
-                        ->select(['name', 'description', 'id']);
+                ->select(['name', 'description', 'id']);
 
             return Datatables::of($brands)
                 ->addColumn(
@@ -80,13 +80,12 @@ class BrandController extends Controller
         $is_repair_installed = $this->moduleUtil->isModuleInstalled('Repair');
 
         return view('brand.create')
-                ->with(compact('quick_add', 'is_repair_installed'));
+            ->with(compact('quick_add', 'is_repair_installed'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -158,7 +157,6 @@ class BrandController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -240,7 +238,7 @@ class BrandController extends Controller
             $api_settings = $this->moduleUtil->getApiSettings($api_token);
 
             $brands = Brands::where('business_id', $api_settings->business_id)
-                                ->get();
+                ->get();
         } catch (\Exception $e) {
             \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 

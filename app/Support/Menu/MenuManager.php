@@ -9,13 +9,15 @@ namespace App\Support\Menu;
 class MenuManager
 {
     protected array $menus = [];
+
     protected array $presenters = [];
 
     public function create(string $name, callable $callback): MenuBuilder
     {
-        $builder = new MenuBuilder();
+        $builder = new MenuBuilder;
         $callback($builder);
         $this->menus[$name] = $builder;
+
         return $builder;
     }
 
@@ -28,13 +30,14 @@ class MenuManager
 
     public function render(string $name, string $presenter = 'default'): string
     {
-        if (!isset($this->menus[$name])) {
+        if (! isset($this->menus[$name])) {
             return '';
         }
 
         $presenterClass = $this->presenters[$presenter] ?? null;
         if ($presenterClass && class_exists($presenterClass)) {
-            $presenterInstance = new $presenterClass();
+            $presenterInstance = new $presenterClass;
+
             return $presenterInstance->render($this->menus[$name]);
         }
 

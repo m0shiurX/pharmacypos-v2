@@ -19,19 +19,19 @@ class WarrantyController extends Controller
 
         if (request()->ajax()) {
             $warranties = Warranty::where('business_id', $business_id)
-                         ->select(['id', 'name', 'description', 'duration', 'duration_type']);
+                ->select(['id', 'name', 'description', 'duration', 'duration_type']);
 
             return Datatables::of($warranties)
                 ->addColumn(
                     'action',
                     '<button data-href="{{action(\'App\Http\Controllers\WarrantyController@edit\', [$id])}}" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary btn-modal" data-container=".view_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>'
-                 )
-                 ->removeColumn('id')
-                 ->editColumn('duration', function ($row) {
-                     return $row->duration.' '.__('lang_v1.'.$row->duration_type);
-                 })
-                 ->rawColumns(['action'])
-                 ->make(true);
+                )
+                ->removeColumn('id')
+                ->editColumn('duration', function ($row) {
+                    return $row->duration.' '.__('lang_v1.'.$row->duration_type);
+                })
+                ->rawColumns(['action'])
+                ->make(true);
         }
 
         return view('warranties.index');
@@ -50,7 +50,6 @@ class WarrantyController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -80,7 +79,6 @@ class WarrantyController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Warranty  $warranty
      * @return \Illuminate\Http\Response
      */
     public function show(Warranty $warranty)
@@ -109,7 +107,6 @@ class WarrantyController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Warranty  $warranty
      * @return \Illuminate\Http\Response
      */
@@ -143,7 +140,6 @@ class WarrantyController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Warranty  $warranty
      * @return \Illuminate\Http\Response
      */
     public function destroy(Warranty $warranty)

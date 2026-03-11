@@ -2,14 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use App\User;
-use Carbon\Carbon;
 
 class AdminSeeder extends Seeder
 {

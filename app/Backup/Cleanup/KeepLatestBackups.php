@@ -1,11 +1,11 @@
 <?php
+
 // app/Backup/Cleanup/KeepLatestBackups.php
 
 namespace App\Backup\Cleanup;
 
-use Spatie\Backup\Tasks\Cleanup\CleanupStrategy;
 use Spatie\Backup\BackupDestination\BackupCollection;
-use Spatie\Backup\BackupDestination\BackupDestination;
+use Spatie\Backup\Tasks\Cleanup\CleanupStrategy;
 
 class KeepLatestBackups extends CleanupStrategy
 {
@@ -19,7 +19,7 @@ class KeepLatestBackups extends CleanupStrategy
 
         // Delete old backups except those to keep
         foreach ($backups as $backup) {
-            if (!$backupsToKeep->contains($backup)) {
+            if (! $backupsToKeep->contains($backup)) {
                 $backup->delete();
             }
         }

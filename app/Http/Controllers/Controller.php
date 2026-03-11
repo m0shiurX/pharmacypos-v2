@@ -47,15 +47,15 @@ class Controller extends BaseController
     /**
      * Returns a went wrong response.
      *
-     * @param  object  $exception = null
+     * @param  object  $exception  = null
      * @return \Illuminate\Http\Response
      */
     public function respondWentWrong($exception = null)
     {
-        //If debug is enabled then send exception message
-        $message = (config('app.debug') && is_object($exception)) ? 'File:' . $exception->getFile() . 'Line:' . $exception->getLine() . 'Message:' . $exception->getMessage() : __('messages.something_went_wrong');
+        // If debug is enabled then send exception message
+        $message = (config('app.debug') && is_object($exception)) ? 'File:'.$exception->getFile().'Line:'.$exception->getLine().'Message:'.$exception->getMessage() : __('messages.something_went_wrong');
 
-        //TODO: show exception error message when error is enabled.
+        // TODO: show exception error message when error is enabled.
         return $this->setStatusCode(200)
             ->respondWithError($message);
     }
@@ -63,7 +63,7 @@ class Controller extends BaseController
     /**
      * Returns a 200 response.
      *
-     * @param  object  $message = null
+     * @param  object  $message  = null
      * @return \Illuminate\Http\Response
      */
     public function respondSuccess($message = null, $additional_data = [])
@@ -91,17 +91,17 @@ class Controller extends BaseController
 
     /**
      * Returns new mpdf instance
-     * 
-     * @param string $orientation 'P' for portrait (default), 'L' for landscape
+     *
+     * @param  string  $orientation  'P' for portrait (default), 'L' for landscape
      * @return \Mpdf\Mpdf
      */
     public function getMpdf($orientation = 'P')
     {
         // Load default font directories and font data
-        $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+        $defaultConfig = (new \Mpdf\Config\ConfigVariables)->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
 
-        $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+        $defaultFontConfig = (new \Mpdf\Config\FontVariables)->getDefaults();
         $fontData = $defaultFontConfig['fontdata'] ?? []; // ensure array
 
         // Create mPDF instance
@@ -130,7 +130,7 @@ class Controller extends BaseController
         }
 
         // Global CSS for fake bold if bold glyph missing
-        $mpdf->WriteHTML("
+        $mpdf->WriteHTML('
         <style>
             body { font-family: notosansbengali; font-size: 14pt; }
             b, strong {
@@ -140,7 +140,7 @@ class Controller extends BaseController
                              -0.3px 0 0 currentColor; /* fake bolding */
             }
         </style>
-    ", \Mpdf\HTMLParserMode::HEADER_CSS);
+    ', \Mpdf\HTMLParserMode::HEADER_CSS);
 
         return $mpdf;
     }

@@ -41,9 +41,9 @@ class UnitController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $unit = Unit::where('business_id', $business_id)
-                        ->with(['base_unit'])
-                        ->select(['actual_name', 'short_name', 'allow_decimal', 'id',
-                            'base_unit_id', 'base_unit_multiplier', ]);
+                ->with(['base_unit'])
+                ->select(['actual_name', 'short_name', 'allow_decimal', 'id',
+                    'base_unit_id', 'base_unit_multiplier', ]);
 
             return Datatables::of($unit)
                 ->addColumn(
@@ -65,10 +65,10 @@ class UnitController extends Controller
                 })
                 ->editColumn('actual_name', function ($row) {
                     if (! empty($row->base_unit_id)) {
-                        return  $row->actual_name.' ('.(float) $row->base_unit_multiplier.$row->base_unit->short_name.')';
+                        return $row->actual_name.' ('.(float) $row->base_unit_multiplier.$row->base_unit->short_name.')';
                     }
 
-                    return  $row->actual_name;
+                    return $row->actual_name;
                 })
                 ->removeColumn('id')
                 ->rawColumns(['action'])
@@ -99,13 +99,12 @@ class UnitController extends Controller
         $units = Unit::forDropdown($business_id);
 
         return view('unit.create')
-                ->with(compact('quick_add', 'units'));
+            ->with(compact('quick_add', 'units'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -182,7 +181,6 @@ class UnitController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -249,9 +247,9 @@ class UnitController extends Controller
 
                 $unit = Unit::where('business_id', $business_id)->findOrFail($id);
 
-                //check if any product associated with the unit
+                // check if any product associated with the unit
                 $exists = Product::where('unit_id', $unit->id)
-                                ->exists();
+                    ->exists();
                 if (! $exists) {
                     $unit->delete();
                     $output = ['success' => true,

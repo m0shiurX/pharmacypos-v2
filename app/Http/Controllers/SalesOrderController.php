@@ -78,12 +78,12 @@ class SalesOrderController extends Controller
         $location_id = request()->input('location_id');
 
         $sales_orders = Transaction::where('business_id', $business_id)
-                            ->where('location_id', $location_id)
-                            ->where('type', 'sales_order')
-                            ->whereIn('status', ['partial', 'ordered'])
-                            ->where('contact_id', $customer_id)
-                            ->select('invoice_no as text', 'id')
-                            ->get();
+            ->where('location_id', $location_id)
+            ->where('type', 'sales_order')
+            ->whereIn('status', ['partial', 'ordered'])
+            ->where('contact_id', $customer_id)
+            ->select('invoice_no as text', 'id')
+            ->get();
 
         return $sales_orders;
     }
@@ -105,7 +105,7 @@ class SalesOrderController extends Controller
         if ($request->ajax()) {
             $business_id = request()->session()->get('user.business_id');
             $transaction = Transaction::where('business_id', $business_id)
-                                ->findOrFail($id);
+                ->findOrFail($id);
 
             $status = $transaction->status;
             $statuses = $this->sales_order_statuses;
@@ -131,7 +131,7 @@ class SalesOrderController extends Controller
             try {
                 $business_id = request()->session()->get('user.business_id');
                 $transaction = Transaction::where('business_id', $business_id)
-                                ->findOrFail($id);
+                    ->findOrFail($id);
 
                 $transaction_before = $transaction->replicate();
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
-    //Allowed booking statuses ('waiting', 'booked', 'completed', 'cancelled')
+    // Allowed booking statuses ('waiting', 'booked', 'completed', 'cancelled')
 
     /**
      * The attributes that aren't mass assignable.

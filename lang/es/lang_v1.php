@@ -18,7 +18,7 @@ return [
     'cmmsn_percent' => 'Porcentaje de la Comisión de Ventas (%)',
     'sales_added' => 'Ventas agregadas',
     'sales_with_commission' => 'Ventas con comisión',
-    //"total_sale_with_commission" => "Venta total con comisión",
+    // "total_sale_with_commission" => "Venta total con comisión",
     'total_sale_commission' => 'Total comisión de venta', /* modified */
     'sales_item_addition_method' => 'Método de adición de artículo de venta',
     'add_item_in_new_row' => 'Agregar elemento en una nueva fila',
@@ -1413,7 +1413,7 @@ return [
     'carousel_image' => 'Imagen del carrusel :number',
     'display_screen' => 'Pantalla de visualización',
     'enable_customer_display_screen' => 'Habilitar pantalla de visualización del cliente',
-    'customer_display_instraction' => "Para que la pantalla de visualización del cliente funcione, asegúrese de que esté abierta en el mismo navegador que la pantalla del POS en una nueva pestaña. Y que esa pestaña esté reflejada en otro monitor de visualización orientado al cliente.",
+    'customer_display_instraction' => 'Para que la pantalla de visualización del cliente funcione, asegúrese de que esté abierta en el mismo navegador que la pantalla del POS en una nueva pestaña. Y que esa pestaña esté reflejada en otro monitor de visualización orientado al cliente.',
     'data_parameter_type' => 'Tipo de Parámetro de Datos',
     'string_default' => 'Cadena (predeterminado)',
     'format_4' => 'Formato 4',
@@ -1424,4 +1424,3 @@ return [
     'invoice_synced_to_zatca_cannot_be_deleted' => 'Esta factura se ha sincronizado correctamente con ZATCA y no se puede eliminar.',
     'invoice_synced_to_zatca_cannot_be_edited' => 'Esta factura se ha sincronizado correctamente con ZATCA y no se puede editar.',
 ];
-

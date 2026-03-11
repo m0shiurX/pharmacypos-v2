@@ -1418,7 +1418,7 @@ return [
     'carousel_image' => 'Döngüsel resim :number',
     'display_screen' => 'Görüntüleme Ekranı',
     'enable_customer_display_screen' => 'Müşteri görüntüleme ekranını etkinleştir',
-    'customer_display_instraction' => "Müşteri görüntüleme ekranının çalışması için, POS ekranı ile aynı tarayıcıda yeni bir sekmede açıldığından emin olun. Ve o sekmenin başka bir müşteri yönelimli ekrana yansıtıldığından emin olun.",
+    'customer_display_instraction' => 'Müşteri görüntüleme ekranının çalışması için, POS ekranı ile aynı tarayıcıda yeni bir sekmede açıldığından emin olun. Ve o sekmenin başka bir müşteri yönelimli ekrana yansıtıldığından emin olun.',
     'data_parameter_type' => 'Veri Parametre Tipi',
     'format_4' => 'Format 4',
     'aging_report' => 'Yaşlandırma Raporu',

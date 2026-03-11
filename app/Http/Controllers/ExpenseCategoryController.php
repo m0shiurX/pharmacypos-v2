@@ -23,7 +23,7 @@ class ExpenseCategoryController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $expense_category = ExpenseCategory::where('business_id', $business_id)
-                        ->select(['name', 'code', 'id', 'parent_id']);
+                ->select(['name', 'code', 'id', 'parent_id']);
 
             return Datatables::of($expense_category)
                 ->addColumn(
@@ -61,8 +61,8 @@ class ExpenseCategoryController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $categories = ExpenseCategory::where('business_id', $business_id)
-                        ->whereNull('parent_id')
-                        ->pluck('name', 'id');
+            ->whereNull('parent_id')
+            ->pluck('name', 'id');
 
         return view('expense_category.create')->with(compact('categories'));
     }
@@ -70,7 +70,6 @@ class ExpenseCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -105,7 +104,6 @@ class ExpenseCategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ExpenseCategory  $expenseCategory
      * @return \Illuminate\Http\Response
      */
     public function show(ExpenseCategory $expenseCategory)
@@ -130,18 +128,17 @@ class ExpenseCategoryController extends Controller
             $expense_category = ExpenseCategory::where('business_id', $business_id)->find($id);
 
             $categories = ExpenseCategory::where('business_id', $business_id)
-                        ->whereNull('parent_id')
-                        ->pluck('name', 'id');
+                ->whereNull('parent_id')
+                ->pluck('name', 'id');
 
             return view('expense_category.edit')
-                    ->with(compact('expense_category', 'categories'));
+                ->with(compact('expense_category', 'categories'));
         }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -202,7 +199,7 @@ class ExpenseCategoryController extends Controller
                 $expense_category = ExpenseCategory::where('business_id', $business_id)->findOrFail($id);
                 $expense_category->delete();
 
-                //delete sub categories also
+                // delete sub categories also
                 ExpenseCategory::where('business_id', $business_id)->where('parent_id', $id)->delete();
 
                 $output = ['success' => true,
@@ -226,9 +223,9 @@ class ExpenseCategoryController extends Controller
             $category_id = $request->input('cat_id');
             $business_id = $request->session()->get('user.business_id');
             $sub_categories = ExpenseCategory::where('business_id', $business_id)
-                        ->where('parent_id', $category_id)
-                        ->select(['name', 'id'])
-                        ->get();
+                ->where('parent_id', $category_id)
+                ->select(['name', 'id'])
+                ->get();
         }
 
         $html = '<option value="">'.__('lang_v1.none').'</option>';

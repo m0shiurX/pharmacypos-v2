@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
             error_reporting(0);
         }
 
-        //force https
+        // force https
         $url = parse_url(config('app.url'));
 
         if ($url['scheme'] == 'https') {
@@ -68,7 +68,7 @@ class AppServiceProvider extends ServiceProvider
                     $keys = ['additional_js', 'additional_css'];
                     $__system_settings = System::getProperties($keys, true);
 
-                    //Get js,css from modules
+                    // Get js,css from modules
                     $moduleUtil = new ModuleUtil;
                     $module_additional_script = $moduleUtil->getModuleData('get_additional_script');
                     $additional_views = [];
@@ -103,20 +103,20 @@ class AppServiceProvider extends ServiceProvider
             }
         );
 
-        //This will fix "Specified key was too long; max key length is 767 bytes issue during migration"
+        // This will fix "Specified key was too long; max key length is 767 bytes issue during migration"
         Schema::defaultStringLength(191);
 
-        //Blade directive to format number into required format.
+        // Blade directive to format number into required format.
         Blade::directive('num_format', function ($expression) {
             return "number_format($expression, session('business.currency_precision', 2), session('currency')['decimal_separator'], session('currency')['thousand_separator'])";
         });
 
-        //Blade directive to format quantity values into required format.
+        // Blade directive to format quantity values into required format.
         Blade::directive('format_quantity', function ($expression) {
             return "number_format($expression, session('business.quantity_precision', 2), session('currency')['decimal_separator'], session('currency')['thousand_separator'])";
         });
 
-        //Blade directive to return appropiate class according to transaction status
+        // Blade directive to return appropiate class according to transaction status
         Blade::directive('transaction_status', function ($status) {
             return "<?php if($status == 'ordered'){
                 echo 'bg-aqua';
@@ -127,7 +127,7 @@ class AppServiceProvider extends ServiceProvider
             }?>";
         });
 
-        //Blade directive to return appropiate class according to transaction status
+        // Blade directive to return appropiate class according to transaction status
         Blade::directive('payment_status', function ($status) {
             return "<?php if($status == 'partial'){
                 echo 'bg-aqua';
@@ -142,7 +142,7 @@ class AppServiceProvider extends ServiceProvider
             }?>";
         });
 
-        //Blade directive to display help text.
+        // Blade directive to display help text.
         Blade::directive('show_tooltip', function ($message) {
             return "<?php
                 if(session('business.enable_tooltip')){
@@ -153,7 +153,7 @@ class AppServiceProvider extends ServiceProvider
                 ?>";
         });
 
-        //Blade directive to convert.
+        // Blade directive to convert.
         Blade::directive('format_date', function ($date) {
             if (! empty($date)) {
                 return "\Carbon::createFromTimestamp(strtotime($date))->format(session('business.date_format'))";
@@ -162,7 +162,7 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        //Blade directive to convert.
+        // Blade directive to convert.
         Blade::directive('format_time', function ($date) {
             if (! empty($date)) {
                 $time_format = 'h:i A';
@@ -189,14 +189,14 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        //Blade directive to format currency.
+        // Blade directive to format currency.
         Blade::directive('format_currency', function ($number) {
             return '<?php 
             $formated_number = "";
             if (session("business.currency_symbol_placement") == "before") {
                 $formated_number .= session("currency")["symbol"] . " ";
             } 
-            $formated_number .= number_format((float) ' . $number . ', session("business.currency_precision", 2) , session("currency")["decimal_separator"], session("currency")["thousand_separator"]);
+            $formated_number .= number_format((float) '.$number.', session("business.currency_precision", 2) , session("currency")["decimal_separator"], session("currency")["thousand_separator"]);
 
             if (session("business.currency_symbol_placement") == "after") {
                 $formated_number .= " " . session("currency")["symbol"];
@@ -213,12 +213,13 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('form', function () {
-            return new \App\Support\FormBuilder();
+            return new \App\Support\FormBuilder;
         });
 
         $this->app->singleton('menu', function () {
-            $manager = new \App\Support\Menu\MenuManager();
+            $manager = new \App\Support\Menu\MenuManager;
             $manager->setPresenter('adminltecustom', \App\Http\AdminlteCustomPresenter::class);
+
             return $manager;
         });
 

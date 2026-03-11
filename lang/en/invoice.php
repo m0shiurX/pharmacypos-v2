@@ -70,5 +70,5 @@ return [
     'number_type' => 'Numbering Type',
     'sequential' => 'Sequential',
     'random' => 'Aleatory/Random',
-    'number_type_tooltip' => 'Sequential will generate number serially like 1,2,3,4 <br/> Aleatory will generate number randomly'
+    'number_type_tooltip' => 'Sequential will generate number serially like 1,2,3,4 <br/> Aleatory will generate number randomly',
 ];

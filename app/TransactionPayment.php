@@ -69,7 +69,7 @@ class TransactionPayment extends Model
 
     public static function deletePayment($payment)
     {
-        //Update parent payment if exists
+        // Update parent payment if exists
         if (! empty($payment->parent_id)) {
             $parent_payment = TransactionPayment::find($payment->parent_id);
             $parent_payment->amount -= $payment->amount;
@@ -79,17 +79,17 @@ class TransactionPayment extends Model
                 event(new TransactionPaymentDeleted($parent_payment));
             } else {
                 $parent_payment->save();
-                //Add event to update parent payment account transaction
+                // Add event to update parent payment account transaction
                 event(new TransactionPaymentUpdated($parent_payment, null));
             }
         }
 
         $payment->delete();
 
-        $transactionUtil = new \App\Utils\TransactionUtil();
+        $transactionUtil = new \App\Utils\TransactionUtil;
 
         if (! empty($payment->transaction_id)) {
-            //update payment status
+            // update payment status
             $transaction = $payment->load('transaction')->transaction;
             $transaction_before = $transaction->replicate();
 
@@ -106,7 +106,7 @@ class TransactionPayment extends Model
         ];
         $transactionUtil->activityLog($payment, 'payment_deleted', null, $log_properities);
 
-        //Add event to delete account transaction
+        // Add event to delete account transaction
         event(new TransactionPaymentDeleted($payment));
     }
 

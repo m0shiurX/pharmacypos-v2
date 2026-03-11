@@ -1,4 +1,5 @@
 <?php
+
 return [
     'restaurant' => '餐厅',
     'tables' => '桌子',
@@ -89,4 +90,3 @@ return [
     'service_staff_report' => '服务人员报告',
     'service_staff_replacement' => '服务人员更换',
 ];
-

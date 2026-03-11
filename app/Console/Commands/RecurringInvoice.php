@@ -52,34 +52,34 @@ class RecurringInvoice extends Command
             ini_set('max_execution_time', 0);
             ini_set('memory_limit', '512M');
             $transactions = Transaction::where('is_recurring', 1)
-                                ->where('type', 'sell')
-                                ->where('status', 'final')
-                                ->whereNull('recur_stopped_on')
-                                ->whereNotNull('recur_interval')
-                                ->whereNotNull('recur_interval_type')
-                                ->with(['recurring_invoices',
-                                    'sell_lines', 'business',
-                                    'sell_lines.product', ])
-                                ->get();
+                ->where('type', 'sell')
+                ->where('status', 'final')
+                ->whereNull('recur_stopped_on')
+                ->whereNotNull('recur_interval')
+                ->whereNotNull('recur_interval_type')
+                ->with(['recurring_invoices',
+                    'sell_lines', 'business',
+                    'sell_lines.product', ])
+                ->get();
 
             foreach ($transactions as $transaction) {
                 date_default_timezone_set($transaction->business->time_zone);
-                //inner try-catch block open
+                // inner try-catch block open
                 try {
-                    //Check if recurring invoice is enabled
+                    // Check if recurring invoice is enabled
                     if (! empty($transaction->business->enabled_modules)
                         && ! in_array('subscription', $transaction->business->enabled_modules)) {
                         continue;
                     }
 
-                    //Check if no. of generated invoices exceed limit
+                    // Check if no. of generated invoices exceed limit
                     $no_of_recurring_invoice_generated = count($transaction->recurring_invoices);
 
                     if (! empty($transaction->recur_repetitions) && $no_of_recurring_invoice_generated >= $transaction->recur_repetitions) {
                         continue;
                     }
 
-                    //Check if generate interval is today
+                    // Check if generate interval is today
                     $last_generated = $no_of_recurring_invoice_generated > 0 ? $transaction->recurring_invoices->max('transaction_date') : $transaction->transaction_date;
 
                     if (! empty($last_generated)) {
@@ -91,7 +91,7 @@ class RecurringInvoice extends Command
                             $diff_from_today = $last_generated->diffInDays($today);
                         } elseif ($transaction->recur_interval_type == 'months') {
 
-                            //check repeat on date and set last generated date part to reapeat on date
+                            // check repeat on date and set last generated date part to reapeat on date
                             if (! empty($transaction->subscription_repeat_on)) {
                                 $last_generated_string = $last_generated->format('Y-m');
                                 $last_generated = \Carbon::parse($last_generated_string.'-'.$transaction->subscription_repeat_on);
@@ -101,18 +101,18 @@ class RecurringInvoice extends Command
                             $diff_from_today = $last_generated->diffInYears($today);
                         }
 
-                        //if last generated is today or less than today then continue
+                        // if last generated is today or less than today then continue
                         if ($diff_from_today == 0) {
                             continue;
                         }
 
-                        //If difference from today is not multiple of today then continue
+                        // If difference from today is not multiple of today then continue
                         if ($diff_from_today % $transaction->recur_interval != 0) {
                             continue;
                         }
                     }
 
-                    //Check if sell line quantity available; If not save as draft
+                    // Check if sell line quantity available; If not save as draft
                     $save_as_draft = false;
                     $out_of_stock_product = null;
                     foreach ($transaction->sell_lines as $sell_line) {
@@ -128,10 +128,10 @@ class RecurringInvoice extends Command
                     }
 
                     DB::beginTransaction();
-                    //Create new recurring invoice
+                    // Create new recurring invoice
                     $recurring_invoice = $this->transactionUtil->createRecurringInvoice($transaction, $save_as_draft);
 
-                    //Update variation location details if status is final
+                    // Update variation location details if status is final
                     if ($recurring_invoice->status == 'final') {
                         foreach ($transaction->sell_lines as $sell_line) {
                             $this->productUtil->decreaseProductQuantity(
@@ -139,7 +139,7 @@ class RecurringInvoice extends Command
                                 $sell_line->variation_id,
                                 $transaction->location_id,
                                 $sell_line->quantity
-                                );
+                            );
                         }
 
                         $business = ['id' => $transaction->business_id,
@@ -151,18 +151,18 @@ class RecurringInvoice extends Command
 
                         $contact = Contact::find($recurring_invoice->contact_id);
 
-                        //Auto send notification
+                        // Auto send notification
                         $this->notificationUtil->autoSendNotification($transaction->business_id, 'new_sale', $recurring_invoice, $contact);
                     }
 
                     $recurring_invoice->out_of_stock_product = $out_of_stock_product;
                     $recurring_invoice->subscription_no = $transaction->subscription_no;
 
-                    //Save database notification
+                    // Save database notification
                     $created_by = User::find($transaction->created_by);
                     $this->notificationUtil->recurringInvoiceNotification($created_by, $recurring_invoice);
 
-                    //if admin is different
+                    // if admin is different
                     if ($created_by->id != $transaction->business->owner_id) {
                         $admin = User::find($transaction->business->owner_id);
                         $this->notificationUtil->recurringInvoiceNotification($admin, $recurring_invoice);
@@ -172,7 +172,7 @@ class RecurringInvoice extends Command
                     DB::rollBack();
                     \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
                 }
-                //inner try-catch block close
+                // inner try-catch block close
             }
         } catch (\Exception $e) {
             \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());

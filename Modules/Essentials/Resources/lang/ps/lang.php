@@ -1,6 +1,6 @@
 <?php
 
-return[
+return [
     'essentials' => 'لازمي',
     'document' => 'سند',
     'description' => 'سپړنه',

@@ -13,7 +13,6 @@ class SalesCommissionAgentController extends Controller
     /**
      * Constructor
      *
-     * @param  Util  $commonUtil
      * @return void
      */
     public function __construct(Util $commonUtil)
@@ -36,10 +35,10 @@ class SalesCommissionAgentController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $users = User::where('business_id', $business_id)
-                        ->where('is_cmmsn_agnt', 1)
-                        ->select(['id',
-                            DB::raw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) as full_name"),
-                            'email', 'contact_no', 'address', 'cmmsn_percent', ]);
+                ->where('is_cmmsn_agnt', 1)
+                ->select(['id',
+                    DB::raw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) as full_name"),
+                    'email', 'contact_no', 'address', 'cmmsn_percent', ]);
 
             return Datatables::of($users)
                 ->addColumn(
@@ -80,7 +79,6 @@ class SalesCommissionAgentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -128,13 +126,12 @@ class SalesCommissionAgentController extends Controller
         $user = User::findOrFail($id);
 
         return view('sales_commission_agent.edit')
-                    ->with(compact('user'));
+            ->with(compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -151,9 +148,9 @@ class SalesCommissionAgentController extends Controller
                 $business_id = $request->session()->get('user.business_id');
 
                 $user = User::where('id', $id)
-                            ->where('business_id', $business_id)
-                            ->where('is_cmmsn_agnt', 1)
-                            ->first();
+                    ->where('business_id', $business_id)
+                    ->where('is_cmmsn_agnt', 1)
+                    ->first();
                 $user->update($input);
 
                 $output = ['success' => true,

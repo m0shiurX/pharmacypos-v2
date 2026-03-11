@@ -18,8 +18,8 @@ use DB;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Str; // Add this at the top with other imports
+use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role; // Add this at the top with other imports
 
 class Util
 {
@@ -52,9 +52,9 @@ class Util
      * This function formats a number and returns them in specified format
      *
      * @param  int  $input_number
-     * @param  bool  $add_symbol = false
-     * @param  array  $business_details = null
-     * @param  bool  $is_quantity = false; If number represents quantity
+     * @param  bool  $add_symbol  = false
+     * @param  array  $business_details  = null
+     * @param  bool  $is_quantity  = false; If number represents quantity
      * @return string
      */
     public function num_f($input_number, $add_symbol = false, $business_details = null, $is_quantity = false)
@@ -75,9 +75,9 @@ class Util
             $symbol = ! empty($business_details) ? $business_details->currency_symbol : session('currency')['symbol'];
 
             if ($currency_symbol_placement == 'after') {
-                $formatted = $formatted . ' ' . $symbol;
+                $formatted = $formatted.' '.$symbol;
             } else {
-                $formatted = $symbol . ' ' . $formatted;
+                $formatted = $symbol.' '.$formatted;
             }
         }
 
@@ -89,7 +89,7 @@ class Util
      *
      * @param  int  $number
      * @param  int  $percent
-     * @param  int  $addition default = 0
+     * @param  int  $addition  default = 0
      * @return float
      */
     public function calc_percentage($number, $percent, $addition = 0)
@@ -127,7 +127,7 @@ class Util
         return ($diff / $base) * 100;
     }
 
-    //Returns all avilable purchase statuses
+    // Returns all avilable purchase statuses
     public function orderStatuses()
     {
         return ['received' => __('lang_v1.received'), 'pending' => __('lang_v1.pending'), 'ordered' => __('lang_v1.ordered')];
@@ -143,7 +143,7 @@ class Util
         if (! empty($location)) {
             $location = is_object($location) ? $location : BusinessLocation::find($location);
 
-            //Get custom label from business settings
+            // Get custom label from business settings
             $custom_labels = Business::find($location->business_id)->custom_labels;
             $custom_labels = json_decode($custom_labels, true);
         } else {
@@ -165,7 +165,7 @@ class Util
         $payment_types['custom_pay_6'] = ! empty($custom_labels['payments']['custom_pay_6']) ? $custom_labels['payments']['custom_pay_6'] : __('lang_v1.custom_payment', ['number' => 6]);
         $payment_types['custom_pay_7'] = ! empty($custom_labels['payments']['custom_pay_7']) ? $custom_labels['payments']['custom_pay_7'] : __('lang_v1.custom_payment', ['number' => 7]);
 
-        //Unset payment types if not enabled in business location
+        // Unset payment types if not enabled in business location
         if (! empty($location)) {
             $location_account_settings = ! empty($location->default_payment_accounts) ? json_decode($location->default_payment_accounts, true) : [];
             $enabled_accounts = [];
@@ -203,7 +203,7 @@ class Util
         $enabled_modules = (! empty($enabled_modules) && $enabled_modules != 'null') ? $enabled_modules : [];
 
         return $enabled_modules;
-        //Module::has('Restaurant');
+        // Module::has('Restaurant');
     }
 
     /**
@@ -225,7 +225,7 @@ class Util
      * Converts date in business format to mysql format
      *
      * @param  string  $date
-     * @param  bool  $time (default = false)
+     * @param  bool  $time  (default = false)
      * @return strin
      */
     public function uf_date($date, $time = false)
@@ -234,9 +234,9 @@ class Util
         $mysql_format = 'Y-m-d';
         if ($time) {
             if (session('business.time_format') == 12) {
-                $date_format = $date_format . ' h:i A';
+                $date_format = $date_format.' h:i A';
             } else {
-                $date_format = $date_format . ' H:i';
+                $date_format = $date_format.' H:i';
             }
             $mysql_format = 'Y-m-d H:i:s';
         }
@@ -280,7 +280,7 @@ class Util
      * Converts date in mysql format to business format
      *
      * @param  string  $date
-     * @param  bool  $time (default = false)
+     * @param  bool  $time  (default = false)
      * @return strin
      */
     public function format_date($date, $show_time = false, $business_details = null)
@@ -359,9 +359,9 @@ class Util
 
         if (! in_array($type, ['contacts', 'business_location', 'username'])) {
             $ref_year = \Carbon::now()->year;
-            $ref_number = $prefix . $ref_year . '/' . $ref_digits;
+            $ref_number = $prefix.$ref_year.'/'.$ref_digits;
         } else {
-            $ref_number = $prefix . $ref_digits;
+            $ref_number = $prefix.$ref_digits;
         }
 
         return $ref_number;
@@ -378,7 +378,7 @@ class Util
     {
         $business_id = empty($business_id) ? $user->business_id : $business_id;
 
-        return $user->hasRole('Admin#' . $business_id) ? true : false;
+        return $user->hasRole('Admin#'.$business_id) ? true : false;
     }
 
     /**
@@ -388,7 +388,7 @@ class Util
      */
     public function notAllowedInDemo()
     {
-        //Disable in demo
+        // Disable in demo
         if (config('app.env') == 'demo') {
             $output = [
                 'success' => 0,
@@ -414,7 +414,7 @@ class Util
         Config::set('nexmo.api_secret', $sms_settings['nexmo_secret']);
 
         // $nexmo = app('Nexmo\Client');
-        $client = new Client();
+        $client = new Client;
 
         $headers = [
             'Content-Type' => 'application/json',
@@ -481,11 +481,11 @@ class Util
         }
 
         $postData = [
-            'api_key'   => $sms_settings['param_val_1'],
-            'type'      => $sms_settings['param_val_2'],
-            'contacts'  => $data['mobile_number'],
-            'senderid'  => $sms_settings['param_val_3'],
-            'msg'       => $data['sms_body'],
+            'api_key' => $sms_settings['param_val_1'],
+            'type' => $sms_settings['param_val_2'],
+            'contacts' => $data['mobile_number'],
+            'senderid' => $sms_settings['param_val_3'],
+            'msg' => $data['sms_body'],
         ];
 
         $ch = curl_init();
@@ -501,11 +501,12 @@ class Util
         $error = curl_error($ch);
         curl_close($ch);
 
-        \Log::info('MRAM SMS Response: ' . $response);
-        \Log::info('MRAM SMS HTTP Code: ' . $httpCode);
+        \Log::info('MRAM SMS Response: '.$response);
+        \Log::info('MRAM SMS HTTP Code: '.$httpCode);
 
         if ($error) {
-            \Log::error('MRAM SMS cURL Error: ' . $error);
+            \Log::error('MRAM SMS cURL Error: '.$error);
+
             return false;
         }
 
@@ -514,13 +515,12 @@ class Util
 
         // Map code → message if applicable
         if (isset($this->mramResponseCodes[$responseCode])) {
-            return $this->mramResponseCodes[$responseCode] . " [" . $responseCode . "]";
+            return $this->mramResponseCodes[$responseCode].' ['.$responseCode.']';
         }
 
         // Otherwise return the raw response
         return $responseCode;
     }
-
 
     /**
      * Sends SMS notification.
@@ -583,7 +583,7 @@ class Util
             $request_data[$sms_settings['param_10']] = $sms_settings['param_val_10'];
         }
 
-        $client = new Client();
+        $client = new Client;
 
         $headers = [];
         if (! empty($sms_settings['header_1'])) {
@@ -606,7 +606,7 @@ class Util
         }
 
         if ($sms_settings['request_method'] == 'get') {
-            $response = $client->get($sms_settings['url'] . '?' . http_build_query($request_data), $options);
+            $response = $client->get($sms_settings['url'].'?'.http_build_query($request_data), $options);
         } else {
             // Check if the parameter type is set to 'json' and process accordingly
             if ($parameter_type == 'json') {
@@ -619,6 +619,7 @@ class Util
                 }
                 // Set the request data as JSON in the options
                 $options['json'] = $request_data;
+
                 // Make the POST request with the JSON data
                 return $client->post($sms_settings['url'], $options);
             }
@@ -638,13 +639,13 @@ class Util
      */
     public function getWhatsappNotificationLink($data)
     {
-        //Supports only integers without leading zeros
+        // Supports only integers without leading zeros
         $whatsapp_number = abs((int) filter_var($data['mobile_number'], FILTER_SANITIZE_NUMBER_INT));
         $text = $data['whatsapp_text'];
 
-        $base_url = config('constants.whatsapp_base_url') . '/' . $whatsapp_number;
+        $base_url = config('constants.whatsapp_base_url').'/'.$whatsapp_number;
 
-        return $base_url . '?text=' . urlencode($text);
+        return $base_url.'?text='.urlencode($text);
     }
 
     /**
@@ -652,8 +653,8 @@ class Util
      *
      * @param  int  $business_id
      * @param  int  $unit_id
-     * @param  bool  $return_main_unit_if_empty = false
-     * @param  int  $product_id = null
+     * @param  bool  $return_main_unit_if_empty  = false
+     * @param  int  $product_id  = null
      * @return array
      */
     public function getSubUnits($business_id, $unit_id, $return_main_unit_if_empty = false, $product_id = null)
@@ -662,7 +663,7 @@ class Util
             ->with(['sub_units'])
             ->findOrFail($unit_id);
 
-        //Find related subunits for the product.
+        // Find related subunits for the product.
         $related_sub_units = [];
         $product_multipliers = [];
         if (! empty($product_id)) {
@@ -673,7 +674,7 @@ class Util
 
         $sub_units = [];
 
-        //Add main unit as per given parameter or conditions.
+        // Add main unit as per given parameter or conditions.
         if (($return_main_unit_if_empty && count($unit->sub_units) == 0)) {
             $sub_units[$unit->id] = [
                 'name' => $unit->actual_name,
@@ -681,7 +682,7 @@ class Util
                 'allow_decimal' => $unit->allow_decimal,
             ];
         } elseif (count($unit->sub_units) > 0) {
-            //Always include base unit when sub-units exist
+            // Always include base unit when sub-units exist
             $sub_units[$unit->id] = [
                 'name' => $unit->actual_name,
                 'multiplier' => 1,
@@ -691,9 +692,9 @@ class Util
 
         if (count($unit->sub_units) > 0) {
             foreach ($unit->sub_units as $sub_unit) {
-                //Check if subunit is related to the product or not.
+                // Check if subunit is related to the product or not.
                 if (empty($related_sub_units) || in_array($sub_unit->id, $related_sub_units)) {
-                    //Use per-product multiplier if set, otherwise fall back to unit's default
+                    // Use per-product multiplier if set, otherwise fall back to unit's default
                     $multiplier = ! empty($product_multipliers[$sub_unit->id])
                         ? $product_multipliers[$sub_unit->id]
                         : $sub_unit->base_unit_multiplier;
@@ -716,7 +717,7 @@ class Util
             return 1;
         }
 
-        //Check per-product multiplier first
+        // Check per-product multiplier first
         if (! empty($product_id)) {
             $product = Product::find($product_id);
             $product_multipliers = $product->sub_unit_multipliers ?? [];
@@ -743,13 +744,13 @@ class Util
      */
     public function generateToken()
     {
-        return md5(rand(1, 10) . microtime());
+        return md5(rand(1, 10).microtime());
     }
 
     /**
      * Generates invoice url for the transaction
      *
-     * @param  int  $transaction_id, int $business_id
+     * @param  int  $transaction_id,  int $business_id
      * @return string
      */
     public function getInvoiceUrl($transaction_id, $business_id)
@@ -772,7 +773,7 @@ class Util
     /**
      * Generates payment link for the transaction
      *
-     * @param  int  $transaction_id, int $business_id
+     * @param  int  $transaction_id,  int $business_id
      * @return string
      */
     public function getInvoicePaymentLink($transaction_id, $business_id)
@@ -795,12 +796,12 @@ class Util
     /**
      * Uploads document to the server if present in the request
      *
-     * @param  obj  $request, string $file_name, string dir_name
+     * @param  obj  $request,  string $file_name, string dir_name
      * @return string
      */
     public function uploadFile($request, $file_name, $dir_name, $file_type = 'document')
     {
-        //If app environment is demo return null
+        // If app environment is demo return null
         if (config('app.env') == 'demo') {
             return null;
         }
@@ -812,14 +813,14 @@ class Util
 
             // Laravel inbuilt server-side file type validation
             if ($file_type == 'image') {
-                if (!$file->isValid() || !Str::startsWith($file->getMimeType(), 'image/')) {
+                if (! $file->isValid() || ! Str::startsWith($file->getMimeType(), 'image/')) {
                     throw new \Exception('Invalid image file');
                 }
             }
 
             if ($file_type == 'document') {
                 $allowed_mimes = array_keys(config('constants.document_upload_mimes_types'));
-                if (!in_array($file->getMimeType(), $allowed_mimes)) {
+                if (! in_array($file->getMimeType(), $allowed_mimes)) {
                     throw new \Exception('Invalid document file');
                 }
             }
@@ -829,7 +830,7 @@ class Util
                 $original_name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 $extension = $file->getClientOriginalExtension();
                 $sanitized_name = Str::slug($original_name);
-                $new_file_name = time() . '_' . $sanitized_name . ($extension ? '.' . $extension : '');
+                $new_file_name = time().'_'.$sanitized_name.($extension ? '.'.$extension : '');
 
                 if ($file->storeAs($dir_name, $new_file_name)) {
                     $uploaded_file_name = $new_file_name;
@@ -848,19 +849,19 @@ class Util
     public function getServiceStaff($business_id, $location_id = null, $for_dropdown = false)
     {
         $waiters = [];
-        //Get all service staff roles
+        // Get all service staff roles
         $service_staff_roles = Role::where('business_id', $business_id)
             ->where('is_service_staff', 1)
             ->pluck('name')
             ->toArray();
 
-        //Get all users of service staff roles
+        // Get all users of service staff roles
         if (! empty($service_staff_roles)) {
             $waiters = User::where('business_id', $business_id)
                 ->role($service_staff_roles);
 
             if (! empty($location_id)) {
-                $waiters->permission(['location.' . $location_id, 'access_all_locations']);
+                $waiters->permission(['location.'.$location_id, 'access_all_locations']);
             }
 
             if ($for_dropdown) {
@@ -890,30 +891,30 @@ class Util
 
         $business = ! is_object($business_id) ? Business::with(['currency'])->findOrFail($business_id) : $business_id;
 
-        $contact = (!empty($transaction) && !empty($transaction->contact)) ? $transaction->contact : $contact;
+        $contact = (! empty($transaction) && ! empty($transaction->contact)) ? $transaction->contact : $contact;
 
         foreach ($data as $key => $value) {
-            //Replace contact name
+            // Replace contact name
             if (strpos($value, '{contact_name}') !== false) {
                 $contact_name = empty($contact) ? $transaction->contact->name : $contact->name;
 
                 $data[$key] = str_replace('{contact_name}', $contact_name, $data[$key]);
             }
 
-            //Replace invoice number
+            // Replace invoice number
             if (strpos($value, '{invoice_number}') !== false) {
                 $invoice_number = $transaction->type == 'sell' ? $transaction->invoice_no : '';
 
                 $data[$key] = str_replace('{invoice_number}', $invoice_number, $data[$key]);
             }
 
-            //Replace ref number
+            // Replace ref number
             if (strpos($value, '{order_ref_number}') !== false) {
                 $order_ref_number = $transaction->ref_no;
 
                 $data[$key] = str_replace('{order_ref_number}', $order_ref_number, $data[$key]);
             }
-            //Replace total_amount
+            // Replace total_amount
             if (strpos($value, '{total_amount}') !== false) {
                 $total_amount = $this->num_f($transaction->final_total, true, $business->currency);
 
@@ -933,22 +934,22 @@ class Util
 
             $paid_amount = $this->num_f($total_paid, true, $business->currency);
 
-            //Replace paid_amount
+            // Replace paid_amount
             if (strpos($value, '{paid_amount}') !== false) {
                 $data[$key] = str_replace('{paid_amount}', $paid_amount, $data[$key]);
             }
 
-            //Replace received_amount
+            // Replace received_amount
             if (strpos($value, '{received_amount}') !== false) {
                 $data[$key] = str_replace('{received_amount}', $paid_amount, $data[$key]);
             }
 
-            //Replace payment_ref_number
+            // Replace payment_ref_number
             if (strpos($value, '{payment_ref_number}') !== false) {
                 $data[$key] = str_replace('{payment_ref_number}', implode(', ', $payment_ref_number), $data[$key]);
             }
 
-            //Replace due_amount
+            // Replace due_amount
             if (strpos($value, '{due_amount}') !== false) {
                 $due = $transaction->final_total - $total_paid;
                 $due_amount = $this->num_f($due, true, $business->currency);
@@ -956,22 +957,21 @@ class Util
                 $data[$key] = str_replace('{due_amount}', $due_amount, $data[$key]);
             }
 
-
-            //Replace business_name
+            // Replace business_name
             if (strpos($value, '{business_name}') !== false) {
                 $business_name = $business->name;
                 $data[$key] = str_replace('{business_name}', $business_name, $data[$key]);
             }
 
-            //Replace business_logo
+            // Replace business_logo
             if (strpos($value, '{business_logo}') !== false) {
                 $logo_name = $business->logo;
-                $business_logo = ! empty($logo_name) ? '<img src="' . url('uploads/business_logos/' . $logo_name) . '" alt="Business Logo" >' : '';
+                $business_logo = ! empty($logo_name) ? '<img src="'.url('uploads/business_logos/'.$logo_name).'" alt="Business Logo" >' : '';
 
                 $data[$key] = str_replace('{business_logo}', $business_logo, $data[$key]);
             }
 
-            //Replace invoice_url
+            // Replace invoice_url
             if (! empty($transaction) && strpos($value, '{invoice_url}') !== false && $transaction->type == 'sell') {
                 $invoice_url = $this->getInvoiceUrl($transaction->id, $transaction->business_id);
                 $data[$key] = str_replace('{invoice_url}', $invoice_url, $data[$key]);
@@ -982,13 +982,13 @@ class Util
                 $data[$key] = str_replace('{quote_url}', $invoice_url, $data[$key]);
             }
 
-            //Replace cumulative_due_amount
+            // Replace cumulative_due_amount
             if (strpos($value, '{cumulative_due_amount}') !== false) {
                 try {
                     // Try to get contact_id from transaction first
-                    if (!empty($transaction) && !empty($transaction->contact_id)) {
+                    if (! empty($transaction) && ! empty($transaction->contact_id)) {
                         $contact_id = $transaction->contact_id;
-                    } elseif (!empty($contact) && !empty($contact->id)) {
+                    } elseif (! empty($contact) && ! empty($contact->id)) {
                         $contact_id = $contact->id;
                     } else {
                         $contact_id = null;
@@ -1193,7 +1193,7 @@ class Util
             $php_binary_path = 'php';
         }
 
-        $command = '* * * * * ' . $php_binary_path . ' ' . base_path('artisan') . ' schedule:run >> /dev/null 2>&1';
+        $command = '* * * * * '.$php_binary_path.' '.base_path('artisan').' schedule:run >> /dev/null 2>&1';
 
         if (config('app.env') == 'demo') {
             $command = '';
@@ -1276,7 +1276,7 @@ class Util
      */
     public function get_admins($business_id)
     {
-        $admins = User::role('Admin#' . $business_id)->get();
+        $admins = User::role('Admin#'.$business_id)->get();
 
         return $admins;
     }
@@ -1289,10 +1289,10 @@ class Util
     public function getUserIpAddr()
     {
         if (! empty($_SERVER['HTTP_CLIENT_IP'])) {
-            //ip from share internet
+            // ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (! empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            //ip pass from proxy
+            // ip pass from proxy
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
         } else {
             $ip = $_SERVER['REMOTE_ADDR'];
@@ -1306,7 +1306,7 @@ class Util
      *
      * @param  array  $lines
      * @param  int  $location_id
-     * @param  bool  $adjust_stock = true
+     * @param  bool  $adjust_stock  = true
      * @return void
      */
     public function updateEditedSellLineCombo($lines, $location_id, $adjust_stock = true)
@@ -1322,8 +1322,8 @@ class Util
 
             $difference = $prev_line->quantity - $line['quantity'];
             if ($difference != 0) {
-                //Update stock in variation location details table.
-                //Adjust Quantity in variations location table
+                // Update stock in variation location details table.
+                // Adjust Quantity in variations location table
                 if ($adjust_stock) {
                     VariationLocationDetails::where('variation_id', $line['variation_id'])
                         ->where('product_id', $line['product_id'])
@@ -1331,12 +1331,12 @@ class Util
                         ->increment('qty_available', $difference);
                 }
 
-                //Update the child line quantity
+                // Update the child line quantity
                 $prev_line->quantity = $line['quantity'];
                 $prev_line->save();
             }
 
-            //Recalculate the price.
+            // Recalculate the price.
             if (is_null($change_percent)) {
                 $parent = TransactionSellLine::findOrFail($prev_line->parent_sell_line_id);
                 $child_sum = TransactionSellLine::where('parent_sell_line_id', $prev_line->parent_sell_line_id)
@@ -1361,8 +1361,8 @@ class Util
      */
     public function get_pl_quantity_sum_string($table_name = '')
     {
-        $table_name = ! empty($table_name) ? $table_name . '.' : '';
-        $string = $table_name . 'quantity_sold + ' . $table_name . 'quantity_adjusted + ' . $table_name . 'quantity_returned + ' . $table_name . 'mfg_quantity_used';
+        $table_name = ! empty($table_name) ? $table_name.'.' : '';
+        $string = $table_name.'quantity_sold + '.$table_name.'quantity_adjusted + '.$table_name.'quantity_returned + '.$table_name.'mfg_quantity_used';
 
         return $string;
     }
@@ -1388,7 +1388,7 @@ class Util
      */
     public function getContactDue($contact_id, $business_id = null)
     {
-        // aad type sell_return for to calculate total_sell_return 
+        // aad type sell_return for to calculate total_sell_return
         $query = Contact::where('contacts.id', $contact_id)
             ->join('transactions AS t', 'contacts.id', '=', 't.contact_id')
             ->whereIn('t.type', ['sell', 'opening_balance', 'purchase', 'sell_return'])
@@ -1413,7 +1413,7 @@ class Util
             return 0;
         }
 
-        // + $contact_payments->sell_return_paid add this in due because after paymnet for sell return not calculated 
+        // + $contact_payments->sell_return_paid add this in due because after paymnet for sell return not calculated
 
         $due = $contact_payments->total_invoice + $contact_payments->total_purchase - $contact_payments->total_paid - $contact_payments->purchase_paid + $contact_payments->opening_balance - $contact_payments->opening_balance_paid - $contact_payments->total_sell_return + $contact_payments->sell_return_paid;
 
@@ -1568,21 +1568,21 @@ class Util
             if ($number) {
                 $plural = (($counter = count($str)) && $number > 9) ? 's' : null;
                 $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
-                $str[] = ($number < 21) ? $words[$number] . ' ' . $digits[$counter] . $plural . ' ' . $hundred : $words[floor($number / 10) * 10] . ' ' . $words[$number % 10] . ' ' . $digits[$counter] . $plural . ' ' . $hundred;
+                $str[] = ($number < 21) ? $words[$number].' '.$digits[$counter].$plural.' '.$hundred : $words[floor($number / 10) * 10].' '.$words[$number % 10].' '.$digits[$counter].$plural.' '.$hundred;
             } else {
                 $str[] = null;
             }
         }
         $whole_number_part = implode('', array_reverse($str));
-        $decimal_part = ($decimal > 0) ? ' point ' . ($words[$decimal / 10] . ' ' . $words[$decimal % 10]) : '';
+        $decimal_part = ($decimal > 0) ? ' point '.($words[$decimal / 10].' '.$words[$decimal % 10]) : '';
 
-        return ($whole_number_part ? $whole_number_part : '') . $decimal_part;
+        return ($whole_number_part ? $whole_number_part : '').$decimal_part;
     }
 
     public function getCustomLabels($business, $type = null)
     {
         $business = is_object($business) ? $business : Business::find($business);
-        //Get custom label from business settings
+        // Get custom label from business settings
         $custom_labels = $business->custom_labels;
         $custom_labels = json_decode($custom_labels, true);
 
@@ -1596,13 +1596,13 @@ class Util
     /**
      * Logs activities to database
      *
-     * @param $on object Model instance
-     * @param $action string name of the operation performed on the model instance
-     * @param $before object Previous state of the model instance
-     * @param $properties array Extra properties to be saved along with model properties
-     * update_note key to directly show message in note section,
-     * from_api key to show api client if added from api
-     * @param $log_changes boolean whether to log changes to modal properties
+     * @param  $on  object Model instance
+     * @param  $action  string name of the operation performed on the model instance
+     * @param  $before  object Previous state of the model instance
+     * @param  $properties  array Extra properties to be saved along with model properties
+     *                     update_note key to directly show message in note section,
+     *                     from_api key to show api client if added from api
+     * @param  $log_changes  boolean whether to log changes to modal properties
      * @return string
      */
     public function activityLog($on, $action = null, $before = null, $properties = [], $log_changes = true, $business_id = null)
@@ -1620,10 +1620,10 @@ class Util
             }
         }
 
-        //Check if session has business id
+        // Check if session has business id
         $business_id = session()->has('business') ? session('business.id') : $business_id;
 
-        //Check if subject has business id
+        // Check if subject has business id
         if (empty($business_id) && ! empty($on->business_id)) {
             $business_id = $on->business_id;
         }
@@ -1645,7 +1645,7 @@ class Util
     {
         $php_binary_path = empty(PHP_BINARY) ? 'php' : PHP_BINARY;
 
-        $command = '* * * * * ' . $php_binary_path . ' ' . base_path('artisan') . ' backup:clean >> /dev/null 2>&1';
+        $command = '* * * * * '.$php_binary_path.' '.base_path('artisan').' backup:clean >> /dev/null 2>&1';
 
         if (config('app.env') == 'demo') {
             $command = '';
@@ -1658,8 +1658,8 @@ class Util
      * Get location from latitude and longitude
      * Uses Google's Geocoding api
      *
-     * @param $lat string latitude
-     * @param $long string longitude
+     * @param  $lat  string latitude
+     * @param  $long  string longitude
      * @return string
      */
     public function getLocationFromCoordinates($lat, $long)
@@ -1669,21 +1669,21 @@ class Util
             $full_address = null;
             $address = [];
             if (! empty($access_token)) {
-                $client = new Client();
+                $client = new Client;
                 $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={$lat},{$long}&key={$access_token}";
 
                 $response = $client->get($url);
 
                 $address = json_decode($response->getBody()->getContents(), true);
             } else {
-                $client = new Client();
+                $client = new Client;
 
                 $this->client = new Client([
                     'base_uri' => 'https://nominatim.openstreetmap.org/',
                     'timeout' => 10,
                     'verify' => false,
                     'headers' => [
-                        'User-Agent' => 'pos'  // Add a User-Agent header
+                        'User-Agent' => 'pos',  // Add a User-Agent header
                     ],
                 ]);
 
@@ -1734,7 +1734,7 @@ class Util
 
         $roles = [];
         foreach ($app_roles as $key => $value) {
-            $roles[$key] = str_replace('#' . $business_id, '', $value);
+            $roles[$key] = str_replace('#'.$business_id, '', $value);
         }
 
         return $roles;
@@ -1791,7 +1791,7 @@ class Util
         $business_id = Auth::user()->business_id;
         $user_details['business_id'] = $business_id;
 
-        //Check if subscribed or not, then check for users quota
+        // Check if subscribed or not, then check for users quota
         if ($user_details['user_type'] == 'user') {
             $moduleUtil = new \App\Utils\ModuleUtil;
             if (! $moduleUtil->isSubscribed($business_id)) {
@@ -1829,27 +1829,27 @@ class Util
             }
         }
 
-        //Create the user
+        // Create the user
         $user = User::create($user_details);
 
         if ($user_details['user_type'] == 'user') {
             $role = Role::findOrFail($request->input('role'));
 
-            //Remove Location permissions from role
+            // Remove Location permissions from role
             $this->revokeLocationPermissionsFromRole($role);
 
             $user->assignRole($role->name);
 
-            //Grant Location permissions
+            // Grant Location permissions
             $this->giveLocationPermissions($user, $request);
 
-            //Assign selected contacts
+            // Assign selected contacts
             if ($user_details['selected_contacts'] == 1) {
                 $contact_ids = $request->get('selected_contact_ids');
                 $user->contactAccess()->sync($contact_ids);
             }
 
-            //Save module fields for user
+            // Save module fields for user
             $moduleUtil = new \App\Utils\ModuleUtil;
             $moduleUtil->getModuleData('afterModelSaved', ['event' => 'user_saved', 'model_instance' => $user]);
             $this->activityLog($user, 'added', null, ['name' => $user->user_full_name], true, $business_id);
@@ -1865,7 +1865,7 @@ class Util
     {
         $business_id = Auth::user()->business_id;
 
-        $extension = ! empty(System::getProperty('enable_business_based_username')) ? '-' . str_pad($business_id, 2, 0, STR_PAD_LEFT) : null;
+        $extension = ! empty(System::getProperty('enable_business_based_username')) ? '-'.str_pad($business_id, 2, 0, STR_PAD_LEFT) : null;
 
         return $extension;
     }
@@ -1883,8 +1883,8 @@ class Util
 
         $all_locations = BusinessLocation::where('business_id', $business_id)->get();
         foreach ($all_locations as $location) {
-            if ($role->hasPermissionTo('location.' . $location->id)) {
-                $role->revokePermissionTo('location.' . $location->id);
+            if ($role->hasPermissionTo('location.'.$location->id)) {
+                $role->revokePermissionTo('location.'.$location->id);
             }
         }
     }
@@ -1899,24 +1899,24 @@ class Util
         $location_permissions = $request->input('location_permissions');
         $revoked_permissions = [];
 
-        //during api call if access_all_locations = 1 then generate location permissions
+        // during api call if access_all_locations = 1 then generate location permissions
         if (($permissions != 'access_all_locations') && $permissions == 1) {
             $permissions = 'access_all_locations';
             $location_ids = $request->input('location_permissions');
             $location_permissions = [];
             if (! empty($location_ids)) {
                 foreach ($location_ids as $location_id) {
-                    $location_permissions[] = 'location.' . $location_id;
+                    $location_permissions[] = 'location.'.$location_id;
                 }
             }
         }
 
-        //If not access all location then revoke permission
+        // If not access all location then revoke permission
         if ($permitted_locations == 'all' && $permissions != 'access_all_locations') {
             $user->revokePermissionTo('access_all_locations');
         }
 
-        //Include location permissions
+        // Include location permissions
         if (empty($permissions) && ! empty($location_permissions)) {
             $permissions = [];
             foreach ($location_permissions as $location_permission) {
@@ -1925,8 +1925,8 @@ class Util
 
             if (is_array($permitted_locations)) {
                 foreach ($permitted_locations as $key => $value) {
-                    if (! in_array('location.' . $value, $permissions)) {
-                        $revoked_permissions[] = 'location.' . $value;
+                    if (! in_array('location.'.$value, $permissions)) {
+                        $revoked_permissions[] = 'location.'.$value;
                     }
                 }
             }
@@ -1939,11 +1939,11 @@ class Util
         if (! empty($permissions)) {
             $user->givePermissionTo($permissions);
         } else {
-            //if no location permission given revoke previous permissions
+            // if no location permission given revoke previous permissions
             if (! empty($permitted_locations)) {
                 $revoked_permissions = [];
                 foreach ($permitted_locations as $key => $value) {
-                    $revoke_permissions[] = 'location.' . $value;
+                    $revoke_permissions[] = 'location.'.$value;
                 }
 
                 $user->revokePermissionTo($revoke_permissions);
@@ -1951,8 +1951,7 @@ class Util
         }
     }
 
-
-    function getDateRange($timePeriod)
+    public function getDateRange($timePeriod)
     {
         switch ($timePeriod) {
             case 'today':
@@ -2021,8 +2020,7 @@ class Util
         return ['start' => $start, 'end' => $end];
     }
 
-
-    function numberToCurrencyWords($amount, $currencyMain = 'dollar', $currencySub = 'cent', $locale = 'en')
+    public function numberToCurrencyWords($amount, $currencyMain = 'dollar', $currencySub = 'cent', $locale = 'en')
     {
         $formatter = new \NumberFormatter($locale, \NumberFormatter::SPELLOUT);
 
@@ -2039,13 +2037,13 @@ class Util
             $mainLabel = $currencyMain;
             $subLabel = $currencySub;
         } else {
-            $mainLabel = ($mainUnit == 1) ? $currencyMain : $currencyMain . 's';
-            $subLabel = ($subUnit == 1) ? $currencySub : $currencySub . 's';
+            $mainLabel = ($mainUnit == 1) ? $currencyMain : $currencyMain.'s';
+            $subLabel = ($subUnit == 1) ? $currencySub : $currencySub.'s';
         }
-        $result = ucfirst($mainWord) . " " . $mainLabel;
+        $result = ucfirst($mainWord).' '.$mainLabel;
 
         if ($subUnit > 0) {
-            $result .= " " . $subWord . " " . $subLabel;
+            $result .= ' '.$subWord.' '.$subLabel;
         }
 
         return $result;

@@ -66,7 +66,7 @@ class NotificationTemplateController extends Controller
         $supplier_notifications = $this->__getTemplateDetails($supplier_notifications);
 
         return view('notification_template.index')
-                ->with(compact('customer_notifications', 'supplier_notifications', 'general_notifications'));
+            ->with(compact('customer_notifications', 'supplier_notifications', 'general_notifications'));
     }
 
     private function __getTemplateDetails($notifications)
@@ -91,7 +91,6 @@ class NotificationTemplateController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)

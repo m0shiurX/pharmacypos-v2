@@ -5,7 +5,6 @@ namespace Modules\Essentials\Utils;
 use App\Transaction;
 use App\Utils\Util;
 use DB;
-use Illuminate\Support\Facades\View;
 use Modules\Essentials\Entities\EssentialsAllowanceAndDeduction;
 use Modules\Essentials\Entities\EssentialsAttendance;
 use Modules\Essentials\Entities\EssentialsLeave;
@@ -20,8 +19,8 @@ class EssentialsUtil extends Util
      * @param  string  $unit
      * @param  int  $user_id
      * @param  int  $business_id
-     * @param  int  $start_date = null
-     * @param  int  $end_date = null
+     * @param  int  $start_date  = null
+     * @param  int  $end_date  = null
      */
     public function getTotalWorkDuration(
         $unit,
@@ -33,12 +32,12 @@ class EssentialsUtil extends Util
         $total_work_duration = 0;
         if ($unit == 'hour') {
             $query = EssentialsAttendance::where('business_id', $business_id)
-                                        ->where('user_id', $user_id)
-                                        ->whereNotNull('clock_out_time');
+                ->where('user_id', $user_id)
+                ->whereNotNull('clock_out_time');
 
             if (! empty($start_date) && ! empty($end_date)) {
                 $query->whereDate('clock_in_time', '>=', $start_date)
-                            ->whereDate('clock_in_time', '<=', $end_date);
+                    ->whereDate('clock_in_time', '<=', $end_date);
             }
 
             $minutes_sum = $query->select(DB::raw('SUM(TIMESTAMPDIFF(MINUTE, clock_in_time, clock_out_time)) as total_minutes'))->first();
@@ -69,16 +68,16 @@ class EssentialsUtil extends Util
      *
      * @param  int  $business_id
      * @param  int  $user_id
-     * @param  string  $start_date = null
-     * @param  string  $end_date = null
+     * @param  string  $start_date  = null
+     * @param  string  $end_date  = null
      */
     public function getEmployeeAllowancesAndDeductions($business_id, $user_id, $start_date = null, $end_date = null)
     {
         $query = EssentialsAllowanceAndDeduction::join('essentials_user_allowance_and_deductions as euad', 'euad.allowance_deduction_id', '=', 'essentials_allowances_and_deductions.id')
-                ->where('business_id', $business_id)
-                ->where('euad.user_id', $user_id);
+            ->where('business_id', $business_id)
+            ->where('euad.user_id', $user_id);
 
-        //Filter if applicable one
+        // Filter if applicable one
         if (! empty($start_date) && ! empty($end_date)) {
             $query->where(function ($q) use ($start_date, $end_date) {
                 $q->whereNull('applicable_date')
@@ -105,23 +104,23 @@ class EssentialsUtil extends Util
         $clock_in_end = ! empty($clock_in_time) ? \Carbon::parse($clock_in_time)->addMinutes($grace_after_checkin) : \Carbon::now()->addMinutes($grace_after_checkin);
 
         $user_shifts = EssentialsUserShift::join('essentials_shifts as s', 's.id', '=', 'essentials_user_shifts.essentials_shift_id')
-                    ->where('user_id', $user_id)
-                    ->where('start_date', '<=', $shift_datetime)
-                    ->where(function ($q) use ($shift_datetime) {
-                        $q->whereNull('end_date')
-                        ->orWhere('end_date', '>=', $shift_datetime);
-                    })
-                    ->select('essentials_user_shifts.*', 's.holidays', 's.start_time', 's.end_time', 's.type')
-                    ->get();
+            ->where('user_id', $user_id)
+            ->where('start_date', '<=', $shift_datetime)
+            ->where(function ($q) use ($shift_datetime) {
+                $q->whereNull('end_date')
+                    ->orWhere('end_date', '>=', $shift_datetime);
+            })
+            ->select('essentials_user_shifts.*', 's.holidays', 's.start_time', 's.end_time', 's.type')
+            ->get();
 
         foreach ($user_shifts as $shift) {
             $holidays = json_decode($shift->holidays, true);
-            //check if holiday
+            // check if holiday
             if (is_array($holidays) && in_array($day_string, $holidays)) {
                 continue;
             }
 
-            //Check allocated shift time
+            // Check allocated shift time
             if ((! empty($shift->start_time) && \Carbon::parse($shift->start_time)->between($clock_in_start, $clock_in_end)) || $shift->type == 'flexible_shift') {
                 return $shift->essentials_shift_id;
             }
@@ -155,7 +154,7 @@ class EssentialsUtil extends Util
 
     public function clockin($data, $essentials_settings)
     {
-        //Check user can clockin
+        // Check user can clockin
         $clock_in_time = is_object($data['clock_in_time']) ? $data['clock_in_time']->toDateTimeString() : $data['clock_in_time'];
 
         $shift = $this->checkUserShift($data['user_id'], $essentials_settings, $clock_in_time);
@@ -164,8 +163,8 @@ class EssentialsUtil extends Util
             $available_shifts = $this->getAllAvailableShiftsForGivenUser($data['business_id'], $data['user_id']);
 
             $available_shifts_html = view('essentials::attendance.avail_shifts')
-                                        ->with(compact('available_shifts'))
-                                        ->render();
+                ->with(compact('available_shifts'))
+                ->render();
 
             $output = ['success' => false,
                 'msg' => __('essentials::lang.shift_not_allocated'),
@@ -178,18 +177,18 @@ class EssentialsUtil extends Util
 
         $data['essentials_shift_id'] = $shift;
 
-        //Check if already clocked in
+        // Check if already clocked in
         $count = EssentialsAttendance::where('business_id', $data['business_id'])
-                                ->where('user_id', $data['user_id'])
-                                ->whereNull('clock_out_time')
-                                ->count();
+            ->where('user_id', $data['user_id'])
+            ->whereNull('clock_out_time')
+            ->count();
         if ($count == 0) {
             EssentialsAttendance::create($data);
 
             $shift_info = Shift::getGivenShiftInfo($data['business_id'], $shift);
             $current_shift_html = view('essentials::attendance.current_shift')
-                                    ->with(compact('shift_info'))
-                                    ->render();
+                ->with(compact('shift_info'))
+                ->render();
 
             $output = ['success' => true,
                 'msg' => __('essentials::lang.clock_in_success'),
@@ -209,11 +208,11 @@ class EssentialsUtil extends Util
     public function clockout($data, $essentials_settings)
     {
 
-        //Get clock in
+        // Get clock in
         $clock_in = EssentialsAttendance::where('business_id', $data['business_id'])
-                                ->where('user_id', $data['user_id'])
-                                ->whereNull('clock_out_time')
-                                ->first();
+            ->where('user_id', $data['user_id'])
+            ->whereNull('clock_out_time')
+            ->first();
         $clock_out_time = is_object($data['clock_out_time']) ? $data['clock_out_time']->toDateTimeString() : $data['clock_out_time'];
 
         if (! empty($clock_in)) {
@@ -249,14 +248,14 @@ class EssentialsUtil extends Util
     public function getAllAvailableShiftsForGivenUser($business_id, $user_id)
     {
         $available_user_shifts = EssentialsUserShift::join('essentials_shifts as s', 's.id', '=',
-                                    'essentials_user_shifts.essentials_shift_id')
-                                    ->where('user_id', $user_id)
-                                    ->where('s.business_id', $business_id)
-                                    ->whereDate('start_date', '<=', \Carbon::today())
-                                    ->whereDate('end_date', '>=', \Carbon::today())
-                                    ->select('essentials_user_shifts.start_date', 'essentials_user_shifts.end_date',
-                                        's.name', 's.type', 's.start_time', 's.end_time', 's.holidays')
-                                    ->get();
+            'essentials_user_shifts.essentials_shift_id')
+            ->where('user_id', $user_id)
+            ->where('s.business_id', $business_id)
+            ->whereDate('start_date', '<=', \Carbon::today())
+            ->whereDate('end_date', '>=', \Carbon::today())
+            ->select('essentials_user_shifts.start_date', 'essentials_user_shifts.end_date',
+                's.name', 's.type', 's.start_time', 's.end_time', 's.holidays')
+            ->get();
 
         return $available_user_shifts;
     }
@@ -272,10 +271,10 @@ class EssentialsUtil extends Util
     public function getTotalLeavesForGivenDateOfAnEmployee($business_id, $employee_id, $start_date, $end_date)
     {
         $leaves = EssentialsLeave::where('business_id', $business_id)
-                        ->where('user_id', $employee_id)
-                        ->whereDate('start_date', '>=', $start_date)
-                        ->whereDate('end_date', '<=', $end_date)
-                        ->get();
+            ->where('user_id', $employee_id)
+            ->whereDate('start_date', '>=', $start_date)
+            ->whereDate('end_date', '<=', $end_date)
+            ->get();
 
         $total_leaves = 0;
         foreach ($leaves as $key => $leave) {
@@ -293,14 +292,14 @@ class EssentialsUtil extends Util
     public function getTotalDaysWorkedForGivenDateOfAnEmployee($business_id, $employee_id, $start_date, $end_date)
     {
         $attendances = EssentialsAttendance::where('business_id', $business_id)
-                        ->where('user_id', $employee_id)
-                        ->whereNotNull('clock_out_time')
-                        ->whereDate('clock_in_time', '>=', $start_date)
-                        ->whereDate('clock_in_time', '<=', $end_date)
-                        ->get()
-                        ->groupBy(function ($attendance, $key) {
-                            return \Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
-                        });
+            ->where('user_id', $employee_id)
+            ->whereNotNull('clock_out_time')
+            ->whereDate('clock_in_time', '>=', $start_date)
+            ->whereDate('clock_in_time', '<=', $end_date)
+            ->get()
+            ->groupBy(function ($attendance, $key) {
+                return \Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
+            });
 
         return count($attendances);
     }
@@ -308,23 +307,23 @@ class EssentialsUtil extends Util
     public function getPayrollQuery($business_id)
     {
         $payrolls = Transaction::where('transactions.business_id', $business_id)
-                    ->where('type', 'payroll')
-                    ->join('users as u', 'u.id', '=', 'transactions.expense_for')
-                    ->leftJoin('categories as dept', 'u.essentials_department_id', '=', 'dept.id')
-                    ->leftJoin('categories as dsgn', 'u.essentials_designation_id', '=', 'dsgn.id')
-                    ->leftJoin('essentials_payroll_group_transactions as epgt', 'transactions.id', '=', 'epgt.transaction_id')
-                    ->leftJoin('essentials_payroll_groups as epg', 'epgt.payroll_group_id', '=', 'epg.id')
-                    ->select([
-                        'transactions.id',
-                        DB::raw("CONCAT(COALESCE(u.surname, ''), ' ', COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, '')) as user"),
-                        'final_total',
-                        'transaction_date',
-                        'ref_no',
-                        'transactions.payment_status',
-                        'dept.name as department',
-                        'dsgn.name as designation',
-                        'epgt.payroll_group_id',
-                    ]);
+            ->where('type', 'payroll')
+            ->join('users as u', 'u.id', '=', 'transactions.expense_for')
+            ->leftJoin('categories as dept', 'u.essentials_department_id', '=', 'dept.id')
+            ->leftJoin('categories as dsgn', 'u.essentials_designation_id', '=', 'dsgn.id')
+            ->leftJoin('essentials_payroll_group_transactions as epgt', 'transactions.id', '=', 'epgt.transaction_id')
+            ->leftJoin('essentials_payroll_groups as epg', 'epgt.payroll_group_id', '=', 'epg.id')
+            ->select([
+                'transactions.id',
+                DB::raw("CONCAT(COALESCE(u.surname, ''), ' ', COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, '')) as user"),
+                'final_total',
+                'transaction_date',
+                'ref_no',
+                'transactions.payment_status',
+                'dept.name as department',
+                'dsgn.name as designation',
+                'epgt.payroll_group_id',
+            ]);
 
         return $payrolls;
     }

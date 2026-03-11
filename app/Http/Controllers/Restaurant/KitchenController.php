@@ -21,8 +21,6 @@ class KitchenController extends Controller
     /**
      * Constructor
      *
-     * @param  Util  $commonUtil
-     * @param  RestaurantUtil  $restUtil
      * @return void
      */
     public function __construct(Util $commonUtil, RestaurantUtil $restUtil)
@@ -43,7 +41,7 @@ class KitchenController extends Controller
         // }
 
         $business_id = request()->session()->get('user.business_id');
-        
+
         $orders = $this->restUtil->getAllOrders($business_id, ['line_order_status' => 'received', 'is_kitchen_order' => 1]);
 
         return view('restaurant.kitchen.index', compact('orders'));
@@ -62,13 +60,13 @@ class KitchenController extends Controller
         try {
             $business_id = request()->session()->get('user.business_id');
             $sl = TransactionSellLine::leftJoin('transactions as t', 't.id', '=', 'transaction_sell_lines.transaction_id')
-                        ->where('t.business_id', $business_id)
-                        ->where('transaction_id', $id)
-                        ->where(function ($q) {
-                            $q->whereNull('res_line_order_status')
-                                ->orWhere('res_line_order_status', 'received');
-                        })
-                        ->update(['res_line_order_status' => 'cooked']);
+                ->where('t.business_id', $business_id)
+                ->where('transaction_id', $id)
+                ->where(function ($q) {
+                    $q->whereNull('res_line_order_status')
+                        ->orWhere('res_line_order_status', 'received');
+                })
+                ->update(['res_line_order_status' => 'cooked']);
 
             $output = ['success' => 1,
                 'msg' => trans('restaurant.order_successfully_marked_cooked'),

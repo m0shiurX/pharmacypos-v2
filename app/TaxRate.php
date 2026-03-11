@@ -24,9 +24,9 @@ class TaxRate extends Model
     /**
      * Return list of tax rate dropdown for a business
      *
-     * @param $business_id int
-     * @param $prepend_none = true (boolean)
-     * @param $include_attributes = false (boolean)
+     * @param  $business_id  int
+     * @param  $prepend_none  = true (boolean)
+     * @param  $include_attributes  = false (boolean)
      * @return array['tax_rates', 'attributes']
      */
     public static function forBusinessDropdown(
@@ -43,12 +43,12 @@ class TaxRate extends Model
         $result = $all_taxes->get();
         $tax_rates = $result->pluck('name', 'id');
 
-        //Prepend none
+        // Prepend none
         if ($prepend_none) {
             $tax_rates = $tax_rates->prepend(__('lang_v1.none'), '');
         }
 
-        //Add tax attributes
+        // Add tax attributes
         $tax_attributes = null;
         if ($include_attributes) {
             $tax_attributes = collect($result)->mapWithKeys(function ($item) {

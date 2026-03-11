@@ -15,8 +15,6 @@ use App\Unit;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
-use App\VariationLocationDetails;
-
 
 class BusinessUtil extends Util
 {
@@ -31,14 +29,14 @@ class BusinessUtil extends Util
     {
         $user = User::find($user_id);
 
-        //create Admin role and assign to user
+        // create Admin role and assign to user
         $role = Role::create(['name' => 'Admin#'.$business_id,
             'business_id' => $business_id,
             'guard_name' => 'web', 'is_default' => 1,
         ]);
         $user->assignRole($role->name);
 
-        //Create Cashier role for a new business
+        // Create Cashier role for a new business
         $cashier_role = Role::create(['name' => 'Cashier#'.$business_id,
             'business_id' => $business_id,
             'guard_name' => 'web',
@@ -47,11 +45,11 @@ class BusinessUtil extends Util
 
         $business = Business::findOrFail($business_id);
 
-        //Update reference count
+        // Update reference count
         $ref_count = $this->setAndGetReferenceCount('contacts', $business_id);
         $contact_id = $this->generateReferenceNumber('contacts', $ref_count, $business_id);
 
-        //Add Default/Walk-In Customer for new business
+        // Add Default/Walk-In Customer for new business
         $customer = [
             'business_id' => $business_id,
             'type' => 'customer',
@@ -63,7 +61,7 @@ class BusinessUtil extends Util
         ];
         Contact::create($customer);
 
-        //create default invoice setting for new business
+        // create default invoice setting for new business
         InvoiceScheme::create(['name' => 'Default',
             'scheme_type' => 'blank',
             'prefix' => '',
@@ -72,7 +70,7 @@ class BusinessUtil extends Util
             'is_default' => 1,
             'business_id' => $business_id,
         ]);
-        //create default invoice layour for new business
+        // create default invoice layour for new business
         InvoiceLayout::create(['name' => 'Default',
             'header_text' => null,
             'invoice_no_prefix' => 'Invoice No.',
@@ -104,7 +102,7 @@ class BusinessUtil extends Util
             'date_label' => 'Date',
         ]);
 
-        //create default barcode setting for new business
+        // create default barcode setting for new business
         // Barcode::create(['name' => 'Default',
         //                 'description' => '',
         //                 'width' => 37.29,
@@ -118,7 +116,7 @@ class BusinessUtil extends Util
         //                 'business_id' => $business_id
         //             ]);
 
-        //Add Default Unit for new business
+        // Add Default Unit for new business
         $unit = [
             'business_id' => $business_id,
             'actual_name' => 'Pieces',
@@ -128,7 +126,7 @@ class BusinessUtil extends Util
         ];
         Unit::create($unit);
 
-        //Create default notification templates
+        // Create default notification templates
         $notification_templates = NotificationTemplate::defaultNotificationTemplates($business_id);
         foreach ($notification_templates as $notification_template) {
             NotificationTemplate::create($notification_template);
@@ -145,8 +143,8 @@ class BusinessUtil extends Util
     public function allCurrencies()
     {
         $currencies = Currency::select('id', DB::raw("concat(country, ' - ',currency, '(', code, ') ') as info"))
-                ->orderBy('country')
-                ->pluck('info', 'id');
+            ->orderBy('country')
+            ->pluck('info', 'id');
 
         return $currencies;
     }
@@ -193,10 +191,10 @@ class BusinessUtil extends Util
 
         $business_details['default_profit_percent'] = 25;
 
-        //Add POS shortcuts
+        // Add POS shortcuts
         $business_details['keyboard_shortcuts'] = '{"pos":{"express_checkout":"shift+e","pay_n_ckeckout":"shift+p","draft":"shift+d","cancel":"shift+c","edit_discount":"shift+i","edit_order_tax":"shift+t","add_payment_row":"shift+r","finalize_payment":"shift+f","recent_product_quantity":"f2","add_new_product":"f4"}}';
 
-        //Add prefixes
+        // Add prefixes
         $business_details['ref_no_prefixes'] = [
             'purchase' => 'PO',
             'stock_transfer' => 'ST',
@@ -209,7 +207,7 @@ class BusinessUtil extends Util
             'business_location' => 'BL',
         ];
 
-        //Disable inline tax editing
+        // Disable inline tax editing
         $business_details['enable_inline_tax'] = 0;
 
         $business = Business::create_business($business_details);
@@ -225,18 +223,18 @@ class BusinessUtil extends Util
     public function getDetails($business_id)
     {
         $details = Business::leftjoin('tax_rates AS TR', 'business.default_sales_tax', 'TR.id')
-                        ->leftjoin('currencies AS cur', 'business.currency_id', 'cur.id')
-                        ->select(
-                            'business.*',
-                            'cur.code as currency_code',
-                            'cur.symbol as currency_symbol',
-                            'thousand_separator',
-                            'decimal_separator',
-                            'TR.amount AS tax_calculation_amount',
-                            'business.default_sales_discount'
-                        )
-                        ->where('business.id', $business_id)
-                        ->first();
+            ->leftjoin('currencies AS cur', 'business.currency_id', 'cur.id')
+            ->select(
+                'business.*',
+                'cur.code as currency_code',
+                'cur.symbol as currency_symbol',
+                'thousand_separator',
+                'decimal_separator',
+                'TR.amount AS tax_calculation_amount',
+                'business.default_sales_discount'
+            )
+            ->where('business.id', $business_id)
+            ->first();
 
         return $details;
     }
@@ -256,13 +254,13 @@ class BusinessUtil extends Util
         }
 
         $start_year = date('Y');
-        //if current month is less than start month change start year to last year
+        // if current month is less than start month change start year to last year
         if (date('n') < $start_month) {
             $start_year = $start_year - 1;
         }
 
         $end_year = date('Y');
-        //if current month is greater than end month change end year to next year
+        // if current month is greater than end month change end year to next year
         if (date('n') > $end_month) {
             $end_year = $start_year + 1;
         }
@@ -283,30 +281,30 @@ class BusinessUtil extends Util
      *
      * @param  int  $business_id
      * @param  array  $location_details
-     * @param  int  $invoice_layout_id default null
+     * @param  int  $invoice_layout_id  default null
      * @return location object
      */
     public function addLocation($business_id, $location_details, $invoice_scheme_id = null, $invoice_layout_id = null)
     {
         if (empty($invoice_scheme_id)) {
             $layout = InvoiceLayout::where('is_default', 1)
-                                    ->where('business_id', $business_id)
-                                    ->first();
+                ->where('business_id', $business_id)
+                ->first();
             $invoice_layout_id = $layout->id;
         }
 
         if (empty($invoice_scheme_id)) {
             $scheme = InvoiceScheme::where('is_default', 1)
-                                    ->where('business_id', $business_id)
-                                    ->first();
+                ->where('business_id', $business_id)
+                ->first();
             $invoice_scheme_id = $scheme->id;
         }
 
-        //Update reference count
+        // Update reference count
         $ref_count = $this->setAndGetReferenceCount('business_location', $business_id);
         $location_id = $this->generateReferenceNumber('business_location', $ref_count, $business_id);
 
-        //Enable all payment methods by default
+        // Enable all payment methods by default
         $payment_types = $this->payment_types();
         $location_payment_types = [];
         foreach ($payment_types as $key => $value) {
@@ -340,7 +338,7 @@ class BusinessUtil extends Util
      * Return the invoice layout details
      *
      * @param  int  $business_id
-     * @param  array  $layout_id = null
+     * @param  array  $layout_id  = null
      * @return location object
      */
     public function invoiceLayout($business_id, $layout_id = null)
@@ -350,13 +348,14 @@ class BusinessUtil extends Util
             $layout = InvoiceLayout::find($layout_id);
         }
 
-        //If layout is not found (deleted) then get the default layout for the business
+        // If layout is not found (deleted) then get the default layout for the business
         if (empty($layout)) {
             $layout = InvoiceLayout::where('business_id', $business_id)
-                        ->where('is_default', 1)
-                        ->first();
+                ->where('is_default', 1)
+                ->first();
         }
-        //$output = []
+
+        // $output = []
         return $layout;
     }
 
@@ -370,7 +369,7 @@ class BusinessUtil extends Util
     public function printerConfig($business_id, $printer_id)
     {
         $printer = Printer::where('business_id', $business_id)
-                    ->find($printer_id);
+            ->find($printer_id);
 
         $output = [];
 
@@ -402,7 +401,7 @@ class BusinessUtil extends Util
                 'end' => \Carbon::today(),
             ];
         } elseif ($edit_transaction_period == 'fy') {
-            //Editing allowed for current financial year
+            // Editing allowed for current financial year
             return $this->getCurrentFinancialYear($business_id);
         }
 
@@ -438,5 +437,4 @@ class BusinessUtil extends Util
     {
         return ['url' => '', 'send_to_param_name' => 'to', 'msg_param_name' => 'text', 'request_method' => 'post', 'param_1' => '', 'param_val_1' => '', 'param_2' => '', 'param_val_2' => '', 'param_3' => '', 'param_val_3' => '', 'param_4' => '', 'param_val_4' => '', 'param_5' => '', 'param_val_5' => '', 'data_parameter_type' => 'form-data'];
     }
-
 }

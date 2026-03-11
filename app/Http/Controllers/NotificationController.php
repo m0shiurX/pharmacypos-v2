@@ -22,7 +22,7 @@ class NotificationController extends Controller
     /**
      * Constructor
      *
-     * @param  NotificationUtil  $notificationUtil, TransactionUtil $transactionUtil
+     * @param  NotificationUtil  $notificationUtil,  TransactionUtil $transactionUtil
      * @return void
      */
     public function __construct(NotificationUtil $notificationUtil, TransactionUtil $transactionUtil)
@@ -78,7 +78,7 @@ class NotificationController extends Controller
             $tags = $general_notifications[$template_for]['extra_tags'];
         }
 
-        //for send_ledger notification template
+        // for send_ledger notification template
         $start_date = request()->input('start_date');
         $end_date = request()->input('end_date');
         $ledger_format = request()->input('format');
@@ -91,7 +91,6 @@ class NotificationController extends Controller
     /**
      * Sends notifications to customer and supplier
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function send(Request $request)
@@ -150,7 +149,7 @@ class NotificationController extends Controller
             if (array_key_exists($request->input('template_for'), $customer_notifications)) {
                 if (in_array('email', $notification_type)) {
                     if (! empty($request->input('attach_pdf'))) {
-                        $data['pdf_name'] = 'INVOICE-' . $transaction->invoice_no . '.pdf';
+                        $data['pdf_name'] = 'INVOICE-'.$transaction->invoice_no.'.pdf';
                         $data['pdf'] = $this->transactionUtil->getEmailAttachmentForGivenTransaction($business_id, $transaction_id, true);
                     }
 
@@ -174,7 +173,7 @@ class NotificationController extends Controller
             } elseif (array_key_exists($request->input('template_for'), $supplier_notifications)) {
                 if (in_array('email', $notification_type)) {
                     if ($request->input('template_for') == 'purchase_order') {
-                        $data['pdf_name'] = 'PO-' . $transaction->ref_no . '.pdf';
+                        $data['pdf_name'] = 'PO-'.$transaction->ref_no.'.pdf';
                         $data['pdf'] = $this->transactionUtil->getPurchaseOrderPdf($business_id, $transaction_id, true);
                     }
                     Notification::route('mail', $emails_array)
@@ -201,7 +200,7 @@ class NotificationController extends Controller
                 $output['whatsapp_link'] = $whatsapp_link;
             }
         } catch (\Exception $e) {
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,
@@ -228,7 +227,7 @@ class NotificationController extends Controller
 
             $contact = Contact::find($contact_id);
             if (empty($contact) || empty($contact->mobile)) {
-                return ['success' => 0, 'msg' => __('lang_v1.mobile_number') . ' ' . __('validation.required')];
+                return ['success' => 0, 'msg' => __('lang_v1.mobile_number').' '.__('validation.required')];
             }
 
             // Use latest finalized sell to populate tags
@@ -248,15 +247,15 @@ class NotificationController extends Controller
             ];
 
             // Check if customer has any due amount before sending SMS
-            $util = new \App\Utils\Util();
+            $util = new \App\Utils\Util;
             $due_amount = $util->getContactDue($contact->id, $business_id);
-            
+
             if ($due_amount <= 0) {
                 return ['success' => 0, 'msg' => 'No due amount found for this customer'];
             }
 
             $sms_body = $orig_data['sms_body'];
-            if (!empty($transaction)) {
+            if (! empty($transaction)) {
                 // Replace tags using the transaction id when available
                 $tag_replaced = $this->notificationUtil->replaceTags($business_id, $orig_data, $transaction->id);
                 $sms_body = $tag_replaced['sms_body'];
@@ -273,13 +272,14 @@ class NotificationController extends Controller
             ];
 
             $this->notificationUtil->sendSms($data);
-            if (!empty($transaction)) {
+            if (! empty($transaction)) {
                 $this->notificationUtil->activityLog($transaction, 'sms_notification_sent', null, [], false);
             }
 
             return ['success' => 1, 'msg' => __('lang_v1.notification_sent_successfully')];
         } catch (\Exception $e) {
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+
             return ['success' => 0, 'msg' => $e->getMessage()];
         }
     }

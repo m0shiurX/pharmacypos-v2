@@ -20,7 +20,6 @@ class EssentialsHolidayController extends Controller
     /**
      * Constructor
      *
-     * @param  ModuleUtil  $moduleUtil
      * @return void
      */
     public function __construct(ModuleUtil $moduleUtil)
@@ -45,15 +44,15 @@ class EssentialsHolidayController extends Controller
 
         if (request()->ajax()) {
             $holidays = EssentialsHoliday::where('essentials_holidays.business_id', $business_id)
-                        ->leftJoin('business_locations as bl', 'bl.id', '=', 'essentials_holidays.location_id')
-                        ->select([
-                            'essentials_holidays.id',
-                            'essentials_holidays.name',
-                            'bl.name as location',
-                            'start_date',
-                            'end_date',
-                            'note',
-                        ]);
+                ->leftJoin('business_locations as bl', 'bl.id', '=', 'essentials_holidays.location_id')
+                ->select([
+                    'essentials_holidays.id',
+                    'essentials_holidays.name',
+                    'bl.name as location',
+                    'start_date',
+                    'end_date',
+                    'note',
+                ]);
 
             $permitted_locations = auth()->user()->permitted_locations();
             if ($permitted_locations != 'all') {
@@ -71,7 +70,7 @@ class EssentialsHolidayController extends Controller
                 $start = request()->start_date;
                 $end = request()->end_date;
                 $holidays->whereDate('essentials_holidays.start_date', '>=', $start)
-                            ->whereDate('essentials_holidays.start_date', '<=', $end);
+                    ->whereDate('essentials_holidays.start_date', '<=', $end);
             }
 
             return Datatables::of($holidays)
@@ -133,7 +132,6 @@ class EssentialsHolidayController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -192,7 +190,7 @@ class EssentialsHolidayController extends Controller
         }
 
         $holiday = EssentialsHoliday::where('business_id', $business_id)
-                                    ->findOrFail($id);
+            ->findOrFail($id);
 
         $locations = BusinessLocation::forDropdown($business_id);
 
@@ -202,7 +200,6 @@ class EssentialsHolidayController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function update(Request $request, $id)
@@ -221,8 +218,8 @@ class EssentialsHolidayController extends Controller
             $input['end_date'] = $this->moduleUtil->uf_date($input['end_date']);
 
             EssentialsHoliday::where('business_id', $business_id)
-                        ->where('id', $id)
-                        ->update($input);
+                ->where('id', $id)
+                ->update($input);
 
             $output = ['success' => true,
                 'msg' => __('lang_v1.updated_success'),
@@ -254,8 +251,8 @@ class EssentialsHolidayController extends Controller
 
         try {
             EssentialsHoliday::where('business_id', $business_id)
-                        ->where('id', $id)
-                        ->delete();
+                ->where('id', $id)
+                ->delete();
 
             $output = ['success' => true,
                 'msg' => __('lang_v1.deleted_success'),

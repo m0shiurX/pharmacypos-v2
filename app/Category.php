@@ -74,7 +74,7 @@ class Category extends Model
      * Category Dropdown
      *
      * @param  int  $business_id
-     * @param  string  $type category type
+     * @param  string  $type  category type
      * @return array
      */
     public static function forDropdown($business_id, $type)

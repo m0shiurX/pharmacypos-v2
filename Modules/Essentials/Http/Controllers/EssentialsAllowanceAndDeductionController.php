@@ -106,7 +106,6 @@ class EssentialsAllowanceAndDeductionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -169,8 +168,8 @@ class EssentialsAllowanceAndDeductionController extends Controller
         }
 
         $allowance = EssentialsAllowanceAndDeduction::where('business_id', $business_id)
-                    ->with('employees')
-                    ->findOrFail($id);
+            ->with('employees')
+            ->findOrFail($id);
         $users = User::forDropdown($business_id, false);
 
         $selected_users = [];
@@ -181,13 +180,12 @@ class EssentialsAllowanceAndDeductionController extends Controller
         $applicable_date = ! empty($allowance->applicable_date) ? $this->essentialsUtil->format_date($allowance->applicable_date) : null;
 
         return view('essentials::allowance_deduction.edit')
-                ->with(compact('allowance', 'users', 'selected_users', 'applicable_date'));
+            ->with(compact('allowance', 'users', 'selected_users', 'applicable_date'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function update(Request $request, $id)
@@ -237,8 +235,8 @@ class EssentialsAllowanceAndDeductionController extends Controller
         if (request()->ajax()) {
             try {
                 EssentialsAllowanceAndDeduction::where('business_id', $business_id)
-                            ->where('id', $id)
-                            ->delete();
+                    ->where('id', $id)
+                    ->delete();
 
                 $output = ['success' => true,
                     'msg' => __('lang_v1.deleted_success'),

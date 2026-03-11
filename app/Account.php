@@ -30,8 +30,8 @@ class Account extends Model
         $account_ids = [];
         if ($permitted_locations != 'all') {
             $locations = BusinessLocation::where('business_id', $business_id)
-                            ->whereIn('id', $permitted_locations)
-                            ->get();
+                ->whereIn('id', $permitted_locations)
+                ->get();
 
             foreach ($locations as $location) {
                 if (! empty($location->default_payment_accounts)) {
@@ -58,9 +58,9 @@ class Account extends Model
             //     $join->whereNull('AT.deleted_at');
             // })
             $query->select('accounts.name',
-                    'accounts.id',
-                    DB::raw("(SELECT SUM( IF(account_transactions.type='credit', amount, -1*amount) ) as balance from account_transactions where account_transactions.account_id = accounts.id AND deleted_at is NULL) as balance")
-                );
+                'accounts.id',
+                DB::raw("(SELECT SUM( IF(account_transactions.type='credit', amount, -1*amount) ) as balance from account_transactions where account_transactions.account_id = accounts.id AND deleted_at is NULL) as balance")
+            );
         }
 
         if (! $closed) {

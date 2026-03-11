@@ -30,7 +30,6 @@ class DashboardConfiguratorController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -59,11 +58,11 @@ class DashboardConfiguratorController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
 
-        //get the configuration.
+        // get the configuration.
         $dashboard = DashboardConfiguration::where('business_id', $business_id)->findorfail($id);
         $dashboard->configuration = json_decode($dashboard->configuration, true);
 
-        //Get all widgets
+        // Get all widgets
         $available_widgets = [
             'widget1' => ['title' => 'Widget 1'],
             'widget2' => ['title' => 'Widget 2'],
@@ -76,7 +75,6 @@ class DashboardConfiguratorController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */

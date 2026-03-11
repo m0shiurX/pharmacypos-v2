@@ -3,7 +3,6 @@
 namespace App\Support;
 
 use Illuminate\Support\HtmlString;
-use Illuminate\Support\ViewErrorBag;
 
 /**
  * Drop-in replacement for LaravelCollective Form builder.
@@ -50,7 +49,7 @@ class FormBuilder
                 : action($options['action']);
         }
 
-        if (!empty($options['files'])) {
+        if (! empty($options['files'])) {
             $attributes['enctype'] = 'multipart/form-data';
         }
 
@@ -64,7 +63,7 @@ class FormBuilder
             $this->setModel($options['model']);
         }
 
-        $html = '<form' . $this->attributes($attributes) . '>';
+        $html = '<form'.$this->attributes($attributes).'>';
 
         // Add CSRF token for non-GET forms
         if ($htmlMethod !== 'GET') {
@@ -72,7 +71,7 @@ class FormBuilder
         }
 
         // Add method spoofing for PUT, PATCH, DELETE
-        if (!in_array($method, ['GET', 'POST'])) {
+        if (! in_array($method, ['GET', 'POST'])) {
             $html .= method_field($method);
         }
 
@@ -85,6 +84,7 @@ class FormBuilder
     public function close(): HtmlString
     {
         $this->model = null;
+
         return new HtmlString('</form>');
     }
 
@@ -94,6 +94,7 @@ class FormBuilder
     public function model($model, array $options = []): HtmlString
     {
         $this->setModel($model);
+
         return $this->open($options);
     }
 
@@ -106,7 +107,7 @@ class FormBuilder
         $value = $value ?? ucfirst(str_replace(['_', '-'], ' ', $name));
         $options['for'] = $options['for'] ?? $name;
 
-        return new HtmlString('<label' . $this->attributes($options) . '>' . e($value) . '</label>');
+        return new HtmlString('<label'.$this->attributes($options).'>'.e($value).'</label>');
     }
 
     /**
@@ -166,7 +167,7 @@ class FormBuilder
         $options['type'] = $type;
         $options['name'] = $name;
 
-        if (!isset($options['id'])) {
+        if (! isset($options['id'])) {
             $options['id'] = $this->getIdAttribute($name, $options);
         }
 
@@ -175,7 +176,7 @@ class FormBuilder
             $options['value'] = $value;
         }
 
-        return new HtmlString('<input' . $this->attributes($options) . '>');
+        return new HtmlString('<input'.$this->attributes($options).'>');
     }
 
     /**
@@ -185,19 +186,19 @@ class FormBuilder
     public function textarea(string $name, ?string $value = null, array $options = []): HtmlString
     {
         $options['name'] = $name;
-        if (!isset($options['id'])) {
+        if (! isset($options['id'])) {
             $options['id'] = $this->getIdAttribute($name, $options);
         }
-        if (!isset($options['rows'])) {
+        if (! isset($options['rows'])) {
             $options['rows'] = 10;
         }
-        if (!isset($options['cols'])) {
+        if (! isset($options['cols'])) {
             $options['cols'] = 50;
         }
 
         $value = $this->getValueAttribute($name, $value);
 
-        return new HtmlString('<textarea' . $this->attributes($options) . '>' . e($value ?? '') . '</textarea>');
+        return new HtmlString('<textarea'.$this->attributes($options).'>'.e($value ?? '').'</textarea>');
     }
 
     /**
@@ -207,30 +208,30 @@ class FormBuilder
     public function select(string $name, $list = [], $selected = null, array $selectAttributes = [], array $optionsAttributes = [], array $optgroupsAttributes = []): HtmlString
     {
         $selectAttributes['name'] = $name;
-        if (!isset($selectAttributes['id'])) {
+        if (! isset($selectAttributes['id'])) {
             $selectAttributes['id'] = $this->getIdAttribute($name, $selectAttributes);
         }
 
         // Handle multiple select
         if (isset($selectAttributes['multiple']) && $selectAttributes['multiple']) {
-            if (!str_ends_with($name, '[]')) {
-                $selectAttributes['name'] = $name . '[]';
+            if (! str_ends_with($name, '[]')) {
+                $selectAttributes['name'] = $name.'[]';
             }
         }
 
         $selected = $this->getValueAttribute($name, $selected);
 
-        $html = '<select' . $this->attributes($selectAttributes) . '>';
+        $html = '<select'.$this->attributes($selectAttributes).'>';
 
         // Add placeholder option
         if (isset($selectAttributes['placeholder'])) {
-            $html .= '<option value="">' . e($selectAttributes['placeholder']) . '</option>';
+            $html .= '<option value="">'.e($selectAttributes['placeholder']).'</option>';
         }
 
         foreach ((array) $list as $value => $display) {
             if (is_array($display)) {
                 // Optgroup
-                $html .= '<optgroup label="' . e($value) . '">';
+                $html .= '<optgroup label="'.e($value).'">';
                 foreach ($display as $optValue => $optDisplay) {
                     $html .= $this->getSelectOption($optValue, $optDisplay, $selected);
                 }
@@ -263,6 +264,7 @@ class FormBuilder
         if (is_null($value)) {
             $value = $name;
         }
+
         return $this->checkable('radio', $name, $value, $checked, $options);
     }
 
@@ -271,7 +273,7 @@ class FormBuilder
      */
     public function submit(?string $value = null, array $options = []): HtmlString
     {
-        return new HtmlString('<input type="submit"' . $this->attributes(array_merge($options, ['value' => $value])) . '>');
+        return new HtmlString('<input type="submit"'.$this->attributes(array_merge($options, ['value' => $value])).'>');
     }
 
     /**
@@ -290,8 +292,8 @@ class FormBuilder
         $options['name'] = $name;
         $options['value'] = $value;
 
-        if (!isset($options['id'])) {
-            $options['id'] = $this->getIdAttribute($name, $options) . '_' . $value;
+        if (! isset($options['id'])) {
+            $options['id'] = $this->getIdAttribute($name, $options).'_'.$value;
         }
 
         if ($checked === true || $checked === 1 || $checked === '1') {
@@ -302,18 +304,18 @@ class FormBuilder
                 if (is_array($modelValue)) {
                     $options['checked'] = in_array($value, $modelValue) ? 'checked' : null;
                 } else {
-                    $options['checked'] = ((string)$modelValue === (string)$value) ? 'checked' : null;
+                    $options['checked'] = ((string) $modelValue === (string) $value) ? 'checked' : null;
                 }
             } else {
-                $options['checked'] = ((string)$modelValue === (string)$value) ? 'checked' : null;
+                $options['checked'] = ((string) $modelValue === (string) $value) ? 'checked' : null;
             }
         }
 
-        if (!isset($options['checked']) || $options['checked'] === null) {
+        if (! isset($options['checked']) || $options['checked'] === null) {
             unset($options['checked']);
         }
 
-        return new HtmlString('<input' . $this->attributes($options) . '>');
+        return new HtmlString('<input'.$this->attributes($options).'>');
     }
 
     protected function getSelectOption($value, $display, $selected): string
@@ -321,24 +323,25 @@ class FormBuilder
         $isSelected = false;
         if (is_array($selected)) {
             $isSelected = in_array((string) $value, array_map('strval', $selected));
-        } elseif (!is_null($selected)) {
+        } elseif (! is_null($selected)) {
             $isSelected = ((string) $value === (string) $selected);
         }
 
         $selectedAttr = $isSelected ? ' selected="selected"' : '';
-        return '<option value="' . e($value) . '"' . $selectedAttr . '>' . e($display) . '</option>';
+
+        return '<option value="'.e($value).'"'.$selectedAttr.'>'.e($display).'</option>';
     }
 
     protected function getValueAttribute(string $name, $value = null)
     {
         // Old input takes precedence
         $old = old($this->transformKey($name));
-        if (!is_null($old)) {
+        if (! is_null($old)) {
             return $old;
         }
 
         // Explicit value
-        if (!is_null($value)) {
+        if (! is_null($value)) {
             return $value;
         }
 
@@ -348,7 +351,7 @@ class FormBuilder
 
     protected function getModelValueAttribute(string $name)
     {
-        if (!$this->model) {
+        if (! $this->model) {
             return null;
         }
 
@@ -388,10 +391,10 @@ class FormBuilder
             } elseif ($value === false || $value === null) {
                 continue;
             } else {
-                $html[] = $key . '="' . e($value) . '"';
+                $html[] = $key.'="'.e($value).'"';
             }
         }
 
-        return count($html) > 0 ? ' ' . implode(' ', $html) : '';
+        return count($html) > 0 ? ' '.implode(' ', $html) : '';
     }
 }

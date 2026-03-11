@@ -11,28 +11,28 @@ use Spatie\Permission\Models\Role;
 
 class OldDummyBusinessSeeder extends Seeder
 {
-	/**
-	 * Run the database seeds.
-	 *
-	 * @return void
-	 */
-	public function run()
-	{
-		DB::beginTransaction();
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        DB::beginTransaction();
 
-		$password = Hash::make('123456');
+        $password = Hash::make('123456');
 
-		$today = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
-		$yesterday = \Carbon\Carbon::now()->subDays(2)->format('Y-m-d H:i:s');
-		$last_week = \Carbon\Carbon::now()->subDays(7)->format('Y-m-d H:i:s');
-		$last_15th_day = \Carbon\Carbon::now()->subDays(15)->format('Y-m-d H:i:s');
-		$last_month = \Carbon\Carbon::now()->subDays(30)->format('Y-m-d H:i:s');
+        $today = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
+        $yesterday = \Carbon\Carbon::now()->subDays(2)->format('Y-m-d H:i:s');
+        $last_week = \Carbon\Carbon::now()->subDays(7)->format('Y-m-d H:i:s');
+        $last_15th_day = \Carbon\Carbon::now()->subDays(15)->format('Y-m-d H:i:s');
+        $last_month = \Carbon\Carbon::now()->subDays(30)->format('Y-m-d H:i:s');
 
-		DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 
-		$shortcuts = '{"pos":{"express_checkout":"shift+e","pay_n_ckeckout":"shift+p","draft":"shift+d","cancel":"shift+c","edit_discount":"shift+i","edit_order_tax":"shift+t","add_payment_row":"shift+r","finalize_payment":"shift+f","recent_product_quantity":"f2","add_new_product":"f4"}}';
+        $shortcuts = '{"pos":{"express_checkout":"shift+e","pay_n_ckeckout":"shift+p","draft":"shift+d","cancel":"shift+c","edit_discount":"shift+i","edit_order_tax":"shift+t","add_payment_row":"shift+r","finalize_payment":"shift+f","recent_product_quantity":"f2","add_new_product":"f4"}}';
 
-		DB::insert("INSERT INTO business (id, name, currency_id, start_date, tax_number_1, tax_label_1, 
+        DB::insert("INSERT INTO business (id, name, currency_id, start_date, tax_number_1, tax_label_1, 
         			tax_number_2, tax_label_2, default_sales_tax, default_profit_percent, owner_id, 
         			time_zone, fy_start_month, accounting_method, default_sales_discount, 
         			sell_price_tax, logo, sku_prefix, keyboard_shortcuts, created_at, updated_at, enable_editing_product_from_purchase) VALUES
@@ -40,12 +40,12 @@ class OldDummyBusinessSeeder extends Seeder
 					'America/Phoenix', 1, 'fifo', '10.00', 'includes', NULL, 'AS', '$shortcuts', 
 					'2018-01-04 07:45:19', '2018-01-04 07:47:08', 1)");
 
-		DB::insert("INSERT INTO business_locations (id, business_id, name, landmark, country, state, 
+        DB::insert("INSERT INTO business_locations (id, business_id, name, landmark, country, state, 
         			city, zip_code, invoice_scheme_id, invoice_layout_id, print_receipt_on_invoice,receipt_printer_type,deleted_at, created_at, updated_at) VALUES
 					(1, 1, 'Awesome Shop', 'Linking Street', 'USA', 'Arizona', 'Phoenix', '85001', 1, 1, 1,'browser',
 					NULL, '2018-01-04 07:45:20', '2018-01-04 07:45:20')");
 
-		DB::insert("INSERT INTO users (id, surname, first_name, last_name, username, email, 
+        DB::insert("INSERT INTO users (id, surname, first_name, last_name, username, email, 
         			password, language, remember_token, business_id, deleted_at, created_at, 
         			updated_at) VALUES
 					(1, 'Mr', 'Admin', NULL, 'admin', 'admin@example.com', 
@@ -56,7 +56,7 @@ class OldDummyBusinessSeeder extends Seeder
 					NULL, 1, NULL, '2018-01-04 07:50:58', '2018-01-04 07:50:58'),
 					(3, 'Mr.', 'Demo', 'Admin', 'demo-admin', 'demoadmin@example.com', '$password', 'en', NULL, 1, NULL, '2018-01-06 12:40:57', '2018-01-06 12:40:57')");
 
-		DB::insert("INSERT INTO brands (id, business_id, name, description, created_by, 
+        DB::insert("INSERT INTO brands (id, business_id, name, description, created_by, 
         			created_at, updated_at) VALUES
 					(1, 1, 'Levis', NULL, 1, '2018-01-04 02:49:47', '2018-01-04 02:49:47'),
 					(2, 1, 'Espirit', NULL, 1, '2018-01-04 02:49:58', '2018-01-04 02:49:58'),
@@ -73,7 +73,7 @@ class OldDummyBusinessSeeder extends Seeder
 					(13, 1, 'Barilla', NULL, 1, '2018-01-06 12:14:59', '2018-01-06 12:14:59'),
 					(14, 1, 'Lipton', NULL, 1, '2018-01-06 12:18:12', '2018-01-06 12:18:12')");
 
-		DB::insert("INSERT INTO categories (id, name, business_id, short_code, parent_id, 
+        DB::insert("INSERT INTO categories (id, name, business_id, short_code, parent_id, 
         			created_by, created_at, updated_at) VALUES
 					(1, 'Men''s', 1, NULL, 0, 1, '2018-01-04 02:36:34', '2018-01-04 02:36:34'),
 					(2, 'Women''s', 1, NULL, 0, 1, '2018-01-04 02:36:46', '2018-01-04 02:36:46'),
@@ -95,7 +95,7 @@ class OldDummyBusinessSeeder extends Seeder
 					(20, 'Children''s books', 1, NULL, 18, 1, '2018-01-06 11:00:58', '2018-01-06 11:00:58'),
 					(21, 'Food & Grocery', 1, NULL, 0, 1, '2018-01-06 11:01:35', '2018-01-06 11:01:35')");
 
-		DB::insert("INSERT INTO contacts (id, business_id, type, supplier_business_name, name, 
+        DB::insert("INSERT INTO contacts (id, business_id, type, supplier_business_name, name, 
         			tax_number, city, state, country, landmark, mobile, landline, 
         			alternate_number, pay_term_number, pay_term_type, created_by, is_default, 
         			deleted_at, created_at, updated_at) VALUES
@@ -115,35 +115,35 @@ class OldDummyBusinessSeeder extends Seeder
 					'Arizona', 'USA', 'Linking Street', '(378) 400-1234', NULL, NULL, 45, 'days', 1, 0, 
 					NULL, '2018-01-06 12:25:09', '2018-01-06 12:25:09')");
 
-		DB::insert("INSERT INTO tax_rates (id, business_id, name, amount, is_tax_group, 
+        DB::insert("INSERT INTO tax_rates (id, business_id, name, amount, is_tax_group, 
         			created_by, created_at, updated_at) VALUES
 					(1, 1, 'VAT@10%', 10.00, 0, 1, '2018-01-04 08:10:07', '2018-01-04 08:10:07'),
 					(2, 1, 'CGST@10%', 10.00, 0, 1, '2018-01-04 08:10:55', '2018-01-04 08:10:55'),
 					(3, 1, 'SGST@8%', 8.00, 0, 1, '2018-01-04 08:11:13', '2018-01-04 08:11:13'),
 					(4, 1, 'GST@18%', 18.00, 1, 1, '2018-01-04 08:12:19', '2018-01-04 08:12:19')");
 
-		DB::insert('INSERT INTO group_sub_taxes (group_tax_id, tax_id) VALUES
+        DB::insert('INSERT INTO group_sub_taxes (group_tax_id, tax_id) VALUES
 					(4, 2),
 					(4, 3)');
 
-		DB::insert("INSERT INTO invoice_schemes (id, business_id, name, scheme_type, prefix, 
+        DB::insert("INSERT INTO invoice_schemes (id, business_id, name, scheme_type, prefix, 
         			start_number, invoice_count, total_digits, is_default, created_at, updated_at) VALUES
 					(1, 1, 'Default', 'blank', 'AS', 1, 5, 4, 1, '2018-01-04 07:45:20', 
 					'2018-01-04 08:15:16')");
 
-		DB::insert("INSERT INTO invoice_layouts (id, name, header_text, invoice_no_prefix, invoice_heading, sub_heading_line1, sub_heading_line2, sub_heading_line3, sub_heading_line4, sub_heading_line5, invoice_heading_not_paid, invoice_heading_paid, sub_total_label, discount_label, tax_label, total_label, total_due_label, paid_label, show_client_id, client_id_label, date_label, show_time, show_brand, show_sku, show_cat_code, table_product_label, table_qty_label, table_unit_price_label, table_subtotal_label, logo, show_logo, show_business_name, show_location_name, show_landmark, show_city, show_state, show_zip_code, show_country, show_mobile_number, show_alternate_number, show_email, show_tax_1, show_tax_2, show_barcode, show_payments, show_customer, customer_label, highlight_color, footer_text, is_default, business_id, created_at, updated_at) VALUES
+        DB::insert("INSERT INTO invoice_layouts (id, name, header_text, invoice_no_prefix, invoice_heading, sub_heading_line1, sub_heading_line2, sub_heading_line3, sub_heading_line4, sub_heading_line5, invoice_heading_not_paid, invoice_heading_paid, sub_total_label, discount_label, tax_label, total_label, total_due_label, paid_label, show_client_id, client_id_label, date_label, show_time, show_brand, show_sku, show_cat_code, table_product_label, table_qty_label, table_unit_price_label, table_subtotal_label, logo, show_logo, show_business_name, show_location_name, show_landmark, show_city, show_state, show_zip_code, show_country, show_mobile_number, show_alternate_number, show_email, show_tax_1, show_tax_2, show_barcode, show_payments, show_customer, customer_label, highlight_color, footer_text, is_default, business_id, created_at, updated_at) VALUES
         	(1, 'Default', NULL, 'Invoice No.', 'Invoice', NULL, NULL, NULL, NULL, NULL, '', '', 'Subtotal', 
         	'Discount', 'Tax', 'Total', 'Total Due', 'Total Paid', 0, NULL, 'Date', 1, 0, 1, 1, 'Product', 
         	'Quantity', 'Unit Price', 'Subtotal', NULL, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 
         	'Customer', '#000000', '', 1, 1, '2018-04-04 05:05:32', '2018-04-04 05:05:32')");
 
-		DB::insert("INSERT INTO units (id, business_id, actual_name, short_name, 
+        DB::insert("INSERT INTO units (id, business_id, actual_name, short_name, 
         			allow_decimal, created_by, created_at, updated_at) VALUES
 					(1, 1, 'Pieces', 'Pc(s)', 0, 1, '2018-01-04 02:15:20', '2018-01-04 02:15:20'),
 					(2, 1, 'Packets', 'packets', 0, 1, '2018-01-06 12:07:01', '2018-01-06 12:08:36'),
 					(3, 1, 'Grams', 'g', 1, 1, '2018-01-06 12:10:34', '2018-01-06 12:10:34')");
 
-		DB::insert("INSERT INTO products (id, name, business_id, type, unit_id, brand_id, 
+        DB::insert("INSERT INTO products (id, name, business_id, type, unit_id, brand_id, 
         			category_id, sub_category_id, tax, tax_type, enable_stock, alert_quantity, 
         			sku, barcode_type, created_by, created_at, updated_at) VALUES
 					(1, 'Men''s Reverse Fleece Crew', 1, 'single', 1, 1, 1, 5, 1, 'exclusive', 1, 5, 
@@ -191,7 +191,7 @@ class OldDummyBusinessSeeder extends Seeder
 					(30, 'Lipton Black Tea Bags', 1, 'single', 2, 14, 21, NULL, 1, 'exclusive', 1, 50, 
 					'AS0030', 'C128', 1, '2018-01-06 12:18:59', '2018-01-06 12:18:59')");
 
-		DB::insert("INSERT INTO product_variations (id, name, product_id, is_dummy, 
+        DB::insert("INSERT INTO product_variations (id, name, product_id, is_dummy, 
         			created_at, updated_at) VALUES
 					(1, 'DUMMY', 1, 1, '2018-01-04 02:59:08', '2018-01-04 02:59:08'),
 					(2, 'Waist Size', 2, 0, '2018-01-04 03:00:35', '2018-01-06 10:44:12'),
@@ -223,7 +223,7 @@ class OldDummyBusinessSeeder extends Seeder
 					(31, 'DUMMY', 29, 1, '2018-01-06 12:16:53', '2018-01-06 12:16:53'),
 					(32, 'DUMMY', 30, 1, '2018-01-06 12:18:59', '2018-01-06 12:18:59')");
 
-		DB::insert("INSERT INTO variations (id, name, product_id, sub_sku, product_variation_id, default_purchase_price, dpp_inc_tax, profit_percent, default_sell_price, 
+        DB::insert("INSERT INTO variations (id, name, product_id, sub_sku, product_variation_id, default_purchase_price, dpp_inc_tax, profit_percent, default_sell_price, 
         	sell_price_inc_tax, created_at, updated_at, deleted_at) VALUES
 			(1, 'DUMMY', 1, 'AS0001', 1, '130.00', '143.00', '0.00', '130.00', '143.00', '2018-01-04 02:59:08', '2018-01-04 02:59:08', NULL),
 			(2, '28', 2, 'AS0002-1', 2, '70.00', '77.00', '0.00', '70.00', '77.00', '2018-01-04 03:00:35', '2018-01-06 11:21:16', NULL),
@@ -287,14 +287,14 @@ class OldDummyBusinessSeeder extends Seeder
 			(72, 'DUMMY', 29, 'AS0029', 31, '12.00', '12.00', '25.00', '15.00', '15.00', '2018-01-06 12:16:53', '2018-01-06 12:16:53', NULL),
 			(73, 'DUMMY', 30, 'AS0030', 32, '40.00', '44.00', '25.00', '50.00', '55.00', '2018-01-06 12:18:59', '2018-01-06 12:18:59', NULL)");
 
-		DB::insert("INSERT INTO variation_templates (id, name, business_id, 
+        DB::insert("INSERT INTO variation_templates (id, name, business_id, 
         			created_at, updated_at) VALUES
 					(1, 'Size (Tshirts)', 1, '2018-01-04 02:52:13', '2018-01-04 02:52:13'),
 					(2, 'Size (Shoes)', 1, '2018-01-04 02:53:21', '2018-01-04 02:53:21'),
 					(3, 'Waist Size (Jeans)', 1, '2018-01-04 02:54:34', '2018-01-04 02:54:34'),
 					(4, 'Color', 1, '2018-01-06 12:42:52', '2018-01-06 12:42:52')");
 
-		DB::insert("INSERT INTO variation_value_templates (id, name, variation_template_id, 
+        DB::insert("INSERT INTO variation_value_templates (id, name, variation_template_id, 
         			created_at, updated_at) VALUES
 					(1, 'S', 1, '2018-01-04 02:52:13', '2018-01-04 02:52:13'),
 					(2, 'M', 1, '2018-01-04 02:52:13', '2018-01-04 02:52:13'),
@@ -316,7 +316,7 @@ class OldDummyBusinessSeeder extends Seeder
 					(19, 'Grey', 4, '2018-01-06 12:43:17', '2018-01-06 12:43:17'),
 					(20, 'Gold', 4, '2018-01-06 12:43:17', '2018-01-06 12:43:17')");
 
-		DB::insert("INSERT INTO purchase_lines (id, transaction_id, product_id, variation_id, 
+        DB::insert("INSERT INTO purchase_lines (id, transaction_id, product_id, variation_id, 
         			quantity, purchase_price, purchase_price_inc_tax, item_tax, tax_id, created_at, updated_at) VALUES
 					(1, 1, 2, 2, 100, '70.00', '77.00', '7.00', 1, '2018-01-06 12:27:11', 
 					'2018-01-06 12:27:11'),
@@ -337,7 +337,7 @@ class OldDummyBusinessSeeder extends Seeder
 					(9, 5, 27, 70, 500, '20.00', '22.00', '2.00', 1, '2018-01-06 12:35:26', 
 					'2018-01-06 12:35:26')");
 
-		DB::insert("INSERT INTO transactions (id, business_id, location_id, type, status, payment_status, contact_id, invoice_no, ref_no, transaction_date, total_before_tax, tax_id, tax_amount, discount_type, discount_amount, shipping_details, shipping_charges, additional_notes, staff_note, final_total, created_by, created_at, updated_at) VALUES
+        DB::insert("INSERT INTO transactions (id, business_id, location_id, type, status, payment_status, contact_id, invoice_no, ref_no, transaction_date, total_before_tax, tax_id, tax_amount, discount_type, discount_amount, shipping_details, shipping_charges, additional_notes, staff_note, final_total, created_by, created_at, updated_at) VALUES
 					(1, 1, 1, 'purchase', 'received', 'paid', 2, NULL, '35001BCVX', 
 					'$last_month', '50600.00', 1, '5060.00', NULL, '0', NULL, '0.00', NULL, NULL, '55660.00', 1, '2018-01-06 12:27:11', '2018-01-06 12:27:11'),
 					(2, 1, 1, 'purchase', 'received', 'paid', 5, NULL, '35001BJGN', '$last_15th_day', '77000.00', 1, '7700.00', NULL, '0', NULL, '0.00', NULL, NULL, '84700.00', 1, '2018-01-06 12:28:10', '2018-01-06 12:28:10'),
@@ -350,7 +350,7 @@ class OldDummyBusinessSeeder extends Seeder
 					(9, 1, 1, 'sell', 'final', 'paid', 1, 'AS0004', '', '$yesterday', '750.00', NULL, '0.00', 'percentage', '0', NULL, '0.00', NULL, NULL, '750.00', 1, '2018-01-06 12:37:45', '2018-01-06 12:37:45'),
 					(10, 1, 1, 'sell', 'final', 'paid', 1, 'AS0005', '', '$today', '412.50', NULL, '0.00', 'percentage', '0', NULL, '0.00', NULL, NULL, '412.50', 1, '2018-01-06 12:38:03', '2018-01-06 12:38:03')");
 
-		DB::insert("INSERT INTO transaction_payments (id, transaction_id, amount, method, card_transaction_number, card_number, card_type, card_holder_name, card_month, card_year, card_security, cheque_number, bank_account_number,paid_on, created_by, note, created_at, updated_at) VALUES
+        DB::insert("INSERT INTO transaction_payments (id, transaction_id, amount, method, card_transaction_number, card_number, card_type, card_holder_name, card_month, card_year, card_security, cheque_number, bank_account_number,paid_on, created_by, note, created_at, updated_at) VALUES
 					(1, 6, '770.00', 'cash', NULL, NULL, 'visa', NULL, NULL, NULL, NULL, NULL, NULL, '2018-01-09 17:30:35', 1, NULL, '2018-01-06 07:06:11', '2018-01-06 07:06:11'),
 					(2, 7, '825.00', 'cash', NULL, NULL, 'visa', NULL, NULL, NULL, NULL, NULL, NULL, '2018-01-09 17:30:35', 1, NULL, '2018-01-06 07:06:31', '2018-01-06 07:06:31'),
 					(3, 8, '7700.00', 'cash', NULL, NULL, 'visa', NULL, NULL, NULL, NULL, NULL, NULL, '2018-01-09 17:30:35', 1, NULL, '2018-01-06 07:07:23', '2018-01-06 07:07:23'),
@@ -362,7 +362,7 @@ class OldDummyBusinessSeeder extends Seeder
 					(9, 1, '50000.00', 'cash', NULL, NULL, 'visa', NULL, NULL, NULL, NULL, NULL, NULL, '2018-01-11 17:35:04', 1, NULL, '2018-01-11 12:05:04', '2018-01-11 12:05:04'),
 					(10, 1, '5660.00', 'cash', NULL, NULL, 'visa', NULL, NULL, NULL, NULL, NULL, NULL, '2018-01-11 17:35:17', 1, NULL, '2018-01-11 12:05:17', '2018-01-11 12:05:17')");
 
-		DB::insert("INSERT INTO transaction_sell_lines (id, transaction_id, product_id, variation_id, quantity, unit_price, unit_price_inc_tax, item_tax, tax_id, created_at, updated_at) VALUES
+        DB::insert("INSERT INTO transaction_sell_lines (id, transaction_id, product_id, variation_id, quantity, unit_price, unit_price_inc_tax, item_tax, tax_id, created_at, updated_at) VALUES
 					(1, 6, 2, 3, 10, '70.00', '77.00', '7.00', 1, '2018-01-06 12:36:11', 
 					'2018-01-06 12:36:11'),
 					(2, 7, 27, 70, 30, '25.00', '27.50', '2.50', 1, '2018-01-06 12:36:31', '2018-01-06 12:36:31'),
@@ -371,7 +371,7 @@ class OldDummyBusinessSeeder extends Seeder
 					(5, 9, 21, 64, 60, '12.50', '12.50', '0.00', NULL, '2018-01-06 12:37:45', '2018-01-06 12:37:45'),
 					(6, 10, 28, 71, 30, '12.50', '13.75', '1.25', 1, '2018-01-06 12:38:03', '2018-01-06 12:38:03')");
 
-		DB::insert("INSERT INTO variation_location_details (id, product_id, product_variation_id, variation_id, location_id, qty_available, created_at, updated_at) VALUES
+        DB::insert("INSERT INTO variation_location_details (id, product_id, product_variation_id, variation_id, location_id, qty_available, created_at, updated_at) VALUES
 					(1, 2, 2, 2, 1, '50.00', '2018-01-06 12:27:11', '2018-01-06 12:37:23'),
 					(2, 2, 2, 3, 1, '90.00', '2018-01-06 12:27:11', '2018-01-06 12:37:23'),
 					(3, 2, 2, 4, 1, '150.00', '2018-01-06 12:27:11', '2018-01-06 12:27:11'),
@@ -382,39 +382,39 @@ class OldDummyBusinessSeeder extends Seeder
 					(8, 21, 23, 64, 1, '140.00', '2018-01-06 12:33:12', '2018-01-06 12:37:45'),
 					(9, 27, 29, 70, 1, '470.00', '2018-01-06 12:35:26', '2018-01-06 12:36:32')");
 
-		$admin_role = Role::create([
-			'name' => 'Admin#1',
-			'business_id' => 1,
-			'guard_name' => 'web',
-			'is_default' => 1,
-		]);
-		$cashier_role = Role::create([
-			'name' => 'Cashier#1',
-			'business_id' => 1,
-			'guard_name' => 'web',
-			'is_default' => 1,
-		]);
+        $admin_role = Role::create([
+            'name' => 'Admin#1',
+            'business_id' => 1,
+            'guard_name' => 'web',
+            'is_default' => 1,
+        ]);
+        $cashier_role = Role::create([
+            'name' => 'Cashier#1',
+            'business_id' => 1,
+            'guard_name' => 'web',
+            'is_default' => 1,
+        ]);
 
-		$cashier_role->syncPermissions([
-			'sell.view',
-			'sell.create',
-			'sell.update',
-			'sell.delete',
-			'access_all_locations',
-			'dashboard.data',
-		]);
+        $cashier_role->syncPermissions([
+            'sell.view',
+            'sell.create',
+            'sell.update',
+            'sell.delete',
+            'access_all_locations',
+            'dashboard.data',
+        ]);
 
-		$admin = User::findOrFail(1);
-		$cashier = User::findOrFail(2);
-		$demo_user = User::findOrFail(3);
+        $admin = User::findOrFail(1);
+        $cashier = User::findOrFail(2);
+        $demo_user = User::findOrFail(3);
 
-		$admin->assignRole('Admin#1');
-		$cashier->assignRole('Cashier#1');
-		$demo_user->assignRole('Admin#1');
-		Permission::insert(['name' => 'location.1', 'guard_name' => 'web', 'created_at' => \Carbon\Carbon::now()->toDateTimeString()]);
+        $admin->assignRole('Admin#1');
+        $cashier->assignRole('Cashier#1');
+        $demo_user->assignRole('Admin#1');
+        Permission::insert(['name' => 'location.1', 'guard_name' => 'web', 'created_at' => \Carbon\Carbon::now()->toDateTimeString()]);
 
-		DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
 
-		DB::commit();
-	}
+        DB::commit();
+    }
 }

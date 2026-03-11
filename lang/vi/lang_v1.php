@@ -1427,7 +1427,7 @@ return [
     'carousel_image' => 'Hình ảnh băng chuyền :number',
     'display_screen' => 'Màn hình hiển thị',
     'enable_customer_display_screen' => 'Bật màn hình hiển thị khách hàng',
-    'customer_display_instraction' => "Để màn hình hiển thị khách hàng hoạt động, hãy đảm bảo rằng nó được mở trong cùng trình duyệt với màn hình POS trong một tab mới. Và tab đó được phản chiếu sang một màn hình hiển thị khác hướng đến khách hàng.",
+    'customer_display_instraction' => 'Để màn hình hiển thị khách hàng hoạt động, hãy đảm bảo rằng nó được mở trong cùng trình duyệt với màn hình POS trong một tab mới. Và tab đó được phản chiếu sang một màn hình hiển thị khác hướng đến khách hàng.',
     'data_parameter_type' => 'Loại Tham Số Dữ Liệu',
     'format_4' => 'Định dạng 4',
     'aging_report' => 'Báo cáo lão hóa',

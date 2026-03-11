@@ -27,6 +27,6 @@ return [
     'payment_dues' => 'পেমেন্ট বকেয়া',
     'due_amount' => 'বকেয়া পরিমাণ',
     'stock_expiry_alert' => 'স্টক মেয়াদ শেষ সতর্কতা',
-    'todays_profit' => "আজকের লাভ",
+    'todays_profit' => 'আজকের লাভ',
     'dashboard' => 'ড্যাশবোর্ড',
 ];

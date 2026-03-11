@@ -57,16 +57,16 @@ class CreateDummyBusiness extends Command
         Artisan::call('db:seed');
         Artisan::call('db:seed', ['--class' => 'DummyBusinessSeeder']);
 
-        //Run the purchase & mapping command
-        //Artisan::call('pos:mapPurchaseSell');
+        // Run the purchase & mapping command
+        // Artisan::call('pos:mapPurchaseSell');
 
-        //Call modules dummy
-        $moduleUtil = new ModuleUtil();
+        // Call modules dummy
+        $moduleUtil = new ModuleUtil;
         $moduleUtil->getModuleData('dummy_data');
 
-        //if (config('app.env') == 'demo') {
+        // if (config('app.env') == 'demo') {
         //  system('chmod 777 -R /var/www/pos/storage');
-        //}
+        // }
 
         // DB::commit();
     }

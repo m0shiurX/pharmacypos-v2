@@ -6,6 +6,7 @@ use App\Business;
 use App\BusinessLocation;
 use App\Contact;
 use App\CustomerGroup;
+use App\Events\ContactCreatedOrModified;
 use App\Notifications\CustomerNotification;
 use App\PurchaseLine;
 use App\Transaction;
@@ -21,7 +22,6 @@ use Excel;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\Facades\DataTables;
-use App\Events\ContactCreatedOrModified;
 
 class ContactController extends Controller
 {
@@ -38,7 +38,6 @@ class ContactController extends Controller
     /**
      * Constructor
      *
-     * @param  Util  $commonUtil
      * @return void
      */
     public function __construct(
@@ -150,32 +149,32 @@ class ContactController extends Controller
                 function ($row) {
                     $html = '<div class="btn-group">
                     <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info tw-w-max  dropdown-toggle" 
-                        data-toggle="dropdown" aria-expanded="false">' .
-                        __('messages.actions') .
+                        data-toggle="dropdown" aria-expanded="false">'.
+                        __('messages.actions').
                         '<span class="caret"></span><span class="sr-only">Toggle Dropdown
                         </span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-left" role="menu">';
 
-                    $html .= '<li><a href="' . action([\App\Http\Controllers\TransactionPaymentController::class, 'getPayContactDue'], [$row->id]) . '?type=purchase" class="pay_purchase_due"><i class="fas fa-money-bill-alt" aria-hidden="true"></i>' . __('lang_v1.pay') . '</a></li>';
+                    $html .= '<li><a href="'.action([\App\Http\Controllers\TransactionPaymentController::class, 'getPayContactDue'], [$row->id]).'?type=purchase" class="pay_purchase_due"><i class="fas fa-money-bill-alt" aria-hidden="true"></i>'.__('lang_v1.pay').'</a></li>';
 
                     $return_due = $row->total_purchase_return - $row->purchase_return_paid;
                     if ($return_due > 0) {
-                        $html .= '<li><a href="' . action([\App\Http\Controllers\TransactionPaymentController::class, 'getPayContactDue'], [$row->id]) . '?type=purchase_return" class="pay_purchase_due"><i class="fas fa-money-bill-alt" aria-hidden="true"></i>' . __('lang_v1.receive_purchase_return_due') . '</a></li>';
+                        $html .= '<li><a href="'.action([\App\Http\Controllers\TransactionPaymentController::class, 'getPayContactDue'], [$row->id]).'?type=purchase_return" class="pay_purchase_due"><i class="fas fa-money-bill-alt" aria-hidden="true"></i>'.__('lang_v1.receive_purchase_return_due').'</a></li>';
                     }
 
                     if (auth()->user()->can('supplier.view') || auth()->user()->can('supplier.view_own')) {
-                        $html .= '<li><a href="' . action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]) . '"><i class="fas fa-eye" aria-hidden="true"></i>' . __('messages.view') . '</a></li>';
+                        $html .= '<li><a href="'.action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]).'"><i class="fas fa-eye" aria-hidden="true"></i>'.__('messages.view').'</a></li>';
                     }
                     if (auth()->user()->can('supplier.update')) {
-                        $html .= '<li><a href="' . action([\App\Http\Controllers\ContactController::class, 'edit'], [$row->id]) . '" class="edit_contact_button"><i class="glyphicon glyphicon-edit"></i>' . __('messages.edit') . '</a></li>';
+                        $html .= '<li><a href="'.action([\App\Http\Controllers\ContactController::class, 'edit'], [$row->id]).'" class="edit_contact_button"><i class="glyphicon glyphicon-edit"></i>'.__('messages.edit').'</a></li>';
                     }
                     if (auth()->user()->can('supplier.delete')) {
-                        $html .= '<li><a href="' . action([\App\Http\Controllers\ContactController::class, 'destroy'], [$row->id]) . '" class="delete_contact_button"><i class="glyphicon glyphicon-trash"></i>' . __('messages.delete') . '</a></li>';
+                        $html .= '<li><a href="'.action([\App\Http\Controllers\ContactController::class, 'destroy'], [$row->id]).'" class="delete_contact_button"><i class="glyphicon glyphicon-trash"></i>'.__('messages.delete').'</a></li>';
                     }
 
                     if (auth()->user()->can('customer.update')) {
-                        $html .= '<li><a href="' . action([\App\Http\Controllers\ContactController::class, 'updateStatus'], [$row->id]) . '"class="update_contact_status"><i class="fas fa-power-off"></i>';
+                        $html .= '<li><a href="'.action([\App\Http\Controllers\ContactController::class, 'updateStatus'], [$row->id]).'"class="update_contact_status"><i class="fas fa-power-off"></i>';
 
                         if ($row->contact_status == 'active') {
                             $html .= __('messages.deactivate');
@@ -190,40 +189,40 @@ class ContactController extends Controller
                     if (auth()->user()->can('supplier.view')) {
                         $html .= '
                                 <li>
-                                    <a href="' . action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]) . '?view=ledger">
+                                    <a href="'.action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]).'?view=ledger">
                                         <i class="fas fa-scroll" aria-hidden="true"></i>
-                                        ' . __('lang_v1.ledger') . '
+                                        '.__('lang_v1.ledger').'
                                     </a>
                                 </li>';
 
                         if (in_array($row->type, ['both', 'supplier'])) {
                             $html .= '<li>
-                                <a href="' . action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]) . '?view=purchase">
+                                <a href="'.action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]).'?view=purchase">
                                     <i class="fas fa-arrow-circle-down" aria-hidden="true"></i>
-                                    ' . __('purchase.purchases') . '
+                                    '.__('purchase.purchases').'
                                 </a>
                             </li>
                             <li>
-                                <a href="' . action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]) . '?view=stock_report">
+                                <a href="'.action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]).'?view=stock_report">
                                     <i class="fas fa-hourglass-half" aria-hidden="true"></i>
-                                    ' . __('report.stock_report') . '
+                                    '.__('report.stock_report').'
                                 </a>
                             </li>';
                         }
 
                         if (in_array($row->type, ['both', 'customer'])) {
                             $html .= '<li>
-                                <a href="' . action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]) . '?view=sales">
+                                <a href="'.action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]).'?view=sales">
                                     <i class="fas fa-arrow-circle-up" aria-hidden="true"></i>
-                                    ' . __('sale.sells') . '
+                                    '.__('sale.sells').'
                                 </a>
                             </li>';
                         }
 
                         $html .= '<li>
-                                <a href="' . action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]) . '?view=documents_and_notes">
+                                <a href="'.action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]).'?view=documents_and_notes">
                                     <i class="fas fa-paperclip" aria-hidden="true"></i>
-                                     ' . __('lang_v1.documents_and_notes') . '
+                                     '.__('lang_v1.documents_and_notes').'
                                 </a>
                             </li>';
                     }
@@ -233,12 +232,12 @@ class ContactController extends Controller
                 }
             )
             ->editColumn('opening_balance', function ($row) {
-                $html = '<span data-orig-value="' . $row->opening_balance . '">' . $this->transactionUtil->num_f($row->opening_balance, true) . '</span>';
+                $html = '<span data-orig-value="'.$row->opening_balance.'">'.$this->transactionUtil->num_f($row->opening_balance, true).'</span>';
 
                 return $html;
             })
             ->editColumn('balance', function ($row) {
-                $html = '<span data-orig-value="' . $row->balance . '">' . $this->transactionUtil->num_f($row->balance, true) . '</span>';
+                $html = '<span data-orig-value="'.$row->balance.'">'.$this->transactionUtil->num_f($row->balance, true).'</span>';
 
                 return $html;
             })
@@ -250,7 +249,7 @@ class ContactController extends Controller
             ')
             ->editColumn('name', function ($row) {
                 if ($row->contact_status == 'inactive') {
-                    return e($row->name) . ' <small class="label pull-right bg-red no-print">' . __('lang_v1.inactive') . '</small>';
+                    return e($row->name).' <small class="label pull-right bg-red no-print">'.__('lang_v1.inactive').'</small>';
                 } else {
                     return e($row->name);
                 }
@@ -363,7 +362,7 @@ class ContactController extends Controller
 
         $contacts = Datatables::of($query)
             ->addColumn('address', '{{implode(", ", array_filter([$address_line_1, $address_line_2, $city, $state, $country, $zip_code]))}}')
-            //    + $sell_return_paid add this in due because after paymnet for sell return not calculated 
+            //    + $sell_return_paid add this in due because after paymnet for sell return not calculated
             ->addColumn(
                 'due',
                 '<span class="contact_due" data-orig-value="{{$total_invoice - $invoice_received - $total_ledger_discount - $total_sell_return  + $sell_return_paid}}" data-highlight=true>@format_currency($total_invoice - $invoice_received - $total_ledger_discount -  $total_sell_return + $sell_return_paid)  </span>'
@@ -377,32 +376,32 @@ class ContactController extends Controller
                 function ($row) {
                     $html = '<div class="btn-group">
                     <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info tw-w-max dropdown-toggle" 
-                        data-toggle="dropdown" aria-expanded="false">' .
-                        __('messages.actions') .
+                        data-toggle="dropdown" aria-expanded="false">'.
+                        __('messages.actions').
                         '<span class="caret"></span><span class="sr-only">Toggle Dropdown
                         </span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-left" role="menu">';
 
-                    $html .= '<li><a href="' . action([\App\Http\Controllers\TransactionPaymentController::class, 'getPayContactDue'], [$row->id]) . '?type=sell" class="pay_sale_due"><i class="fas fa-money-bill-alt" aria-hidden="true"></i>' . __('lang_v1.pay') . '</a></li>';
+                    $html .= '<li><a href="'.action([\App\Http\Controllers\TransactionPaymentController::class, 'getPayContactDue'], [$row->id]).'?type=sell" class="pay_sale_due"><i class="fas fa-money-bill-alt" aria-hidden="true"></i>'.__('lang_v1.pay').'</a></li>';
                     $return_due = $row->total_sell_return - $row->sell_return_paid;
                     if ($return_due > 0) {
-                        $html .= '<li><a href="' . action([\App\Http\Controllers\TransactionPaymentController::class, 'getPayContactDue'], [$row->id]) . '?type=sell_return" class="pay_purchase_due"><i class="fas fa-money-bill-alt" aria-hidden="true"></i>' . __('lang_v1.pay_sell_return_due') . '</a></li>';
+                        $html .= '<li><a href="'.action([\App\Http\Controllers\TransactionPaymentController::class, 'getPayContactDue'], [$row->id]).'?type=sell_return" class="pay_purchase_due"><i class="fas fa-money-bill-alt" aria-hidden="true"></i>'.__('lang_v1.pay_sell_return_due').'</a></li>';
                     }
 
                     if (auth()->user()->can('customer.view') || auth()->user()->can('customer.view_own')) {
-                        $html .= '<li><a href="' . action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]) . '"><i class="fas fa-eye" aria-hidden="true"></i>' . __('messages.view') . '</a></li>';
+                        $html .= '<li><a href="'.action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]).'"><i class="fas fa-eye" aria-hidden="true"></i>'.__('messages.view').'</a></li>';
                     }
                     if (auth()->user()->can('customer.update')) {
-                        $html .= '<li><a href="' . action([\App\Http\Controllers\ContactController::class, 'edit'], [$row->id]) . '" class="edit_contact_button"><i class="glyphicon glyphicon-edit"></i>' . __('messages.edit') . '</a></li>';
+                        $html .= '<li><a href="'.action([\App\Http\Controllers\ContactController::class, 'edit'], [$row->id]).'" class="edit_contact_button"><i class="glyphicon glyphicon-edit"></i>'.__('messages.edit').'</a></li>';
                     }
                     if (! $row->is_default && auth()->user()->can('customer.delete')) {
-                        $html .= '<li><a href="' . action([\App\Http\Controllers\ContactController::class, 'destroy'], [$row->id]) . '" class="delete_contact_button"><i class="glyphicon glyphicon-trash"></i>' . __('messages.delete') . '</a></li>';
+                        $html .= '<li><a href="'.action([\App\Http\Controllers\ContactController::class, 'destroy'], [$row->id]).'" class="delete_contact_button"><i class="glyphicon glyphicon-trash"></i>'.__('messages.delete').'</a></li>';
                     }
 
                     if (auth()->user()->can('customer.update')) {
-                        if (!$row->is_default) {
-                            $html .= '<li><a href="' . action([\App\Http\Controllers\ContactController::class, 'updateStatus'], [$row->id]) . '"class="update_contact_status"><i class="fas fa-power-off"></i>';
+                        if (! $row->is_default) {
+                            $html .= '<li><a href="'.action([\App\Http\Controllers\ContactController::class, 'updateStatus'], [$row->id]).'"class="update_contact_status"><i class="fas fa-power-off"></i>';
 
                             if ($row->contact_status == 'active') {
                                 $html .= __('messages.deactivate');
@@ -417,40 +416,40 @@ class ContactController extends Controller
                     if (auth()->user()->can('customer.view')) {
                         $html .= '
                                 <li>
-                                    <a href="' . action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]) . '?view=ledger">
+                                    <a href="'.action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]).'?view=ledger">
                                         <i class="fas fa-scroll" aria-hidden="true"></i>
-                                        ' . __('lang_v1.ledger') . '
+                                        '.__('lang_v1.ledger').'
                                     </a>
                                 </li>';
 
                         if (in_array($row->type, ['both', 'supplier'])) {
                             $html .= '<li>
-                                <a href="' . action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]) . '?view=purchase">
+                                <a href="'.action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]).'?view=purchase">
                                     <i class="fas fa-arrow-circle-down" aria-hidden="true"></i>
-                                    ' . __('purchase.purchases') . '
+                                    '.__('purchase.purchases').'
                                 </a>
                             </li>
                             <li>
-                                <a href="' . action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]) . '?view=stock_report">
+                                <a href="'.action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]).'?view=stock_report">
                                     <i class="fas fa-hourglass-half" aria-hidden="true"></i>
-                                    ' . __('report.stock_report') . '
+                                    '.__('report.stock_report').'
                                 </a>
                             </li>';
                         }
 
                         if (in_array($row->type, ['both', 'customer'])) {
                             $html .= '<li>
-                                <a href="' . action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]) . '?view=sales">
+                                <a href="'.action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]).'?view=sales">
                                     <i class="fas fa-arrow-circle-up" aria-hidden="true"></i>
-                                    ' . __('sale.sells') . '
+                                    '.__('sale.sells').'
                                 </a>
                             </li>';
                         }
 
                         $html .= '<li>
-                                <a href="' . action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]) . '?view=documents_and_notes">
+                                <a href="'.action([\App\Http\Controllers\ContactController::class, 'show'], [$row->id]).'?view=documents_and_notes">
                                     <i class="fas fa-paperclip" aria-hidden="true"></i>
-                                     ' . __('lang_v1.documents_and_notes') . '
+                                     '.__('lang_v1.documents_and_notes').'
                                 </a>
                             </li>';
                     }
@@ -460,19 +459,19 @@ class ContactController extends Controller
                 }
             )
             ->editColumn('opening_balance', function ($row) {
-                $html = '<span data-orig-value="' . $row->opening_balance . '">' . $this->transactionUtil->num_f($row->opening_balance, true) . '</span>';
+                $html = '<span data-orig-value="'.$row->opening_balance.'">'.$this->transactionUtil->num_f($row->opening_balance, true).'</span>';
 
                 return $html;
             })
             ->editColumn('balance', function ($row) {
-                $html = '<span data-orig-value="' . $row->balance . '">' . $this->transactionUtil->num_f($row->balance, true) . '</span>';
+                $html = '<span data-orig-value="'.$row->balance.'">'.$this->transactionUtil->num_f($row->balance, true).'</span>';
 
                 return $html;
             })
             ->editColumn('credit_limit', function ($row) {
                 $html = __('lang_v1.no_limit');
                 if (! is_null($row->credit_limit)) {
-                    $html = '<span data-orig-value="' . $row->credit_limit . '">' . $this->transactionUtil->num_f($row->credit_limit, true) . '</span>';
+                    $html = '<span data-orig-value="'.$row->credit_limit.'">'.$this->transactionUtil->num_f($row->credit_limit, true).'</span>';
                 }
 
                 return $html;
@@ -486,7 +485,7 @@ class ContactController extends Controller
             ->editColumn('name', function ($row) {
                 $name = e($row->name);
                 if ($row->contact_status == 'inactive') {
-                    $name = e($row->name) . ' <small class="label pull-right bg-red no-print">' . __('lang_v1.inactive') . '</small>';
+                    $name = e($row->name).' <small class="label pull-right bg-red no-print">'.__('lang_v1.inactive').'</small>';
                 }
 
                 if (! empty($row->converted_by)) {
@@ -541,7 +540,7 @@ class ContactController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
 
-        //Check if subscribed or not
+        // Check if subscribed or not
         if (! $this->moduleUtil->isSubscribed($business_id)) {
             return $this->moduleUtil->expiredResponse();
         }
@@ -562,7 +561,7 @@ class ContactController extends Controller
 
         $module_form_parts = $this->moduleUtil->getModuleData('contact_form_part');
 
-        //Added check because $users is of no use if enable_contact_assign if false
+        // Added check because $users is of no use if enable_contact_assign if false
         $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
 
         return view('contact.create')
@@ -572,7 +571,6 @@ class ContactController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -628,7 +626,7 @@ class ContactController extends Controller
                 'land_mark',
                 'street_name',
                 'building_number',
-                'additional_number'
+                'additional_number',
             ]);
 
             $name_array = [];
@@ -682,7 +680,7 @@ class ContactController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => false,
@@ -731,7 +729,7 @@ class ContactController extends Controller
 
         $business_locations = BusinessLocation::forDropdown($business_id, true);
 
-        //get contact view type : ledger, notes etc.
+        // get contact view type : ledger, notes etc.
         $view_type = request()->get('view');
         if (is_null($view_type)) {
             $view_type = 'ledger';
@@ -786,7 +784,7 @@ class ContactController extends Controller
                 ->first();
             $opening_balance = ! empty($ob_transaction->final_total) ? $ob_transaction->final_total : 0;
 
-            //Deduct paid amount from opening balance.
+            // Deduct paid amount from opening balance.
             if (! empty($opening_balance)) {
                 $opening_balance_paid = $this->transactionUtil->getTotalAmountPaid($ob_transaction->id);
                 if (! empty($opening_balance_paid)) {
@@ -796,7 +794,7 @@ class ContactController extends Controller
                 $opening_balance = $this->commonUtil->num_f($opening_balance);
             }
 
-            //Added check because $users is of no use if enable_contact_assign if false
+            // Added check because $users is of no use if enable_contact_assign if false
             $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
 
             return view('contact.edit')
@@ -807,7 +805,6 @@ class ContactController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -865,7 +862,7 @@ class ContactController extends Controller
                     'land_mark',
                     'street_name',
                     'building_number',
-                    'additional_number'
+                    'additional_number',
                 ]);
 
                 $name_array = [];
@@ -884,8 +881,6 @@ class ContactController extends Controller
                 }
 
                 $input['contact_type'] = $request->input('contact_type_radio');
-
-
 
                 $input['name'] = trim(implode(' ', $name_array));
 
@@ -915,7 +910,7 @@ class ContactController extends Controller
 
                 $this->contactUtil->activityLog($output['data'], 'edited');
             } catch (\Exception $e) {
-                \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+                \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
                 $output = [
                     'success' => false,
@@ -943,7 +938,7 @@ class ContactController extends Controller
             try {
                 $business_id = request()->user()->business_id;
 
-                //Check if any transaction related to this contact exists (excluding opening balance)
+                // Check if any transaction related to this contact exists (excluding opening balance)
                 $count = Transaction::where('business_id', $business_id)
                     ->where('contact_id', $id)
                     ->where('type', '!=', 'opening_balance')
@@ -958,7 +953,7 @@ class ContactController extends Controller
                         ];
                         $this->contactUtil->activityLog($contact, 'contact_deleted', $log_properities);
 
-                        //Disable login for associated users
+                        // Disable login for associated users
                         User::where('crm_contact_id', $contact->id)
                             ->update(['allow_login' => 0]);
 
@@ -977,7 +972,7 @@ class ContactController extends Controller
                     ];
                 }
             } catch (\Exception $e) {
-                \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+                \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
                 $output = [
                     'success' => false,
@@ -1013,10 +1008,10 @@ class ContactController extends Controller
 
             if (! empty($term)) {
                 $contacts->where(function ($query) use ($term) {
-                    $query->where('contacts.name', 'like', '%' . $term . '%')
-                        ->orWhere('supplier_business_name', 'like', '%' . $term . '%')
-                        ->orWhere('mobile', 'like', '%' . $term . '%')
-                        ->orWhere('contacts.contact_id', 'like', '%' . $term . '%');
+                    $query->where('contacts.name', 'like', '%'.$term.'%')
+                        ->orWhere('supplier_business_name', 'like', '%'.$term.'%')
+                        ->orWhere('mobile', 'like', '%'.$term.'%')
+                        ->orWhere('contacts.contact_id', 'like', '%'.$term.'%');
                 });
             }
 
@@ -1060,7 +1055,6 @@ class ContactController extends Controller
     /**
      * Checks if the given contact id already exist for the current business.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function checkContactId(Request $request)
@@ -1100,7 +1094,7 @@ class ContactController extends Controller
 
         $zip_loaded = extension_loaded('zip') ? true : false;
 
-        //Check if zip extension it loaded or not.
+        // Check if zip extension it loaded or not.
         if ($zip_loaded === false) {
             $output = [
                 'success' => 0,
@@ -1132,13 +1126,13 @@ class ContactController extends Controller
                 return $notAllowed;
             }
 
-            //Set maximum php execution time
+            // Set maximum php execution time
             ini_set('max_execution_time', 0);
 
             if ($request->hasFile('contacts_csv')) {
                 $file = $request->file('contacts_csv');
                 $parsed_array = Excel::toArray([], $file);
-                //Remove header row
+                // Remove header row
                 $imported_data = array_splice($parsed_array[0], 1);
 
                 $business_id = $request->session()->get('user.business_id');
@@ -1151,7 +1145,7 @@ class ContactController extends Controller
 
                 DB::beginTransaction();
                 foreach ($imported_data as $key => $value) {
-                    //Check if 27 no. of columns exists
+                    // Check if 27 no. of columns exists
                     if (count($value) != 27) {
                         $is_valid = false;
                         $error_msg = 'Number of columns mismatch';
@@ -1161,7 +1155,7 @@ class ContactController extends Controller
                     $row_no = $key + 1;
                     $contact_array = [];
 
-                    //Check contact type
+                    // Check contact type
                     $contact_type = '';
                     $contact_types = [
                         1 => 'customer',
@@ -1185,7 +1179,7 @@ class ContactController extends Controller
                     }
 
                     $contact_array['prefix'] = $value[1];
-                    //Check contact name
+                    // Check contact name
                     if (! empty($value[2])) {
                         $contact_array['first_name'] = $value[2];
                     } else {
@@ -1197,14 +1191,14 @@ class ContactController extends Controller
                     $contact_array['last_name'] = $value[4];
                     $contact_array['name'] = implode(' ', [$contact_array['prefix'], $contact_array['first_name'], $contact_array['middle_name'], $contact_array['last_name']]);
 
-                    //Check business name
+                    // Check business name
                     if (! empty(trim($value[5]))) {
                         $contact_array['supplier_business_name'] = $value[5];
                     }
 
-                    //Check supplier fields
+                    // Check supplier fields
                     if (in_array($contact_type, ['supplier', 'both'])) {
-                        //Check pay term
+                        // Check pay term
                         if (trim($value[9]) != '') {
                             $contact_array['pay_term_number'] = trim($value[9]);
                         } else {
@@ -1213,7 +1207,7 @@ class ContactController extends Controller
                             break;
                         }
 
-                        //Check pay period
+                        // Check pay period
                         $pay_term_type = strtolower(trim($value[10]));
                         if (in_array($pay_term_type, ['days', 'months'])) {
                             $contact_array['pay_term_type'] = $pay_term_type;
@@ -1224,7 +1218,7 @@ class ContactController extends Controller
                         }
                     }
 
-                    //Check contact ID
+                    // Check contact ID
                     if (! empty(trim($value[6]))) {
                         $count = Contact::where('business_id', $business_id)
                             ->where('contact_id', $value[6])
@@ -1239,22 +1233,22 @@ class ContactController extends Controller
                         }
                     }
 
-                    //Tax number
+                    // Tax number
                     if (! empty(trim($value[7]))) {
                         $contact_array['tax_number'] = $value[7];
                     }
 
-                    //Check opening balance
+                    // Check opening balance
                     if (! empty(trim($value[8])) && $value[8] != 0) {
                         $contact_array['opening_balance'] = trim($value[8]);
                     }
 
-                    //Check credit limit
+                    // Check credit limit
                     if (trim($value[11]) != '' && in_array($contact_type, ['customer', 'both'])) {
                         $contact_array['credit_limit'] = trim($value[11]);
                     }
 
-                    //Check email
+                    // Check email
                     if (! empty(trim($value[12]))) {
                         if (filter_var(trim($value[12]), FILTER_VALIDATE_EMAIL)) {
                             $contact_array['email'] = $value[12];
@@ -1265,7 +1259,7 @@ class ContactController extends Controller
                         }
                     }
 
-                    //Mobile number
+                    // Mobile number
                     if (! empty(trim($value[13]))) {
                         $contact_array['mobile'] = $value[13];
                     } else {
@@ -1274,29 +1268,29 @@ class ContactController extends Controller
                         break;
                     }
 
-                    //Alt contact number
+                    // Alt contact number
                     $contact_array['alternate_number'] = $value[14];
 
-                    //Landline
+                    // Landline
                     $contact_array['landline'] = $value[15];
 
-                    //City
+                    // City
                     $contact_array['city'] = $value[16];
 
-                    //State
+                    // State
                     $contact_array['state'] = $value[17];
 
-                    //Country
+                    // Country
                     $contact_array['country'] = $value[18];
 
-                    //address_line_1
+                    // address_line_1
                     $contact_array['address_line_1'] = $value[19];
-                    //address_line_2
+                    // address_line_2
                     $contact_array['address_line_2'] = $value[20];
                     $contact_array['zip_code'] = $value[21];
                     $contact_array['dob'] = $value[22];
 
-                    //Cust fields
+                    // Cust fields
                     $contact_array['custom_field1'] = $value[23];
                     $contact_array['custom_field2'] = $value[24];
                     $contact_array['custom_field3'] = $value[25];
@@ -1311,7 +1305,7 @@ class ContactController extends Controller
                 if (! empty($formated_data)) {
                     foreach ($formated_data as $contact_data) {
                         $ref_count = $this->transactionUtil->setAndGetReferenceCount('contacts');
-                        //Set contact id if empty
+                        // Set contact id if empty
                         if (empty($contact_data['contact_id'])) {
                             $contact_data['contact_id'] = $this->commonUtil->generateReferenceNumber('contacts', $ref_count);
                         }
@@ -1344,7 +1338,7 @@ class ContactController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,
@@ -1408,7 +1402,7 @@ class ContactController extends Controller
             $location = BusinessLocation::where('business_id', $business_id)->find($location_id);
         }
         if (request()->input('action') == 'pdf') {
-            $output_file_name = 'Ledger-' . str_replace(' ', '-', $contact->name) . '-' . $start_date . '-' . $end_date . '.pdf';
+            $output_file_name = 'Ledger-'.str_replace(' ', '-', $contact->name).'-'.$start_date.'-'.$end_date.'.pdf';
             $for_pdf = true;
             if ($format == 'format_2') {
                 $html = view('contact.ledger_format_2')
@@ -1475,7 +1469,7 @@ class ContactController extends Controller
                 $customer = Contact::create($data);
             }
         } catch (\Exception $e) {
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             return $this->respondWentWrong($e);
         }
@@ -1517,7 +1511,7 @@ class ContactController extends Controller
             $data['email_body'] = $tag_replaced_data['email_body'];
             $data['subject'] = $tag_replaced_data['subject'];
 
-            //replace balance_due
+            // replace balance_due
             $data['email_body'] = str_replace('{balance_due}', $this->notificationUtil->num_f($ledger_details['balance_due']), $data['email_body']);
 
             $data['email_settings'] = request()->session()->get('business.email_settings');
@@ -1541,7 +1535,7 @@ class ContactController extends Controller
                 mkdir($path, 0777, true);
             }
 
-            $file = $path . '/' . time() . '_ledger.pdf';
+            $file = $path.'/'.time().'_ledger.pdf';
             $mpdf->Output($file, 'F');
 
             $data['attachment'] = $file;
@@ -1555,11 +1549,11 @@ class ContactController extends Controller
 
             $output = ['success' => 1, 'msg' => __('lang_v1.notification_sent_successfully')];
         } catch (\Exception $e) {
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,
-                'msg' => 'File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage(),
+                'msg' => 'File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage(),
             ];
         }
 
@@ -1571,7 +1565,7 @@ class ContactController extends Controller
      */
     public function getSupplierStockReport($supplier_id)
     {
-        //TODO: current stock not calculating stock transferred from other location
+        // TODO: current stock not calculating stock transferred from other location
         $pl_query_string = $this->commonUtil->get_pl_quantity_sum_string();
         $query = PurchaseLine::join('transactions as t', 't.id', '=', 'purchase_lines.transaction_id')
             ->join('products as p', 'p.id', '=', 'purchase_lines.product_id')
@@ -1611,10 +1605,10 @@ class ContactController extends Controller
             ->editColumn('product_name', function ($row) {
                 $name = $row->product_name;
                 if ($row->product_type == 'variable') {
-                    $name .= ' - ' . $row->product_variation_name . '-' . $row->variation_name;
+                    $name .= ' - '.$row->product_variation_name.'-'.$row->variation_name;
                 }
 
-                return $name . ' (' . $row->sub_sku . ')';
+                return $name.' ('.$row->sub_sku.')';
             })
             ->editColumn('purchase_quantity', function ($row) {
                 $purchase_quantity = 0;
@@ -1622,7 +1616,7 @@ class ContactController extends Controller
                     $purchase_quantity = (float) $row->purchase_quantity;
                 }
 
-                return '<span data-is_quantity="true" class="display_currency" data-currency_symbol=false  data-orig-value="' . $purchase_quantity . '" data-unit="' . $row->product_unit . '" >' . $purchase_quantity . '</span> ' . $row->product_unit;
+                return '<span data-is_quantity="true" class="display_currency" data-currency_symbol=false  data-orig-value="'.$purchase_quantity.'" data-unit="'.$row->product_unit.'" >'.$purchase_quantity.'</span> '.$row->product_unit;
             })
             ->editColumn('total_quantity_sold', function ($row) {
                 $total_quantity_sold = 0;
@@ -1630,7 +1624,7 @@ class ContactController extends Controller
                     $total_quantity_sold = (float) $row->total_quantity_sold;
                 }
 
-                return '<span data-is_quantity="true" class="display_currency" data-currency_symbol=false  data-orig-value="' . $total_quantity_sold . '" data-unit="' . $row->product_unit . '" >' . $total_quantity_sold . '</span> ' . $row->product_unit;
+                return '<span data-is_quantity="true" class="display_currency" data-currency_symbol=false  data-orig-value="'.$total_quantity_sold.'" data-unit="'.$row->product_unit.'" >'.$total_quantity_sold.'</span> '.$row->product_unit;
             })
             ->editColumn('total_quantity_transfered', function ($row) {
                 $total_quantity_transfered = 0;
@@ -1638,7 +1632,7 @@ class ContactController extends Controller
                     $total_quantity_transfered = (float) $row->total_quantity_transfered;
                 }
 
-                return '<span data-is_quantity="true" class="display_currency" data-currency_symbol=false  data-orig-value="' . $total_quantity_transfered . '" data-unit="' . $row->product_unit . '" >' . $total_quantity_transfered . '</span> ' . $row->product_unit;
+                return '<span data-is_quantity="true" class="display_currency" data-currency_symbol=false  data-orig-value="'.$total_quantity_transfered.'" data-unit="'.$row->product_unit.'" >'.$total_quantity_transfered.'</span> '.$row->product_unit;
             })
             ->editColumn('stock_price', function ($row) {
                 $stock_price = 0;
@@ -1646,7 +1640,7 @@ class ContactController extends Controller
                     $stock_price = (float) $row->stock_price;
                 }
 
-                return '<span class="display_currency" data-currency_symbol=true >' . $stock_price . '</span> ';
+                return '<span class="display_currency" data-currency_symbol=true >'.$stock_price.'</span> ';
             })
             ->editColumn('current_stock', function ($row) {
                 $current_stock = 0;
@@ -1654,7 +1648,7 @@ class ContactController extends Controller
                     $current_stock = (float) $row->current_stock;
                 }
 
-                return '<span data-is_quantity="true" class="display_currency" data-currency_symbol=false  data-orig-value="' . $current_stock . '" data-unit="' . $row->product_unit . '" >' . $current_stock . '</span> ' . $row->product_unit;
+                return '<span data-is_quantity="true" class="display_currency" data-currency_symbol=false  data-orig-value="'.$current_stock.'" data-unit="'.$row->product_unit.'" >'.$current_stock.'</span> '.$row->product_unit;
             });
 
         return $product_stocks->rawColumns(['current_stock', 'stock_price', 'total_quantity_sold', 'purchase_quantity', 'total_quantity_transfered'])->make(true);
@@ -1786,14 +1780,12 @@ class ContactController extends Controller
     /**
      * Check if Tax Number already exists
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function checkTaxNumber(Request $request)
     {
         $business_id = $request->session()->get('user.business_id');
         $tax_number = $request->input('tax_number');
-
 
         $query = Contact::where('business_id', $business_id)
             ->where('tax_number', $tax_number);

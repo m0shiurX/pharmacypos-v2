@@ -18,7 +18,6 @@ class SalesTargetController extends Controller
     /**
      * Constructor
      *
-     * @param  ModuleUtil  $moduleUtil
      * @return void
      */
     public function __construct(ModuleUtil $moduleUtil)
@@ -42,10 +41,10 @@ class SalesTargetController extends Controller
             $user_id = request()->session()->get('user.id');
 
             $users = User::where('business_id', $business_id)
-                        ->user()
-                        ->where('allow_login', 1)
-                        ->select(['id',
-                            DB::raw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) as full_name"), ]);
+                ->user()
+                ->where('allow_login', 1)
+                ->select(['id',
+                    DB::raw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) as full_name"), ]);
 
             return Datatables::of($users)
                 ->addColumn(
@@ -55,8 +54,8 @@ class SalesTargetController extends Controller
                 ->filterColumn('full_name', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
                         $q->whereRaw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) like ?", ["%{$keyword}%"])
-                        ->orWhere('username', 'like', "%{$keyword}%")
-                        ->orWhere('email', 'like', "%{$keyword}%");
+                            ->orWhere('username', 'like', "%{$keyword}%")
+                            ->orWhere('email', 'like', "%{$keyword}%");
                     });
                 })
                 ->removeColumn('id')
@@ -80,10 +79,10 @@ class SalesTargetController extends Controller
         }
 
         $user = User::where('business_id', $business_id)
-                    ->find($id);
+            ->find($id);
 
         $sales_targets = EssentialsUserSalesTarget::where('user_id', $id)
-                                                ->get();
+            ->get();
 
         return view('essentials::sales_targets.sales_target_modal')->with(compact('user', 'sales_targets'));
     }
@@ -91,7 +90,6 @@ class SalesTargetController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function saveSalesTarget(Request $request)
@@ -106,21 +104,21 @@ class SalesTargetController extends Controller
             if (! empty($request->input('edit_target'))) {
                 foreach ($request->input('edit_target') as $key => $value) {
                     $target = EssentialsUserSalesTarget::where('user_id',
-                                        $request->input('user_id'))
-                                        ->where('id', $key)
-                                        ->update([
-                                            'target_start' => $this->moduleUtil->num_uf($value['target_start']),
-                                            'target_end' => $this->moduleUtil->num_uf($value['target_end']),
-                                            'commission_percent' => $this->moduleUtil->num_uf($value['commission_percent']),
-                                        ]);
+                        $request->input('user_id'))
+                        ->where('id', $key)
+                        ->update([
+                            'target_start' => $this->moduleUtil->num_uf($value['target_start']),
+                            'target_end' => $this->moduleUtil->num_uf($value['target_end']),
+                            'commission_percent' => $this->moduleUtil->num_uf($value['commission_percent']),
+                        ]);
                     $target_ids[] = $key;
                 }
             }
 
             EssentialsUserSalesTarget::where('user_id',
-                                        $request->input('user_id'))
-                                    ->whereNotIn('id', $target_ids)
-                                    ->delete();
+                $request->input('user_id'))
+                ->whereNotIn('id', $target_ids)
+                ->delete();
 
             foreach ($request->input('sales_amount_start') as $key => $value) {
                 $sales_amount_end = $request->input('sales_amount_end')[$key];

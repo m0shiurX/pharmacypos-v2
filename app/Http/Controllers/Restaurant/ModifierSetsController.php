@@ -38,8 +38,8 @@ class ModifierSetsController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $modifer_set = Product::where('business_id', $business_id)
-                            ->where('type', 'modifier')
-                            ->with(['variations', 'modifier_products']);
+                ->where('type', 'modifier')
+                ->with(['variations', 'modifier_products']);
 
             return \Datatables::of($modifer_set)
                 ->addColumn(
@@ -98,7 +98,6 @@ class ModifierSetsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -146,7 +145,7 @@ class ModifierSetsController extends Controller
                 'variations' => $modifers,
             ];
             // with_out_variation is sku type of variation
-            $this->productUtil->createVariableProductVariations($modifer_set->id, $modifiers_data, "with_out_variation",);
+            $this->productUtil->createVariableProductVariations($modifer_set->id, $modifiers_data, 'with_out_variation');
 
             DB::commit();
 
@@ -186,9 +185,9 @@ class ModifierSetsController extends Controller
             $business_id = $request->session()->get('user.business_id');
 
             $modifer_set = Product::where('business_id', $business_id)
-                            ->where('id', $id)
-                            ->with(['variations'])
-                            ->first();
+                ->where('id', $id)
+                ->with(['variations'])
+                ->first();
 
             return view('restaurant.modifier_sets.edit')
                 ->with(compact('modifer_set'));
@@ -202,7 +201,6 @@ class ModifierSetsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function update($id, Request $request)
@@ -219,12 +217,12 @@ class ModifierSetsController extends Controller
             $user_id = $request->session()->get('user.id');
 
             $modifer_set = Product::where('business_id', $business_id)
-                    ->where('id', $id)
-                    ->where('type', 'modifier')
-                    ->first();
+                ->where('id', $id)
+                ->where('type', 'modifier')
+                ->first();
             $modifer_set->update(['name' => $input['name']]);
 
-            //Get the dummy product variation
+            // Get the dummy product variation
             $product_variation = $modifer_set->product_variations()->first();
 
             $modifiers_data[$product_variation->id]['name'] = $product_variation->name;
@@ -232,7 +230,7 @@ class ModifierSetsController extends Controller
             $variations_edit = [];
             $variations = [];
 
-            //Set existing variations
+            // Set existing variations
             if (! empty($input['modifier_name_edit'])) {
                 $modifier_name_edit = $input['modifier_name_edit'];
                 $modifier_price_edit = $input['modifier_price_edit'];
@@ -248,7 +246,7 @@ class ModifierSetsController extends Controller
                     }
                 }
             }
-            //Set new variations
+            // Set new variations
             if (! empty($input['modifier_name'])) {
                 foreach ($input['modifier_name'] as $key => $value) {
                     $variations[] = [
@@ -262,10 +260,10 @@ class ModifierSetsController extends Controller
                 }
             }
 
-            //Update variations
+            // Update variations
             $modifiers_data[$product_variation->id]['variations_edit'] = $variations_edit;
             $modifiers_data[$product_variation->id]['variations'] = $variations;
-            $this->productUtil->updateVariableProductVariations($modifer_set->id, $modifiers_data, "with_out_variation");
+            $this->productUtil->updateVariableProductVariations($modifer_set->id, $modifiers_data, 'with_out_variation');
 
             DB::commit();
 

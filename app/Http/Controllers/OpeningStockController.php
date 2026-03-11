@@ -46,7 +46,7 @@ class OpeningStockController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
 
-        //Get the product
+        // Get the product
         $product = Product::where('business_id', $business_id)
             ->where('id', $product_id)
             ->with([
@@ -58,7 +58,7 @@ class OpeningStockController extends Controller
             ])
             ->first();
         if (! empty($product) && $product->enable_stock == 1) {
-            //Get Opening Stock Transactions for the product if exists
+            // Get Opening Stock Transactions for the product if exists
             $transactions = Transaction::where('business_id', $business_id)
                 ->where('opening_stock_product_id', $product_id)
                 ->where('type', 'opening_stock')
@@ -76,7 +76,7 @@ class OpeningStockController extends Controller
                         $purchase_lines[$purchase_line->variation_id] = [];
                     }
 
-                    //Show only remaining quantity for editing opening stock.
+                    // Show only remaining quantity for editing opening stock.
                     $purchase_lines[$purchase_line->variation_id][$k]['quantity'] = $purchase_line->quantity_remaining;
                     $purchase_lines[$purchase_line->variation_id][$k]['purchase_price'] = $purchase_line->purchase_price;
                     $purchase_lines[$purchase_line->variation_id][$k]['purchase_line_id'] = $purchase_line->id;
@@ -98,7 +98,7 @@ class OpeningStockController extends Controller
 
             $locations = BusinessLocation::forDropdown($business_id);
 
-            //Unset locations where product is not available
+            // Unset locations where product is not available
             $available_locations = $product->product_locations->pluck('id')->toArray();
             foreach ($locations as $key => $value) {
                 if (! in_array($key, $available_locations)) {
@@ -134,7 +134,6 @@ class OpeningStockController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -159,26 +158,26 @@ class OpeningStockController extends Controller
             $locations = BusinessLocation::forDropdown($business_id);
 
             if (! empty($product) && $product->enable_stock == 1) {
-                //Get product tax
+                // Get product tax
                 $tax_percent = ! empty($product->product_tax->amount) ? $product->product_tax->amount : 0;
                 $tax_id = ! empty($product->product_tax->id) ? $product->product_tax->id : null;
 
-                //Get start date for financial year.
+                // Get start date for financial year.
                 $transaction_date = request()->session()->get('financial_year.start');
                 $transaction_date = \Carbon::createFromFormat('Y-m-d', $transaction_date)->toDateTimeString();
 
                 DB::beginTransaction();
 
-                //$key_os is the location_id
+                // $key_os is the location_id
                 foreach ($opening_stocks as $location_id => $value) {
                     $new_purchase_lines = [];
                     $edit_purchase_lines = [];
                     $new_transaction_data = [];
                     $edit_transaction_data = [];
-                    //Check if valid location
+                    // Check if valid location
                     if (array_key_exists($location_id, $locations)) {
                         foreach ($value as $vid => $purchase_lines_data) {
-                            //create purchase_lines array
+                            // create purchase_lines array
                             foreach ($purchase_lines_data as $k => $pl) {
                                 $purchase_price = $this->productUtil->num_uf(trim($pl['purchase_price']));
                                 $item_tax = $this->productUtil->calc_percentage($purchase_price, $tax_percent);
@@ -203,11 +202,11 @@ class OpeningStockController extends Controller
 
                                 if (isset($pl['purchase_line_id'])) {
                                     $purchase_line = PurchaseLine::findOrFail($pl['purchase_line_id']);
-                                    //Quantity = remaining + used
+                                    // Quantity = remaining + used
                                     $qty_remaining = $qty_remaining + $purchase_line->quantity_used;
 
                                     if ($qty_remaining != 0) {
-                                        //Calculate transaction total
+                                        // Calculate transaction total
                                         $old_qty = $purchase_line->quantity;
 
                                         $this->productUtil->updateProductQuantity($location_id, $product->id, $vid, $qty_remaining, $old_qty, null, false);
@@ -215,8 +214,8 @@ class OpeningStockController extends Controller
                                 } else {
                                     if ($qty_remaining != 0) {
 
-                                        //create newly added purchase lines
-                                        $purchase_line = new PurchaseLine();
+                                        // create newly added purchase lines
+                                        $purchase_line = new PurchaseLine;
                                         $purchase_line->product_id = $product->id;
                                         $purchase_line->variation_id = $vid;
 
@@ -254,7 +253,7 @@ class OpeningStockController extends Controller
                             }
                         }
 
-                        //edit existing transactions & purchase lines
+                        // edit existing transactions & purchase lines
                         $updated_transaction_ids = [];
                         if (! empty($edit_purchase_lines)) {
                             foreach ($edit_purchase_lines as $t_id => $purchase_lines) {
@@ -278,7 +277,7 @@ class OpeningStockController extends Controller
                                 $transaction->update();
 
                                 $updated_transaction_ids[] = $transaction->id;
-                                //unset deleted purchase lines
+                                // unset deleted purchase lines
                                 $delete_purchase_line_ids = [];
                                 $delete_purchase_lines = null;
                                 $delete_purchase_lines = PurchaseLine::where('transaction_id', $transaction->id)
@@ -289,7 +288,7 @@ class OpeningStockController extends Controller
                                     foreach ($delete_purchase_lines as $delete_purchase_line) {
                                         $delete_purchase_line_ids[] = $delete_purchase_line->id;
 
-                                        //decrease deleted only if previous status was received
+                                        // decrease deleted only if previous status was received
                                         $this->productUtil->decreaseProductQuantity(
                                             $delete_purchase_line->product_id,
                                             $delete_purchase_line->variation_id,
@@ -297,7 +296,7 @@ class OpeningStockController extends Controller
                                             $delete_purchase_line->quantity
                                         );
                                     }
-                                    //Delete deleted purchase lines
+                                    // Delete deleted purchase lines
                                     PurchaseLine::where('transaction_id', $transaction->id)
                                         ->whereIn('id', $delete_purchase_line_ids)
                                         ->delete();
@@ -305,12 +304,12 @@ class OpeningStockController extends Controller
 
                                 $this->transactionUtil->adjustMappingPurchaseSellAfterEditingPurchase('received', $transaction, $delete_purchase_lines);
 
-                                //Adjust stock over selling if found
+                                // Adjust stock over selling if found
                                 $this->productUtil->adjustStockOverSelling($transaction);
                             }
                         }
 
-                        //Delete transaction if all purchase line quantity is 0 (Only if transaction exists)
+                        // Delete transaction if all purchase line quantity is 0 (Only if transaction exists)
                         $delete_transactions = Transaction::where('type', 'opening_stock')
                             ->where('business_id', $business_id)
                             ->where('opening_stock_product_id', $product->id)
@@ -328,14 +327,14 @@ class OpeningStockController extends Controller
                                     $delete_purchase_line->delete();
                                 }
 
-                                //Update mapping of purchase & Sell.
+                                // Update mapping of purchase & Sell.
                                 $this->transactionUtil->adjustMappingPurchaseSellAfterEditingPurchase('received', $delete_transaction, $delete_purchase_lines);
 
                                 $delete_transaction->delete();
                             }
                         }
 
-                        //create transaction & purchase lines
+                        // create transaction & purchase lines
                         if (! empty($new_purchase_lines)) {
                             foreach ($new_purchase_lines as $key => $new_purchase_line) {
                                 if (empty($new_purchase_line)) {
@@ -359,7 +358,7 @@ class OpeningStockController extends Controller
 
                                 $transaction->purchase_lines()->saveMany([$new_purchase_line]);
 
-                                //Adjust stock over selling if found
+                                // Adjust stock over selling if found
                                 $this->productUtil->adjustStockOverSelling($transaction);
                             }
                         }
@@ -375,7 +374,7 @@ class OpeningStockController extends Controller
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,

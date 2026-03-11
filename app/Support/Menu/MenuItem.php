@@ -5,13 +5,19 @@ namespace App\Support\Menu;
 class MenuItem
 {
     public string $title;
+
     public string $icon;
 
     protected string $url;
+
     protected array $attributes;
+
     protected bool $active = false;
+
     protected bool $isDropdown = false;
+
     protected array $children = [];
+
     protected int $order = 0;
 
     public function __construct(string $url, string $title, array $attributes = [])
@@ -26,6 +32,7 @@ class MenuItem
     public function order(int $order): self
     {
         $this->order = $order;
+
         return $this;
     }
 
@@ -74,6 +81,7 @@ class MenuItem
                 return true;
             }
         }
+
         return false;
     }
 
@@ -90,9 +98,10 @@ class MenuItem
                 continue;
             }
             if (is_string($value)) {
-                $html[] = $key . '="' . e($value) . '"';
+                $html[] = $key.'="'.e($value).'"';
             }
         }
+
         return implode(' ', $html);
     }
 }

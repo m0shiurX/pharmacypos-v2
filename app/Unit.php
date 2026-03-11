@@ -26,7 +26,7 @@ class Unit extends Model
      * Return list of units for a business
      *
      * @param  int  $business_id
-     * @param  bool  $show_none = true
+     * @param  bool  $show_none  = true
      * @return array
      */
     public static function forDropdown($business_id, $show_none = false, $only_base = true)

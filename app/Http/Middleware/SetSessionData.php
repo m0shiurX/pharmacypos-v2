@@ -13,7 +13,6 @@ class SetSessionData
      * Checks if session data is set or not for a user. If data is not set then set it.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -44,7 +43,7 @@ class SetSessionData
             $request->session()->put('business', $business);
             $request->session()->put('currency', $currency_data);
 
-            //set current financial year to session
+            // set current financial year to session
             $financial_year = $business_util->getCurrentFinancialYear($business->id);
             $request->session()->put('financial_year', $financial_year);
         }

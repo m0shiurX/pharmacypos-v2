@@ -1442,7 +1442,7 @@ return [
     'carousel_image' => 'Imagem do carrossel :number',
     'display_screen' => 'Tela de exibição',
     'enable_customer_display_screen' => 'Ativar tela de exibição do cliente',
-    'customer_display_instraction' => "Para que a tela de exibição do cliente funcione, certifique-se de que está aberta no mesmo navegador que a tela do POS em uma nova guia. E que essa guia esteja espelhada em outro monitor voltado para o cliente.",
+    'customer_display_instraction' => 'Para que a tela de exibição do cliente funcione, certifique-se de que está aberta no mesmo navegador que a tela do POS em uma nova guia. E que essa guia esteja espelhada em outro monitor voltado para o cliente.',
     'data_parameter_type' => 'Tipo de Parâmetro de Dados',
     'format_4' => 'Formato 4',
     'aging_report' => 'Relatório de Envelhecimento',

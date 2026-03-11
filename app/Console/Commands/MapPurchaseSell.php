@@ -61,36 +61,36 @@ class MapPurchaseSell extends Command
             // 3. Reset mapping table.
             // 4. map the purchase to sales.
 
-            //STEP1
-            //DB::statement('Update variation_location_details set qty_available = 0');
+            // STEP1
+            // DB::statement('Update variation_location_details set qty_available = 0');
 
-            //Step 2
+            // Step 2
             // $qty_sums = DB::select('Select SUM(pl.quantity) as qty, pl.product_id, pl.variation_id, transactions.location_id from purchase_lines as pl join transactions on pl.transaction_id = transactions.id group by transactions.location_id, pl.product_id, pl.variation_id');
             // foreach ($qty_sums as $key => $value) {
             //     DB::statement('update variation_location_details set qty_available = qty_available + ? where variation_id = ? and product_id = ? and location_id = ?', [$value->qty, $value->variation_id, $value->product_id, $value->location_id]);
             // }
 
-            //Step 3: Delete existing mapping and sold quantity.
+            // Step 3: Delete existing mapping and sold quantity.
             DB::table('transaction_sell_lines_purchase_lines')->delete();
 
             PurchaseLine::whereNotNull('created_at')
                 ->update(['quantity_sold' => 0]);
 
-            //Get all business
+            // Get all business
             $businesses = Business::all();
 
             foreach ($businesses as $business) {
-                //Get all transactions
+                // Get all transactions
                 $transactions = Transaction::where('business_id', $business->id)
-                                    ->with('sell_lines')
-                                    ->where('type', 'sell')
-                                    ->where('status', 'final')
-                                    ->orderBy('created_at', 'asc')
-                                    ->get();
+                    ->with('sell_lines')
+                    ->where('type', 'sell')
+                    ->where('status', 'final')
+                    ->orderBy('created_at', 'asc')
+                    ->get();
 
                 $pos_settings = empty($business->pos_settings) ? $this->businessUtil->defaultPosSettings() : json_decode($business->pos_settings, true);
                 $pos_settings['allow_overselling'] = 1;
-                //Iterate through all transaction and add mapping. First go throught sell_lines having lot number.
+                // Iterate through all transaction and add mapping. First go throught sell_lines having lot number.
                 foreach ($transactions as $transaction) {
                     $business_formatted = ['id' => $business->id,
                         'accounting_method' => $business->accounting_method,
@@ -105,7 +105,7 @@ class MapPurchaseSell extends Command
                     }
                 }
 
-                //Then through sell_lines not having lot number
+                // Then through sell_lines not having lot number
                 foreach ($transactions as $transaction) {
                     $business_formatted = ['id' => $business->id,
                         'accounting_method' => $business->accounting_method,

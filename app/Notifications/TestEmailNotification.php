@@ -21,7 +21,7 @@ class TestEmailNotification extends Notification
     public function __construct($notificationInfo)
     {
         $this->notificationInfo = $notificationInfo;
-        $notificationUtil = new NotificationUtil();
+        $notificationUtil = new NotificationUtil;
         $notificationUtil->configureEmail($notificationInfo, false);
     }
 
@@ -45,7 +45,7 @@ class TestEmailNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('This is a test email');
+            ->line('This is a test email');
     }
 
     /**

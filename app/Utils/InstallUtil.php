@@ -27,25 +27,25 @@ class InstallUtil extends Util
         try {
             DB::beginTransaction();
 
-            //Get all business
+            // Get all business
             $businesses = Business::all();
 
             foreach ($businesses as $business) {
                 $stock_adjustments = DB::table('stock_adjustments')
-                                        ->where('business_id', $business->id)
-                                        ->get();
+                    ->where('business_id', $business->id)
+                    ->get();
 
                 if (! empty($stock_adjustments)) {
                     foreach ($stock_adjustments as $sa) {
                         $sa_lines = DB::table('stock_adjustment_lines')
-                                        ->where('stock_adjustment_id', $sa->id)
-                                        ->get();
+                            ->where('stock_adjustment_id', $sa->id)
+                            ->get();
 
                         if (! empty($sa_lines) && is_array($sa_lines)) {
                             foreach ($sa_lines as $line) {
                                 $variation = Variation::where('id', $line->variation_id)
-                                                ->where('product_id', $line->product_id)
-                                                ->first();
+                                    ->where('product_id', $line->product_id)
+                                    ->first();
 
                                 if (! empty($variation)) {
                                     $variation_location_d = VariationLocationDetails::where('variation_id', $variation->id)
@@ -107,7 +107,7 @@ class InstallUtil extends Util
     public function updateFrom13To20($db_version, $app_version)
     {
         if ($db_version == 1.3 && $app_version == 2.0) {
-            //Fix for purchase_lines table, copy data from  purchase_price to pp_without_discount
+            // Fix for purchase_lines table, copy data from  purchase_price to pp_without_discount
             DB::update('UPDATE `purchase_lines` set pp_without_discount=purchase_price');
         }
 
@@ -125,19 +125,19 @@ class InstallUtil extends Util
         try {
             DB::beginTransaction();
 
-            //Get all the variable products
+            // Get all the variable products
             $variable_products = Product::where('type', 'variable')
-                                    ->with('product_variations', 'product_variations.variations')
-                                    ->get();
+                ->with('product_variations', 'product_variations.variations')
+                ->get();
 
-            //Check if variation template exists; If not create new
+            // Check if variation template exists; If not create new
             foreach ($variable_products as $product) {
                 foreach ($product->product_variations as $product_variation) {
-                    //Update Product variations
+                    // Update Product variations
                     $variation_template = VariationTemplate::where('business_id', $product->business_id)
-                                    ->whereRaw('LOWER(name) = "'.strtolower($product_variation->name).'"')
-                                    ->with(['values'])
-                                    ->first();
+                        ->whereRaw('LOWER(name) = "'.strtolower($product_variation->name).'"')
+                        ->with(['values'])
+                        ->first();
 
                     if (empty($variation_template)) {
                         $variation_template = VariationTemplate::create([
@@ -148,9 +148,9 @@ class InstallUtil extends Util
                     $product_variation->variation_template_id = $variation_template->id;
                     $product_variation->save();
 
-                    //Update variations
+                    // Update variations
                     foreach ($product_variation->variations as $variation) {
-                        //Search variation value;If not found create new
+                        // Search variation value;If not found create new
                         $variation_value = $variation_template->values->filter(function ($item) use ($variation) {
                             return strtolower($variation->name) == strtolower($item->name);
                         })->first();

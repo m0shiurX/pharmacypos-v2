@@ -25,7 +25,7 @@ class CustomerNotification extends Notification
     public function __construct($notificationInfo)
     {
         $this->notificationInfo = $notificationInfo;
-        $notificationUtil = new NotificationUtil();
+        $notificationUtil = new NotificationUtil;
         $notificationUtil->configureEmail($notificationInfo);
         $this->cc = ! empty($notificationInfo['cc']) ? $notificationInfo['cc'] : null;
         $this->bcc = ! empty($notificationInfo['bcc']) ? $notificationInfo['bcc'] : null;
@@ -55,11 +55,11 @@ class CustomerNotification extends Notification
         $data = $this->notificationInfo;
 
         $mail = (new MailMessage)
-                    ->subject($data['subject'])
-                    ->view(
-                        'emails.plain_html',
-                        ['content' => $data['email_body']]
-                    );
+            ->subject($data['subject'])
+            ->view(
+                'emails.plain_html',
+                ['content' => $data['email_body']]
+            );
         if (! empty($this->cc)) {
             $mail->cc($this->cc);
         }

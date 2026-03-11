@@ -76,11 +76,11 @@ class Media extends Model
     /**
      * Uploads files from the request and add's medias to the supplied model.
      *
-     * @param  int  $business_id, obj $model, $obj $request, string $file_name
+     * @param  int  $business_id,  obj $model, $obj $request, string $file_name
      */
     public static function uploadMedia($business_id, $model, $request, $file_name, $is_single = false, $model_media_type = null)
     {
-        //If app environment is demo return null
+        // If app environment is demo return null
         if (config('app.env') == 'demo') {
             return null;
         }
@@ -90,7 +90,7 @@ class Media extends Model
         if ($request->hasFile($file_name)) {
             $files = $request->file($file_name);
 
-            //If multiple files present
+            // If multiple files present
             if (is_array($files)) {
                 foreach ($files as $file) {
                     $uploaded_file = Media::uploadFile($file);
@@ -107,7 +107,7 @@ class Media extends Model
             }
         }
 
-        //check if base64
+        // check if base64
         if (! empty($request->$file_name) && ! is_array($request->$file_name)) {
             $base64_array = explode(',', $request->$file_name);
 
@@ -119,7 +119,7 @@ class Media extends Model
         }
 
         if (! empty($uploaded_files)) {
-            //If one to one relationship upload single file
+            // If one to one relationship upload single file
             if ($is_single) {
                 $uploaded_files = $uploaded_files[0];
             }
@@ -172,7 +172,7 @@ class Media extends Model
     public static function deleteMedia($business_id, $media_id)
     {
         $media = Media::where('business_id', $business_id)
-                        ->findOrFail($media_id);
+            ->findOrFail($media_id);
 
         $media_path = public_path('uploads/media/'.$media->file_name);
 
@@ -204,7 +204,7 @@ class Media extends Model
 
                 $model->media()->saveMany($media_obj);
             } else {
-                //delete previous media if exists
+                // delete previous media if exists
                 $model->media()->delete();
 
                 $media_obj = new \App\Media([

@@ -63,12 +63,12 @@ class ImportSalesController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         $imported_sales = Transaction::where('business_id', $business_id)
-                            ->where('type', 'sell')
-                            ->whereNotNull('import_batch')
-                            ->with(['sales_person'])
-                            ->select('id', 'import_batch', 'import_time', 'invoice_no', 'created_by')
-                            ->orderBy('import_batch', 'desc')
-                            ->get();
+            ->where('type', 'sell')
+            ->whereNotNull('import_batch')
+            ->with(['sales_person'])
+            ->select('id', 'import_batch', 'import_time', 'invoice_no', 'created_by')
+            ->orderBy('import_batch', 'desc')
+            ->get();
 
         $imported_sales_array = [];
         foreach ($imported_sales as $sale) {
@@ -111,7 +111,7 @@ class ImportSalesController extends Controller
                 $import_fields[$key] = $value['label'];
             }
 
-            //Evaluate highest matching field with the header to pre select from dropdown
+            // Evaluate highest matching field with the header to pre select from dropdown
             $headers = $parsed_array[0];
             $match_array = [];
             foreach ($headers as $key => $value) {
@@ -122,7 +122,7 @@ class ImportSalesController extends Controller
                 }
                 $max_key = array_keys($match_percentage, max($match_percentage))[0];
 
-                //If match percentage is greater than 50% then pre select the value
+                // If match percentage is greater than 50% then pre select the value
                 $match_array[$key] = $match_percentage[$max_key] >= 50 ? $max_key : null;
             }
 
@@ -136,10 +136,10 @@ class ImportSalesController extends Controller
     {
         $array = Excel::toArray([], public_path('uploads/temp/'.$file_name))[0];
 
-        //remove blank columns from headers
+        // remove blank columns from headers
         $headers = array_filter($array[0]);
 
-        //Remove header row
+        // Remove header row
         unset($array[0]);
         $parsed_array[] = $headers;
         foreach ($array as $row) {
@@ -177,10 +177,10 @@ class ImportSalesController extends Controller
 
             $file_path = public_path('uploads/temp/'.$file_name);
             $parsed_array = $this->__parseData($file_name);
-            //Remove header row
+            // Remove header row
             unset($parsed_array[0]);
             $formatted_sales_data = $this->__formatSaleData($parsed_array, $import_fields, $group_by);
-            //Set maximum php execution time
+            // Set maximum php execution time
             ini_set('max_execution_time', 0);
             ini_set('memory_limit', -1);
 
@@ -226,20 +226,20 @@ class ImportSalesController extends Controller
             $sell_lines = [];
             foreach ($data as $line_data) {
                 if (! empty($line_data['sku'])) {
-                    
+
                     $variation = Variation::where('sub_sku', $line_data['sku'])
-                    ->whereHas('product', function ($query) use ($business_id) {
-                        $query->where('business_id', $business_id);
-                    })
-                    ->with(['product'])
-                    ->first();
+                        ->whereHas('product', function ($query) use ($business_id) {
+                            $query->where('business_id', $business_id);
+                        })
+                        ->with(['product'])
+                        ->first();
 
                     $product = ! empty($variation) ? $variation->product : null;
                 } else {
                     $product = Product::where('business_id', $business_id)
-                                    ->where('name', $line_data['product'])
-                                    ->with(['variations'])
-                                    ->first();
+                        ->where('name', $line_data['product'])
+                        ->with(['variations'])
+                        ->first();
                     $variation = ! empty($product) ? $product->variations->first() : null;
                 }
 
@@ -257,8 +257,8 @@ class ImportSalesController extends Controller
                 $price_inc_tax = $price_before_tax;
                 if (! empty($line_data['item_tax'])) {
                     $tax = TaxRate::where('business_id', $business_id)
-                                ->where('name', $line_data['item_tax'])
-                                ->first();
+                        ->where('name', $line_data['item_tax'])
+                        ->first();
 
                     if (empty($tax)) {
                         throw new \Exception(__('lang_v1.import_sale_tax_not_found', ['row' => $row_index, 'tax_name' => $line_data['item_tax']]));
@@ -268,7 +268,7 @@ class ImportSalesController extends Controller
                     $price_inc_tax = $price_before_tax + $item_tax;
                 }
 
-                //check if date is correct
+                // check if date is correct
                 if (! empty($line_data['date'])) {
                     try {
                         \Carbon::parse($line_data['date']);
@@ -298,14 +298,14 @@ class ImportSalesController extends Controller
                 if (! empty($line_data['unit'])) {
                     $unit_name = trim($line_data['unit']);
                     $unit = Unit::where('actual_name', $unit_name)
-                                ->orWhere('short_name', $unit_name)
-                                ->first();
+                        ->orWhere('short_name', $unit_name)
+                        ->first();
 
                     if (empty($unit)) {
                         throw new \Exception(__('lang_v1.import_sale_unit_not_found', ['row' => $row_index, 'unit_name' => $unit_name]));
                     }
 
-                    //Check if sub unit
+                    // Check if sub unit
                     if ($unit->id != $product->unit_id) {
                         $temp['sub_unit_id'] = $unit->id;
                         $temp['base_unit_multiplier'] = $unit->base_unit_multiplier;
@@ -320,15 +320,15 @@ class ImportSalesController extends Controller
             }
 
             $first_sell_line = $data[0];
-            //get contact
+            // get contact
             if (! empty($first_sell_line['customer_phone_number'])) {
                 $contact = Contact::where('business_id', $business_id)
-                                ->where('mobile', $first_sell_line['customer_phone_number'])
-                                ->first();
+                    ->where('mobile', $first_sell_line['customer_phone_number'])
+                    ->first();
             } elseif (! empty($first_sell_line['customer_email'])) {
                 $contact = Contact::where('business_id', $business_id)
-                                ->where('email', $first_sell_line['customer_email'])
-                                ->first();
+                    ->where('email', $first_sell_line['customer_email'])
+                    ->first();
             }
             if (empty($contact)) {
                 $customer_name = ! empty($first_sell_line['customer_name']) ? $first_sell_line['customer_name'] : $first_sell_line['customer_phone_number'];
@@ -358,8 +358,8 @@ class ImportSalesController extends Controller
             $is_types_service_enabled = $this->moduleUtil->isModuleEnabled('types_of_service');
             if ($is_types_service_enabled && ! empty($first_sell_line['types_of_service'])) {
                 $types_of_service = TypesOfService::where('business_id', $business_id)
-                                                ->where('name', $first_sell_line['types_of_service'])
-                                                ->first();
+                    ->where('name', $first_sell_line['types_of_service'])
+                    ->first();
 
                 if (empty($types_of_service)) {
                     throw new \Exception(__('lang_v1.types_of_servicet_not_found', ['row' => $row_index, 'types_of_service_name' => $first_sell_line['types_of_service']]));
@@ -397,12 +397,12 @@ class ImportSalesController extends Controller
                         $line_total_quantity = $line_total_quantity * $line['base_unit_multiplier'];
                     }
 
-                    //Decrease quantity of combo as well.
+                    // Decrease quantity of combo as well.
                     $combo_details = [];
                     foreach ($line['combo_variations'] as $combo_variation) {
                         $combo_variation_obj = Variation::find($combo_variation['variation_id']);
 
-                        //Multiply both subunit multiplier of child product and parent product to the quantity
+                        // Multiply both subunit multiplier of child product and parent product to the quantity
                         $combo_variation_quantity = $combo_variation['quantity'];
                         if (! empty($combo_variation['unit_id'])) {
                             $combo_variation_unit = Unit::find($combo_variation['unit_id']);
@@ -426,7 +426,7 @@ class ImportSalesController extends Controller
                 }
             }
 
-            //Update payment status
+            // Update payment status
             $this->transactionUtil->updatePaymentStatus($transaction->id, $transaction->final_total);
 
             $business_details = $this->businessUtil->getDetails($business_id);
@@ -487,7 +487,7 @@ class ImportSalesController extends Controller
             $formatted_array[$key]['service_custom_field4'] = $service_custom_field4_key !== false ? $value[$service_custom_field4_key] : null;
             $formatted_array[$key]['group_by'] = $value[$group_by];
 
-            //check empty
+            // check empty
             if (empty($formatted_array[$key]['customer_phone_number']) && empty($formatted_array[$key]['customer_email'])) {
                 throw new \Exception(__('lang_v1.email_or_phone_cannot_be_empty_in_row', ['row' => $row_index]));
             }
@@ -559,10 +559,10 @@ class ImportSalesController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $sales = Transaction::where('business_id', $business_id)
-                                ->where('type', 'sell')
-                                ->where('import_batch', $batch)
-                                ->get();
-            //Begin transaction
+                ->where('type', 'sell')
+                ->where('import_batch', $batch)
+                ->get();
+            // Begin transaction
             DB::beginTransaction();
             foreach ($sales as $sale) {
                 $this->transactionUtil->deleteSale($business_id, $sale->id);

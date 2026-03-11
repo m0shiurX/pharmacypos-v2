@@ -21,7 +21,6 @@ class ShiftController extends Controller
     /**
      * Constructor
      *
-     * @param  ModuleUtil  $moduleUtil
      * @return void
      */
     public function __construct(ModuleUtil $moduleUtil)
@@ -46,14 +45,14 @@ class ShiftController extends Controller
 
         if (request()->ajax()) {
             $shifts = Shift::where('essentials_shifts.business_id', $business_id)
-                        ->select([
-                            'id',
-                            'name',
-                            'type',
-                            'start_time',
-                            'end_time',
-                            'holidays',
-                        ]);
+                ->select([
+                    'id',
+                    'name',
+                    'type',
+                    'start_time',
+                    'end_time',
+                    'holidays',
+                ]);
 
             return Datatables::of($shifts)
                 ->editColumn('start_time', function ($row) {
@@ -102,7 +101,6 @@ class ShiftController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -176,7 +174,7 @@ class ShiftController extends Controller
             abort(403, 'Unauthorized action.');
         }
         $shift = Shift::where('business_id', $business_id)
-                    ->findOrFail($id);
+            ->findOrFail($id);
 
         $days = $this->moduleUtil->getDays();
 
@@ -186,7 +184,6 @@ class ShiftController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
      * @param  int  $id
      * @return Response
      */
@@ -223,8 +220,8 @@ class ShiftController extends Controller
             }
 
             $shift = Shift::where('business_id', $business_id)
-                        ->where('id', $id)
-                        ->update($input);
+                ->where('id', $id)
+                ->update($input);
 
             $output = ['success' => true,
                 'msg' => __('lang_v1.updated_success'),
@@ -261,8 +258,8 @@ class ShiftController extends Controller
             abort(403, 'Unauthorized action.');
         }
         $shift = Shift::where('business_id', $business_id)
-                    ->with(['user_shifts'])
-                    ->findOrFail($shift_id);
+            ->with(['user_shifts'])
+            ->findOrFail($shift_id);
 
         $users = User::forDropdown($business_id, false);
 
@@ -278,7 +275,7 @@ class ShiftController extends Controller
         }
 
         return view('essentials::attendance.add_shift_users')
-                ->with(compact('shift', 'users', 'user_shifts'));
+            ->with(compact('shift', 'users', 'user_shifts'));
     }
 
     public function postAssignUsers(Request $request)
@@ -293,7 +290,7 @@ class ShiftController extends Controller
         try {
             $shift_id = $request->input('shift_id');
             $shift = Shift::where('business_id', $business_id)
-                        ->find($shift_id);
+                ->find($shift_id);
 
             $user_shifts = $request->input('user_shift');
             $user_shift_data = [];
@@ -315,8 +312,8 @@ class ShiftController extends Controller
             }
 
             EssentialsUserShift::where('essentials_shift_id', $shift_id)
-                            ->whereNotIn('user_id', $user_ids)
-                            ->delete();
+                ->whereNotIn('user_id', $user_ids)
+                ->delete();
 
             $output = ['success' => true,
                 'msg' => __('lang_v1.added_success'),

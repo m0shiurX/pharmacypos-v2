@@ -2,11 +2,11 @@
 
 namespace Modules\Essentials\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
-use Modules\Essentials\Entities\EssentialsAttendance;
 use App\Utils\ModuleUtil;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
+use Modules\Essentials\Entities\EssentialsAttendance;
 
 class EssentialsServiceProvider extends ServiceProvider
 {
@@ -20,13 +20,13 @@ class EssentialsServiceProvider extends ServiceProvider
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
-        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
 
         view::composer([
             'essentials::layouts.partials.header_part',
             'report.profit_loss',
         ], function ($view) {
-            $module_util = new ModuleUtil();
+            $module_util = new ModuleUtil;
 
             if (auth()->user()->can('superadmin')) {
                 $__is_essentials_enabled = $module_util->isModuleInstalled('Essentials');
@@ -42,14 +42,14 @@ class EssentialsServiceProvider extends ServiceProvider
             $is_employee_allowed = false;
             $clock_in = null;
 
-            $module_util = new ModuleUtil();
+            $module_util = new ModuleUtil;
             if ($module_util->isModuleInstalled('Essentials')) {
                 $business_id = session()->get('user.business_id');
 
-                //Check if employee are allowed or not to enter own attendance.
+                // Check if employee are allowed or not to enter own attendance.
                 $is_employee_allowed = auth()->user()->can('essentials.allow_users_for_attendance_from_web');
 
-                //Check if clocked in or not.
+                // Check if clocked in or not.
                 $clock_in = EssentialsAttendance::where('essentials_attendances.business_id', $business_id)
                     ->leftjoin('essentials_shifts as es', 'es.id', '=', 'essentials_attendances.essentials_shift_id')
                     ->where('user_id', auth()->user()->id)
@@ -70,7 +70,7 @@ class EssentialsServiceProvider extends ServiceProvider
             'essentials::attendance.clock_in_clock_out_modal',
             'essentials::attendance.create',
         ], function ($view) {
-            $util = new \App\Utils\Util();
+            $util = new \App\Utils\Util;
             $ip_address = $util->getUserIpAddr();
 
             $settings = session()->get('business.essentials_settings');
@@ -86,7 +86,7 @@ class EssentialsServiceProvider extends ServiceProvider
     public function registerScheduleCommands()
     {
         $env = config('app.env');
-        //schedule command for auto clock out user
+        // schedule command for auto clock out user
         if ($env === 'live') {
             $this->app->booted(function () {
                 $schedule = $this->app->make(Schedule::class);
@@ -114,10 +114,10 @@ class EssentialsServiceProvider extends ServiceProvider
     protected function registerConfig()
     {
         $this->publishes([
-            __DIR__ . '/../Config/config.php' => config_path('essentials.php'),
+            __DIR__.'/../Config/config.php' => config_path('essentials.php'),
         ], 'config');
         $this->mergeConfigFrom(
-            __DIR__ . '/../Config/config.php',
+            __DIR__.'/../Config/config.php',
             'essentials'
         );
     }
@@ -131,14 +131,14 @@ class EssentialsServiceProvider extends ServiceProvider
     {
         $viewPath = resource_path('views/modules/essential');
 
-        $sourcePath = __DIR__ . '/../Resources/views';
+        $sourcePath = __DIR__.'/../Resources/views';
 
         $this->publishes([
             $sourcePath => $viewPath,
         ], 'views');
 
         $this->loadViewsFrom(array_merge(array_map(function ($path) {
-            return $path . '/modules/essential';
+            return $path.'/modules/essential';
         }, config('view.paths')), [$sourcePath]), 'essentials');
     }
 
@@ -154,7 +154,7 @@ class EssentialsServiceProvider extends ServiceProvider
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, 'essentials');
         } else {
-            $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'essentials');
+            $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'essentials');
         }
     }
 

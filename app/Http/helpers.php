@@ -6,7 +6,7 @@
 function pos_boot($ul, $pt, $lc, $em, $un, $type = 1, $pid = null)
 {
     // No-op: license verification removed
-    return;
+
 }
 
 if (! function_exists('humanFilesize')) {
@@ -21,7 +21,7 @@ if (! function_exists('humanFilesize')) {
             $i++;
         }
 
-        return round($size, $precision) . $units[$i];
+        return round($size, $precision).$units[$i];
     }
 }
 
@@ -89,11 +89,11 @@ if (! function_exists('str_ordinal')) {
 
         $indicators = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
 
-        $suffix = $superscript ? '<sup>' . $indicators[$number % 10] . '</sup>' : $indicators[$number % 10];
+        $suffix = $superscript ? '<sup>'.$indicators[$number % 10].'</sup>' : $indicators[$number % 10];
         if ($number % 100 >= 11 && $number % 100 <= 13) {
             $suffix = $superscript ? '<sup>th</sup>' : 'th';
         }
 
-        return number_format($number) . $suffix;
+        return number_format($number).$suffix;
     }
 }

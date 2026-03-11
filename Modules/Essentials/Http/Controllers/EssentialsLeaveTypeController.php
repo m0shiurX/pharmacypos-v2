@@ -46,7 +46,7 @@ class EssentialsLeaveTypeController extends Controller
 
         if (request()->ajax()) {
             $leave_types = EssentialsLeaveType::where('business_id', $business_id)
-                        ->select(['leave_type', 'max_leave_count', 'id']);
+                ->select(['leave_type', 'max_leave_count', 'id']);
 
             return Datatables::of($leave_types)
                 ->addColumn(
@@ -78,7 +78,6 @@ class EssentialsLeaveTypeController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -141,7 +140,7 @@ class EssentialsLeaveTypeController extends Controller
         }
 
         $leave_type = EssentialsLeaveType::where('business_id', $business_id)
-                                        ->find($id);
+            ->find($id);
 
         return view('essentials::leave_type.edit')->with(compact('leave_type'));
     }
@@ -149,7 +148,6 @@ class EssentialsLeaveTypeController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function update(Request $request, $id)
@@ -170,8 +168,8 @@ class EssentialsLeaveTypeController extends Controller
             $input['business_id'] = $business_id;
 
             EssentialsLeaveType::where('business_id', $business_id)
-                            ->where('id', $id)
-                            ->update($input);
+                ->where('id', $id)
+                ->update($input);
 
             $output = ['success' => true,
                 'msg' => __('lang_v1.updated_success'),
@@ -192,7 +190,5 @@ class EssentialsLeaveTypeController extends Controller
      *
      * @return Response
      */
-    public function destroy()
-    {
-    }
+    public function destroy() {}
 }

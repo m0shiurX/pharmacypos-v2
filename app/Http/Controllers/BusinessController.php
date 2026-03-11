@@ -17,9 +17,8 @@ use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Permission;
-use App\Rules\ReCaptcha;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Permission;
 
 class BusinessController extends Controller
 {
@@ -98,7 +97,7 @@ class BusinessController extends Controller
 
         $months = [];
         for ($i = 1; $i <= 12; $i++) {
-            $months[$i] = __('business.months.' . $i);
+            $months[$i] = __('business.months.'.$i);
         }
 
         $accounting_methods = $this->businessUtil->allAccountingMethods();
@@ -169,17 +168,16 @@ class BusinessController extends Controller
 
             if (config('constants.enable_recaptcha')) {
                 $recaptcha_validator = Validator::make($request->all(), [
-                    'g-recaptcha-response' => ['required', new \App\Rules\ReCaptcha]
+                    'g-recaptcha-response' => ['required', new \App\Rules\ReCaptcha],
                 ]);
                 if ($recaptcha_validator->fails()) {
                     return back()->withErrors($recaptcha_validator)->withInput();
                 }
             }
 
-
             DB::beginTransaction();
 
-            //Create owner.
+            // Create owner.
             $owner_details = $request->only(['surname', 'first_name', 'last_name', 'username', 'email', 'password', 'language']);
 
             $owner_details['language'] = empty($owner_details['language']) ? config('app.locale') : $owner_details['language'];
@@ -211,41 +209,41 @@ class BusinessController extends Controller
                 'alternate_number',
             ]);
 
-            //Create the business
+            // Create the business
             $business_details['owner_id'] = $user->id;
             if (! empty($business_details['start_date'])) {
                 $business_details['start_date'] = Carbon::createFromFormat(config('constants.default_date_format'), $business_details['start_date'])->toDateString();
             }
 
-            //upload logo
+            // upload logo
             $logo_name = $this->businessUtil->uploadFile($request, 'business_logo', 'business_logos', 'image');
             if (! empty($logo_name)) {
                 $business_details['logo'] = $logo_name;
             }
 
-            //default enabled modules
+            // default enabled modules
             $business_details['enabled_modules'] = ['purchases', 'add_sale', 'pos_sale', 'stock_transfers', 'stock_adjustment', 'expenses'];
 
             $business = $this->businessUtil->createNewBusiness($business_details);
 
-            //Update user with business id
+            // Update user with business id
             $user->business_id = $business->id;
             $user->save();
 
             $this->businessUtil->newBusinessDefaultResources($business->id, $user->id);
             $new_location = $this->businessUtil->addLocation($business->id, $business_location);
 
-            //create new permission with the new location
-            Permission::create(['name' => 'location.' . $new_location->id]);
+            // create new permission with the new location
+            Permission::create(['name' => 'location.'.$new_location->id]);
 
             DB::commit();
 
-            //Module function to be called after after business is created
+            // Module function to be called after after business is created
             if (config('app.env') != 'demo') {
                 $this->moduleUtil->getModuleData('after_business_created', ['business' => $business]);
             }
 
-            //Process payment information if superadmin is installed & package information is present
+            // Process payment information if superadmin is installed & package information is present
             $is_installed_superadmin = $this->moduleUtil->isSuperadminInstalled();
             $package_id = $request->get('package_id', null);
             if (
@@ -255,6 +253,7 @@ class BusinessController extends Controller
                 $package = \Modules\Superadmin\Entities\Package::find($package_id);
                 if (! empty($package)) {
                     Auth::login($user);
+
                     return redirect()->route('register-pay', ['package_id' => $package_id]);
                 }
             }
@@ -267,7 +266,7 @@ class BusinessController extends Controller
             return redirect('login')->with('status', $output);
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,
@@ -328,7 +327,7 @@ class BusinessController extends Controller
 
         $months = [];
         for ($i = 1; $i <= 12; $i++) {
-            $months[$i] = __('business.months.' . $i);
+            $months[$i] = __('business.months.'.$i);
         }
 
         $accounting_methods = [
@@ -376,7 +375,6 @@ class BusinessController extends Controller
     /**
      * Updates business settings
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function postBusinessSettings(Request $request)
@@ -473,7 +471,7 @@ class BusinessController extends Controller
 
             $business_details['stock_expiry_alert_days'] = ! empty($request->input('stock_expiry_alert_days')) ? $request->input('stock_expiry_alert_days') : 30;
 
-            //Check for Purchase currency
+            // Check for Purchase currency
             if (! empty($request->input('purchase_in_diff_currency')) && $request->input('purchase_in_diff_currency') == 1) {
                 $business_details['purchase_in_diff_currency'] = 1;
                 $business_details['purchase_currency_id'] = $request->input('purchase_currency_id');
@@ -484,7 +482,7 @@ class BusinessController extends Controller
                 $business_details['p_exchange_rate'] = 1;
             }
 
-            //upload logo
+            // upload logo
             $logo_name = $this->businessUtil->uploadFile($request, 'business_logo', 'business_logos', 'image');
             if (! empty($logo_name)) {
                 $business_details['logo'] = $logo_name;
@@ -511,14 +509,14 @@ class BusinessController extends Controller
             $business_id = request()->session()->get('user.business_id');
             $business = Business::where('id', $business_id)->first();
 
-            //Update business settings
+            // Update business settings
             if (! empty($business_details['logo'])) {
                 $business->logo = $business_details['logo'];
             } else {
                 unset($business_details['logo']);
             }
 
-            //System settings
+            // System settings
             $shortcuts = $request->input('shortcuts');
             $business_details['keyboard_shortcuts'] = json_encode($shortcuts);
 
@@ -533,7 +531,7 @@ class BusinessController extends Controller
                 if ($request->hasFile($inputName)) {
                     $image_name = $this->businessUtil->uploadFile($request, $inputName, 'carousel_images', 'image');
                     $pos_settings[$inputName] = $image_name; // Store image URL inside pos_settings
-                } else if (isset($pre_pos_setting[$inputName])) {
+                } elseif (isset($pre_pos_setting[$inputName])) {
                     $pos_settings[$inputName] = $pre_pos_setting[$inputName] ?? null;
                 }
             }
@@ -550,16 +548,16 @@ class BusinessController extends Controller
 
             $business_details['common_settings'] = ! empty($request->input('common_settings')) ? $request->input('common_settings') : [];
 
-            //Enabled modules
+            // Enabled modules
             $enabled_modules = $request->input('enabled_modules');
             $business_details['enabled_modules'] = ! empty($enabled_modules) ? $enabled_modules : null;
             $business->fill($business_details);
             $business->save();
 
-            //update session data
+            // update session data
             $request->session()->put('business', $business);
 
-            //Update Currency details
+            // Update Currency details
             $currency = Currency::find($business->currency_id);
             $request->session()->put('currency', [
                 'id' => $currency->id,
@@ -569,7 +567,7 @@ class BusinessController extends Controller
                 'decimal_separator' => $currency->decimal_separator,
             ]);
 
-            //update current financial year to session
+            // update current financial year to session
             $financial_year = $this->businessUtil->getCurrentFinancialYear($business->id);
             $request->session()->put('financial_year', $financial_year);
 
@@ -578,7 +576,7 @@ class BusinessController extends Controller
                 'msg' => __('business.settings_updated_success'),
             ];
         } catch (\Exception $e) {
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,
@@ -628,11 +626,11 @@ class BusinessController extends Controller
 
             if (! empty($settings_array['slides'])) {
                 foreach ($settings_array['slides'] as $key => $value) {
-                    $settings_array['slides'][$key]['image_url'] = ! empty($value['image']) ? url('uploads/img/' . $value['image']) : '';
+                    $settings_array['slides'][$key]['image_url'] = ! empty($value['image']) ? url('uploads/img/'.$value['image']) : '';
                 }
             }
         } catch (\Exception $e) {
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             return $this->respondWentWrong($e);
         }
@@ -659,7 +657,7 @@ class BusinessController extends Controller
                 'msg' => __('lang_v1.email_tested_successfully'),
             ];
         } catch (\Exception $e) {
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
             $output = [
                 'success' => 0,
                 'msg' => $e->getMessage(),
@@ -691,6 +689,7 @@ class BusinessController extends Controller
                 if ($parameter_type == 'json') {
 
                     $body = json_decode($response->getBody(), true);
+
                     // Optional: Check if 'status' or 'success' is true inside JSON (based on API format)
                     return ['success' => true, 'msg' => 'SMS sent successfully', 'data' => $body];
                 }
@@ -703,7 +702,7 @@ class BusinessController extends Controller
                 'msg' => $response,
             ];
         } catch (\Exception $e) {
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
             $output = [
                 'success' => 0,
                 'msg' => $e->getMessage(),

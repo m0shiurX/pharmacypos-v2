@@ -51,7 +51,7 @@ class BackUpController extends Controller
         $backups = array_reverse($backups);
 
         $cron_job_command = $this->commonUtil->getCronJobCommand();
-        
+
         // $backup_clean_cron_job_command = $this->commonUtil->getBackupCleanCronJobCommand();
 
         return view('backup.index')
@@ -70,7 +70,7 @@ class BackUpController extends Controller
         }
 
         try {
-            //Disable in demo
+            // Disable in demo
             $notAllowed = $this->commonUtil->notAllowedInDemo();
             if (! empty($notAllowed)) {
                 return $notAllowed;
@@ -106,7 +106,7 @@ class BackUpController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        //Disable in demo
+        // Disable in demo
         if (config('app.env') == 'demo') {
             $output = ['success' => 0,
                 'msg' => 'Feature disabled in demo!!',
@@ -120,13 +120,13 @@ class BackUpController extends Controller
         if ($disk->exists($file)) {
             $fs = Storage::disk(config('backup.backup.destination.disks')[0])->getDriver();
             $stream = $fs->readStream($file);
-            //var_dump($fs->size($file));exit;
+            // var_dump($fs->size($file));exit;
 
             return \Response::stream(function () use ($stream) {
                 fpassthru($stream);
             }, 200, [
                 'Content-Type' => $fs->mimeType($file),
-                //'Content-Length' => $fs->getSize($file),
+                // 'Content-Length' => $fs->getSize($file),
                 'Content-disposition' => 'attachment; filename="'.basename($file).'"',
             ]);
         } else {
@@ -139,12 +139,12 @@ class BackUpController extends Controller
      */
     public function delete($file_name)
     {
-        
+
         if (! auth()->user()->can('backup')) {
             abort(403, 'Unauthorized action.');
         }
 
-        //Disable in demo
+        // Disable in demo
         if (config('app.env') == 'demo') {
             $output = ['success' => 0,
                 'msg' => 'Feature disabled in demo!!',

@@ -58,7 +58,6 @@ class ReminderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -120,8 +119,8 @@ class ReminderController extends Controller
             $user_id = request()->session()->get('user.id');
 
             $reminder = Reminder::where('business_id', $business_id)
-                              ->where('user_id', $user_id)
-                              ->find($id);
+                ->where('user_id', $user_id)
+                ->find($id);
 
             $time = $this->commonUtil->format_time($reminder->time);
 
@@ -140,7 +139,6 @@ class ReminderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function update(Request $request, $id)
@@ -193,9 +191,9 @@ class ReminderController extends Controller
                 $user_id = request()->session()->get('user.id');
 
                 Reminder::where('business_id', $business_id)
-                  ->where('user_id', $user_id)
-                  ->where('id', $id)
-                  ->delete();
+                    ->where('user_id', $user_id)
+                    ->where('id', $id)
+                    ->delete();
 
                 $output = ['success' => true,
                     'msg' => trans('lang_v1.deleted_success'),

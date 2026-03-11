@@ -3,8 +3,8 @@
 namespace Modules\Essentials\Entities;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class EssentialsLeave extends Model
 {
@@ -27,7 +27,7 @@ class EssentialsLeave extends Model
     {
         return LogOptions::defaults();
     }
-    
+
     public function user()
     {
         return $this->belongsTo(\App\User::class);

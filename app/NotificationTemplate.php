@@ -23,8 +23,8 @@ class NotificationTemplate extends Model
     public static function getTemplate($business_id, $template_for)
     {
         $notif_template = NotificationTemplate::where('business_id', $business_id)
-                                                        ->where('template_for', $template_for)
-                                                        ->first();
+            ->where('template_for', $template_for)
+            ->first();
         $template = [
             'subject' => ! empty($notif_template->subject) ? $notif_template->subject : '',
             'sms_body' => ! empty($notif_template->sms_body) ? $notif_template->sms_body : '',

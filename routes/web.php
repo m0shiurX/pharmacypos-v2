@@ -26,6 +26,7 @@ use App\Http\Controllers\Install;
 use App\Http\Controllers\InvoiceLayoutController;
 use App\Http\Controllers\InvoiceSchemeController;
 use App\Http\Controllers\LabelsController;
+use App\Http\Controllers\LanguageWordController;
 use App\Http\Controllers\LedgerDiscountController;
 use App\Http\Controllers\LocationSettingsController;
 use App\Http\Controllers\ManageUserController;
@@ -57,10 +58,9 @@ use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VariationTemplateController;
 use App\Http\Controllers\WarrantyController;
-use App\Http\Controllers\LanguageWordController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,7 +96,7 @@ Route::middleware(['setData'])->group(function () {
         ->name('confirm_payment');
 });
 
-//Routes for authenticated users only
+// Routes for authenticated users only
 Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 'AdminSidebarMenu', 'CheckUserLogin'])->group(function () {
     Route::post('change-language', function (\Illuminate\Http\Request $request) {
         $lang = $request->input('language');
@@ -106,6 +106,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
             $user->save();
             $request->session()->put('user.language', $lang);
         }
+
         return redirect()->back();
     })->name('change-language');
 
@@ -196,7 +197,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/products/get_variation_value_row', [ProductController::class, 'getVariationValueRow']);
     Route::post('/products/check_product_sku', [ProductController::class, 'checkProductSku']);
     Route::post('/products/check_product_name', [ProductController::class, 'checkProductName']);
-    Route::post('/products/validate_variation_skus', [ProductController::class, 'validateVaritionSkus']); //validates multiple skus at once
+    Route::post('/products/validate_variation_skus', [ProductController::class, 'validateVaritionSkus']); // validates multiple skus at once
     Route::get('/products/quick_add', [ProductController::class, 'quickAdd']);
     Route::post('/products/save_quick_product', [ProductController::class, 'saveQuickProduct']);
     Route::get('/products/get-combo-product-entry-row', [ProductController::class, 'getComboProductEntryRow']);
@@ -259,16 +260,16 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/barcodes/set_default/{id}', [BarcodeController::class, 'setDefault']);
     Route::resource('barcodes', BarcodeController::class);
 
-    //Invoice schemes..
+    // Invoice schemes..
     Route::get('/invoice-schemes/set_default/{id}', [InvoiceSchemeController::class, 'setDefault']);
     Route::resource('invoice-schemes', InvoiceSchemeController::class);
 
-    //Print Labels
+    // Print Labels
     Route::get('/labels/show', [LabelsController::class, 'show']);
     Route::get('/labels/add-product-row', [LabelsController::class, 'addProductRow']);
     Route::get('/labels/preview', [LabelsController::class, 'preview']);
 
-    //Reports...
+    // Reports...
     Route::get('/reports/gst-purchase-report', [ReportController::class, 'gstPurchaseReport']);
     Route::get('/reports/gst-sales-report', [ReportController::class, 'gstSalesReport']);
     Route::get('/reports/get-stock-by-sell-price', [ReportController::class, 'getStockBySellingPrice']);
@@ -313,30 +314,30 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 
     Route::get('business-location/activate-deactivate/{location_id}', [BusinessLocationController::class, 'activateDeactivateLocation']);
 
-    //Business Location Settings...
+    // Business Location Settings...
     Route::prefix('business-location/{location_id}')->name('location.')->group(function () {
         Route::get('settings', [LocationSettingsController::class, 'index'])->name('settings');
         Route::post('settings', [LocationSettingsController::class, 'updateSettings'])->name('settings_update');
     });
 
-    //Business Locations...
+    // Business Locations...
     Route::post('business-location/check-location-id', [BusinessLocationController::class, 'checkLocationId']);
     Route::resource('business-location', BusinessLocationController::class);
 
-    //Invoice layouts..
+    // Invoice layouts..
     Route::resource('invoice-layouts', InvoiceLayoutController::class);
 
     Route::post('get-expense-sub-categories', [ExpenseCategoryController::class, 'getSubCategories']);
 
-    //Expense Categories...
+    // Expense Categories...
     Route::resource('expense-categories', ExpenseCategoryController::class);
 
-    //Expenses...
+    // Expenses...
     Route::resource('expenses', ExpenseController::class);
     Route::get('import-expense', [ExpenseController::class, 'importExpense']);
     Route::post('store-import-expense', [ExpenseController::class, 'storeExpenseImport']);
 
-    //Transaction payments...
+    // Transaction payments...
     // Route::get('/payments/opening-balance/{contact_id}', [TransactionPaymentController::class, 'getOpeningBalancePayments']);
     Route::get('/payments/show-child-payments/{payment_id}', [TransactionPaymentController::class, 'showChildPayments']);
     Route::get('/payments/view-payment/{payment_id}', [TransactionPaymentController::class, 'viewPayment']);
@@ -345,7 +346,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::post('/payments/pay-contact-due', [TransactionPaymentController::class, 'postPayContactDue']);
     Route::resource('payments', TransactionPaymentController::class);
 
-    //Printers...
+    // Printers...
     Route::resource('printers', PrinterController::class);
 
     Route::get('/stock-adjustments/remove-expired-stock/{purchase_line_id}', [StockAdjustmentController::class, 'removeExpiredStock']);
@@ -357,14 +358,14 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::post('/cash-register/close-register', [CashRegisterController::class, 'postCloseRegister']);
     Route::resource('cash-register', CashRegisterController::class);
 
-    //Import products
+    // Import products
     Route::get('/import-products', [ImportProductsController::class, 'index']);
     Route::post('/import-products/store', [ImportProductsController::class, 'store']);
 
-    //Sales Commission Agent
+    // Sales Commission Agent
     Route::resource('sales-commission-agents', SalesCommissionAgentController::class);
 
-    //Stock Transfer
+    // Stock Transfer
     Route::get('stock-transfers/print/{id}', [StockTransferController::class, 'printInvoice']);
     Route::post('stock-transfers/update-status/{id}', [StockTransferController::class, 'updateStatus']);
     Route::resource('stock-transfers', StockTransferController::class);
@@ -372,14 +373,14 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/opening-stock/add/{product_id}', [OpeningStockController::class, 'add']);
     Route::post('/opening-stock/save', [OpeningStockController::class, 'save']);
 
-    //Customer Groups
+    // Customer Groups
     Route::resource('customer-group', CustomerGroupController::class);
 
-    //Import opening stock
+    // Import opening stock
     Route::get('/import-opening-stock', [ImportOpeningStockController::class, 'index']);
     Route::post('/import-opening-stock/store', [ImportOpeningStockController::class, 'store']);
 
-    //Sell return
+    // Sell return
     Route::get('validate-invoice-to-return/{invoice_no}', [SellReturnController::class, 'validateInvoiceToReturn']);
     // service staff replacement
     Route::get('validate-invoice-to-service-staff-replacement/{invoice_no}', [SellPosController::class, 'validateInvoiceToServiceStaffReplacement']);
@@ -390,7 +391,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/sell-return/print/{id}', [SellReturnController::class, 'printInvoice']);
     Route::get('/sell-return/add/{id}', [SellReturnController::class, 'add']);
 
-    //Backup
+    // Backup
     Route::get('backup/download/{file_name}', [BackUpController::class, 'download']);
     Route::get('backup/{id}/delete', [BackUpController::class, 'delete'])->name('delete_backup');
     Route::resource('backup', BackUpController::class)->only('index', 'create', 'store');
@@ -440,12 +441,12 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 
     Route::resource('account-types', AccountTypeController::class);
 
-    //Restaurant module
+    // Restaurant module
     Route::prefix('modules')->group(function () {
         Route::resource('tables', Restaurant\TableController::class);
         Route::resource('modifiers', Restaurant\ModifierSetsController::class);
 
-        //Map modifier to products
+        // Map modifier to products
         Route::get('/product-modifiers/{id}/edit', [Restaurant\ProductModifierSetController::class, 'edit']);
         Route::post('/product-modifiers/{id}/update', [Restaurant\ProductModifierSetController::class, 'update']);
         Route::get('/product-modifiers/product-row/{product_id}', [Restaurant\ProductModifierSetController::class, 'product_row']);
@@ -495,7 +496,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 
     Route::get('view-media/{model_id}', [SellController::class, 'viewMedia']);
 
-    //common controller for document & note
+    // common controller for document & note
     Route::get('get-document-note-page', [DocumentAndNoteController::class, 'getDocAndNoteIndexPage']);
     Route::post('post-document-upload', [DocumentAndNoteController::class, 'postMedia']);
     Route::resource('note-documents', DocumentAndNoteController::class);
@@ -520,6 +521,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
             Artisan::call('config:cache');
             Artisan::call('route:clear');
             Artisan::call('view:clear');
+
             return response()->json(['success' => true, 'message' => 'All caches cleared successfully.']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
@@ -537,7 +539,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 //     Route::post('orders', [SellPosController::class, 'placeOrdersApi']);
 // });
 
-//common route
+// common route
 Route::middleware(['auth'])->group(function () {
     Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout']);
 });

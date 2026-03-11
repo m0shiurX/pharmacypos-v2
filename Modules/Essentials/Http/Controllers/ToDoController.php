@@ -9,7 +9,6 @@ use App\Utils\Util;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\View;
 use Modules\Essentials\Entities\EssentialsTodoComment;
 use Modules\Essentials\Entities\ToDo;
 use Modules\Essentials\Notifications\NewTaskCommentNotification;
@@ -72,8 +71,8 @@ class ToDoController extends Controller
 
         if (request()->ajax()) {
             $todos = ToDo::where('business_id', $business_id)
-                        ->with(['users', 'assigned_by'])
-                        ->select('*');
+                ->with(['users', 'assigned_by'])
+                ->select('*');
 
             if (! empty($request->priority)) {
                 $todos->where('priority', $request->priority);
@@ -83,7 +82,7 @@ class ToDoController extends Controller
                 $todos->where('status', $request->status);
             }
 
-            //If not admin show only assigned task
+            // If not admin show only assigned task
             if (! $is_admin) {
                 $todos->where(function ($query) use ($auth_id) {
                     $query->where('created_by', $auth_id)
@@ -93,7 +92,7 @@ class ToDoController extends Controller
                 });
             }
 
-            //Filter by user id.
+            // Filter by user id.
             if (! empty($request->user_id)) {
                 $user_id = $request->user_id;
                 $todos->whereHas('users', function ($q) use ($user_id) {
@@ -101,12 +100,12 @@ class ToDoController extends Controller
                 });
             }
 
-            //Filter by date.
+            // Filter by date.
             if (! empty($request->start_date) && ! empty($request->end_date)) {
                 $start = $request->start_date;
                 $end = $request->end_date;
                 $todos->whereDate('date', '>=', $start)
-                            ->whereDate('date', '<=', $end);
+                    ->whereDate('date', '<=', $end);
             }
 
             return Datatables::of($todos)
@@ -226,16 +225,16 @@ class ToDoController extends Controller
         $is_admin = $this->moduleUtil->is_admin(auth()->user(), $business_id);
 
         $query = ToDo::where('business_id', $business_id)
-                    ->with([
-                        'assigned_by',
-                        'comments',
-                        'comments.added_by',
-                        'media',
-                        'users',
-                        'media.uploaded_by_user',
-                    ]);
+            ->with([
+                'assigned_by',
+                'comments',
+                'comments.added_by',
+                'media',
+                'users',
+                'media.uploaded_by_user',
+            ]);
 
-        //If not admin show only assigned task
+        // If not admin show only assigned task
         if (! $is_admin) {
             $query->where(function ($query) {
                 $query->where('created_by', auth()->user()->id)
@@ -255,9 +254,9 @@ class ToDoController extends Controller
         $priorities = ToDo::getTaskPriorities();
 
         $activities = Activity::forSubject($todo)
-           ->with(['causer', 'subject'])
-           ->latest()
-           ->get();
+            ->with(['causer', 'subject'])
+            ->latest()
+            ->get();
 
         return view('essentials::todo.view')->with(compact(
             'todo',
@@ -283,7 +282,7 @@ class ToDoController extends Controller
         $user_id = auth()->user()->id;
         $query = ToDo::where('business_id', $business_id);
 
-        //Non admin can update only assigned tasks
+        // Non admin can update only assigned tasks
         $is_admin = $this->moduleUtil->is_admin(auth()->user(), $business_id);
         if (! $is_admin) {
             $query->where(function ($query) {
@@ -309,7 +308,6 @@ class ToDoController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -340,13 +338,13 @@ class ToDoController extends Controller
                 $input['status'] = ! empty($input['status']) ? $input['status'] : 'new';
 
                 $users = $request->input('users');
-                //Can add only own tasks if permission not given
+                // Can add only own tasks if permission not given
                 if (! auth()->user()->can('essentials.assign_todos') || empty($users)) {
                     $users = [$created_by];
                 }
 
                 $ref_count = $this->commonUtil->setAndGetReferenceCount('essentials_todos');
-                //Generate reference number
+                // Generate reference number
                 $settings = request()->session()->get('business.essentials_settings');
                 $settings = ! empty($settings) ? json_decode($settings, true) : [];
                 $prefix = ! empty($settings['essentials_todos_prefix']) ? $settings['essentials_todos_prefix'] : '';
@@ -356,7 +354,7 @@ class ToDoController extends Controller
 
                 $to_dos->users()->sync($users);
 
-                //Exclude created user from notification
+                // Exclude created user from notification
                 $users = $to_dos->users->filter(function ($item) use ($created_by) {
                     return $item->id != $created_by;
                 });
@@ -386,7 +384,6 @@ class ToDoController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function update(Request $request, $id)
@@ -419,7 +416,7 @@ class ToDoController extends Controller
 
                 $query = ToDo::where('business_id', $business_id);
 
-                //Non admin can update only assigned tasks
+                // Non admin can update only assigned tasks
                 $is_admin = $this->moduleUtil->is_admin(auth()->user(), $business_id);
                 if (! $is_admin) {
                     $query->where(function ($query) {
@@ -477,7 +474,7 @@ class ToDoController extends Controller
                 $is_admin = $this->moduleUtil->is_admin(auth()->user(), $business_id);
 
                 $todo = ToDo::where('business_id', $business_id);
-                //Can destroy only own created tasks if not admin
+                // Can destroy only own created tasks if not admin
                 if (! $is_admin) {
                     $todo->where('created_by', auth()->user()->id);
                 }
@@ -504,7 +501,6 @@ class ToDoController extends Controller
     /**
      * Add comment to the task
      *
-     * @param  Request  $request
      * @return Response
      */
     public function addComment(Request $request)
@@ -518,10 +514,10 @@ class ToDoController extends Controller
             try {
                 $input = $request->only(['task_id', 'comment']);
                 $query = ToDo::where('business_id', $business_id)
-                            ->with('users');
+                    ->with('users');
                 $auth_id = auth()->user()->id;
 
-                //Non admin can add comment to only assigned tasks
+                // Non admin can add comment to only assigned tasks
                 $is_admin = $this->moduleUtil->is_admin(auth()->user(), $business_id);
                 if (! $is_admin) {
                     $query->where(function ($query) {
@@ -539,15 +535,15 @@ class ToDoController extends Controller
                 $comment = EssentialsTodoComment::create($input);
 
                 $comment_html = view('essentials::todo.comment')
-                                ->with(compact('comment'))
-                                ->render();
+                    ->with(compact('comment'))
+                    ->render();
                 $output = [
                     'success' => true,
                     'comment_html' => $comment_html,
                     'msg' => __('lang_v1.success'),
                 ];
 
-                //Remove auth user from users collection
+                // Remove auth user from users collection
                 $users = $todo->users->filter(function ($user) use ($auth_id) {
                     return $user->id != $auth_id;
                 });
@@ -569,7 +565,6 @@ class ToDoController extends Controller
     /**
      * Upload documents for a task
      *
-     * @param  Request  $request
      * @return Response
      */
     public function uploadDocument(Request $request)
@@ -584,7 +579,7 @@ class ToDoController extends Controller
             $query = ToDo::with('users')->where('business_id', $business_id);
             $auth_id = auth()->user()->id;
 
-            //Non admin can add comment to only assigned tasks
+            // Non admin can add comment to only assigned tasks
             $is_admin = $this->moduleUtil->is_admin(auth()->user(), $business_id);
             if (! $is_admin) {
                 $query->where(function ($query) {
@@ -599,7 +594,7 @@ class ToDoController extends Controller
 
             Media::uploadMedia($todo->business_id, $todo, $request, 'documents');
 
-            //Remove auth user from users collection
+            // Remove auth user from users collection
             $users = $todo->users->filter(function ($user) use ($auth_id) {
                 return $user->id != $auth_id;
             });
@@ -644,8 +639,8 @@ class ToDoController extends Controller
 
         try {
             $comment = EssentialsTodoComment::where('comment_by', auth()->user()->id)
-                                    ->where('id', $id)
-                                    ->delete();
+                ->where('id', $id)
+                ->delete();
             $output = [
                 'success' => true,
                 'msg' => __('lang_v1.success'),
@@ -680,7 +675,7 @@ class ToDoController extends Controller
             if ($media->model_type == 'Modules\Essentials\Entities\ToDo') {
                 $todo = ToDo::findOrFail($media->model_id);
 
-                //Can delete document only if task is assigned by or assigned to the user
+                // Can delete document only if task is assigned by or assigned to the user
                 if (in_array(auth()->user()->id, [$todo->user_id, $todo->created_by])) {
                     unlink($media->display_path);
                     $media->delete();

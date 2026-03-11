@@ -16,8 +16,8 @@ return [
     'langs_rtl' => ['ar'],
     'non_utf8_languages' => ['ar', 'hi', 'ps'],
 
-    'document_size_limit' => '5000000', //in Bytes,
-    'image_size_limit' => '5000000', //in Bytes
+    'document_size_limit' => '5000000', // in Bytes,
+    'image_size_limit' => '5000000', // in Bytes
 
     'asset_version' => 670,
 
@@ -25,19 +25,19 @@ return [
 
     'iraqi_selling_price_adjustment' => false,
 
-    //currency_precision & quantity_precision moved to business settings
+    // currency_precision & quantity_precision moved to business settings
 
     'product_img_path' => 'img',
 
     'enable_sell_in_diff_currency' => false,
     'currency_exchange_rate' => 1,
-    'orders_refresh_interval' => 600, //Auto refresh interval on Kitchen and Orders page in seconds,
+    'orders_refresh_interval' => 600, // Auto refresh interval on Kitchen and Orders page in seconds,
 
-    'pos_recent_transactions_display_limit' => env('POS_RECENT_TRANSACTIONS_DISPLAY_LIMIT', 10), //Controls how many recent transactions are shown in POS recent transactions list default is 10
+    'pos_recent_transactions_display_limit' => env('POS_RECENT_TRANSACTIONS_DISPLAY_LIMIT', 10), // Controls how many recent transactions are shown in POS recent transactions list default is 10
 
-    'default_date_format' => 'm/d/Y', //Default date format to be used if session is not set. All valid formats can be found on https://www.php.net/manual/en/function.date.php
+    'default_date_format' => 'm/d/Y', // Default date format to be used if session is not set. All valid formats can be found on https://www.php.net/manual/en/function.date.php
 
-    'new_notification_count_interval' => 60, //Interval to check for new notifications in seconds;Default is 60sec
+    'new_notification_count_interval' => 60, // Interval to check for new notifications in seconds;Default is 60sec
 
     'administrator_usernames' => env('ADMINISTRATOR_USERNAMES'),
     'SHOW_REPAIR_STATUS_LOGIN_SCREEN' => env('SHOW_REPAIR_STATUS_LOGIN_SCREEN', true),
@@ -48,7 +48,7 @@ return [
     'google_recaptcha_secret' => env('GOOGLE_RECAPTCHA_SECRET'),
     'enable_recaptcha' => env('ENABLE_RECAPTCHA', false),
 
-    'mpdf_temp_path' => storage_path('app/pdf'), //Temporary path used by mpdf
+    'mpdf_temp_path' => storage_path('app/pdf'), // Temporary path used by mpdf
 
     'document_upload_mimes_types' => [
         'application/pdf' => '.pdf',
@@ -60,19 +60,19 @@ return [
         'image/jpg' => '.jpg',
         'image/png' => '.png',
 
-    ], //List of MIME type: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+    ], // List of MIME type: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
     'show_report_606' => false,
     'show_report_607' => false,
     'whatsapp_base_url' => 'https://wa.me',
     'enable_crm_call_log' => false,
-    'enable_product_bulk_edit' => false,  //Will be depreciated in future
-    'enable_convert_draft_to_invoice' => false, //Experimental beta feature.
-    'enable_download_pdf' => false,         //Experimental feature
+    'enable_product_bulk_edit' => false,  // Will be depreciated in future
+    'enable_convert_draft_to_invoice' => false, // Experimental beta feature.
+    'enable_download_pdf' => false,         // Experimental feature
     'invoice_scheme_separator' => '-',
-    'show_payments_recovered_today' => false, //Displays payment recovered today table on dashboard
+    'show_payments_recovered_today' => false, // Displays payment recovered today table on dashboard
     'enable_b2b_marketplace' => false,
-    'enable_contact_assign' => true, //Used in add/edit contacts screen
+    'enable_contact_assign' => true, // Used in add/edit contacts screen
     'show_payment_type_on_contact_pay' => false,
     'enable_gst_report_india' => env('ENABLE_GST_REPORT_INDIA', false),
-    'enable_secondary_unit' => false, //Experimental feature, may depreciate
+    'enable_secondary_unit' => false, // Experimental feature, may depreciate
 ];

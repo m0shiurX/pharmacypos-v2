@@ -13,9 +13,9 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     use HasFactory;
+    use HasRoles;
     use Notifiable;
     use SoftDeletes;
-    use HasRoles;
 
     /**
      * The attributes that aren't mass assignable.
@@ -120,7 +120,7 @@ class User extends Authenticatable
             $all_locations = BusinessLocation::where('business_id', $business_id)->get();
             $permissions = $user->permissions->pluck('name')->all();
             foreach ($all_locations as $location) {
-                if (in_array('location.' . $location->id, $permissions)) {
+                if (in_array('location.'.$location->id, $permissions)) {
                     $permitted_locations[] = $location->id;
                 }
             }
@@ -151,11 +151,11 @@ class User extends Authenticatable
     {
         $user = auth()->user();
         $permitted_locations = $user->permitted_locations();
-        $is_admin = $user->hasAnyPermission('Admin#' . $user->business_id);
+        $is_admin = $user->hasAnyPermission('Admin#'.$user->business_id);
         if ($permitted_locations != 'all' && ! $user->can('superadmin') && ! $is_admin) {
             $permissions = ['access_all_locations'];
             foreach ($permitted_locations as $location_id) {
-                $permissions[] = 'location.' . $location_id;
+                $permissions[] = 'location.'.$location_id;
             }
 
             return $query->whereHas('permissions', function ($q) use ($permissions) {
@@ -169,9 +169,9 @@ class User extends Authenticatable
     /**
      * Return list of users dropdown for a business
      *
-     * @param $business_id int
-     * @param $prepend_none = true (boolean)
-     * @param $include_commission_agents = false (boolean)
+     * @param  $business_id  int
+     * @param  $prepend_none  = true (boolean)
+     * @param  $include_commission_agents  = false (boolean)
      * @return array users
      */
     public static function forDropdown($business_id, $prepend_none = true, $include_commission_agents = false, $prepend_all = false, $check_location_permission = false)
@@ -190,12 +190,12 @@ class User extends Authenticatable
         $all_users = $query->select('id', DB::raw("CONCAT(COALESCE(surname, ''),' ',COALESCE(first_name, ''),' ',COALESCE(last_name,'')) as full_name"))->get();
         $users = $all_users->pluck('full_name', 'id');
 
-        //Prepend none
+        // Prepend none
         if ($prepend_none) {
             $users = $users->prepend(__('lang_v1.none'), '');
         }
 
-        //Prepend all
+        // Prepend all
         if ($prepend_all) {
             $users = $users->prepend(__('lang_v1.all'), '');
         }
@@ -206,8 +206,8 @@ class User extends Authenticatable
     /**
      * Return list of sales commission agents dropdown for a business
      *
-     * @param $business_id int
-     * @param $prepend_none = true (boolean)
+     * @param  $business_id  int
+     * @param  $prepend_none  = true (boolean)
      * @return array users
      */
     public static function saleCommissionAgentsDropdown($business_id, $prepend_none = true)
@@ -218,7 +218,7 @@ class User extends Authenticatable
 
         $users = $all_cmmsn_agnts->pluck('full_name', 'id');
 
-        //Prepend none
+        // Prepend none
         if ($prepend_none) {
             $users = $users->prepend(__('lang_v1.none'), '');
         }
@@ -229,9 +229,9 @@ class User extends Authenticatable
     /**
      * Return list of users dropdown for a business
      *
-     * @param $business_id int
-     * @param $prepend_none = true (boolean)
-     * @param $prepend_all = false (boolean)
+     * @param  $business_id  int
+     * @param  $prepend_none  = true (boolean)
+     * @param  $prepend_all  = false (boolean)
      * @return array users
      */
     public static function allUsersDropdown($business_id, $prepend_none = true, $prepend_all = false)
@@ -241,12 +241,12 @@ class User extends Authenticatable
 
         $users = $all_users->pluck('full_name', 'id');
 
-        //Prepend none
+        // Prepend none
         if ($prepend_none) {
             $users = $users->prepend(__('lang_v1.none'), '');
         }
 
-        //Prepend all
+        // Prepend all
         if ($prepend_all) {
             $users = $users->prepend(__('lang_v1.all'), '');
         }
@@ -318,7 +318,7 @@ class User extends Authenticatable
         if (isset($this->media->display_url)) {
             $img_src = $this->media->display_url;
         } else {
-            $img_src = 'https://ui-avatars.com/api/?name=' . $this->first_name;
+            $img_src = 'https://ui-avatars.com/api/?name='.$this->first_name;
         }
 
         return $img_src;

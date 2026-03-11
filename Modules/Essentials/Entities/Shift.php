@@ -37,7 +37,7 @@ class Shift extends Model
     public static function getGivenShiftInfo($business_id, $shift_id)
     {
         $shift = Shift::where('business_id', $business_id)
-                    ->find($shift_id);
+            ->find($shift_id);
 
         return $shift;
     }

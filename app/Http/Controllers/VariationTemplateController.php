@@ -23,8 +23,8 @@ class VariationTemplateController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $variations = VariationTemplate::where('business_id', $business_id)
-                        ->with(['values'])
-                        ->select('id', 'name', DB::raw('(SELECT COUNT(id) FROM product_variations WHERE product_variations.variation_template_id=variation_templates.id) as total_pv'));
+                ->with(['values'])
+                ->select('id', 'name', DB::raw('(SELECT COUNT(id) FROM product_variations WHERE product_variations.variation_template_id=variation_templates.id) as total_pv'));
 
             return Datatables::of($variations)
                 ->addColumn(
@@ -65,7 +65,6 @@ class VariationTemplateController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -75,7 +74,7 @@ class VariationTemplateController extends Controller
             $input['business_id'] = $request->session()->get('user.business_id');
             $variation = VariationTemplate::create($input);
 
-            //craete variation values
+            // craete variation values
             if (! empty($request->input('variation_values'))) {
                 $values = $request->input('variation_values');
                 $data = [];
@@ -105,7 +104,6 @@ class VariationTemplateController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\VariationTemplate  $variationTemplate
      * @return \Illuminate\Http\Response
      */
     public function show(VariationTemplate $variationTemplate)
@@ -124,7 +122,7 @@ class VariationTemplateController extends Controller
         if (request()->ajax()) {
             $business_id = request()->session()->get('user.business_id');
             $variation = VariationTemplate::where('business_id', $business_id)
-                            ->with(['values'])->find($id);
+                ->with(['values'])->find($id);
 
             return view('variation.edit')
                 ->with(compact('variation'));
@@ -134,7 +132,6 @@ class VariationTemplateController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -152,10 +149,10 @@ class VariationTemplateController extends Controller
                     $variation->save();
 
                     ProductVariation::where('variation_template_id', $variation->id)
-                                ->update(['name' => $variation->name]);
+                        ->update(['name' => $variation->name]);
                 }
 
-                //update variation
+                // update variation
                 $data = [];
                 if (! empty($request->input('edit_variation_values'))) {
                     $values = $request->input('edit_variation_values');

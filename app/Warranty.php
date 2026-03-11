@@ -16,7 +16,7 @@ class Warranty extends Model
     public static function forDropdown($business_id)
     {
         $warranties = Warranty::where('business_id', $business_id)
-                            ->get();
+            ->get();
         $dropdown = [];
 
         foreach ($warranties as $warranty) {

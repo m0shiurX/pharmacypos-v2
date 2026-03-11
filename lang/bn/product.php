@@ -61,6 +61,6 @@ return [
     'variation_sku_format' => 'ভিন্নতা SKU ফরম্যাট',
     'variation_sku_format_help_text' => 'ভিন্নতা SKU ফরম্যাট - যখন ভিন্নতা SKU খালি থাকে তখন এই ফরম্যাট ভিন্নতার জন্য SKU তৈরি করতে ব্যবহার করা হবে',
     'sku_number' => 'SKU-নম্বর (উদাহরণ -> ABC-1, ABC-2)',
-    'sku_variation_number' => 'SKU ভিন্নতা (উদাহরণ -> ABCS, ABCM)'
+    'sku_variation_number' => 'SKU ভিন্নতা (উদাহরণ -> ABCS, ABCM)',
 
 ];

@@ -28,12 +28,8 @@ class ProductUtil extends Util
      * Create single type product variation
      *
      * @param (int or object) $product
-     * @param $sku
-     * @param $purchase_price
-     * @param $dpp_inc_tax (default purchase pric including tax)
-     * @param $profit_percent
-     * @param $selling_price
-     * @param $combo_variations = []
+     * @param  $dpp_inc_tax  (default purchase pric including tax)
+     * @param  $combo_variations  = []
      * @return bool
      */
     public function createSingleProductVariation($product, $sku, $purchase_price, $dpp_inc_tax, $profit_percent, $selling_price, $selling_price_inc_tax, $combo_variations = [])
@@ -42,14 +38,14 @@ class ProductUtil extends Util
             $product = Product::find($product);
         }
 
-        //create product variations
+        // create product variations
         $product_variation_data = [
             'name' => 'DUMMY',
             'is_dummy' => 1,
         ];
         $product_variation = $product->product_variations()->create($product_variation_data);
 
-        //create variations
+        // create variations
         $variation_data = [
             'name' => 'DUMMY',
             'product_id' => $product->id,
@@ -72,19 +68,15 @@ class ProductUtil extends Util
      * Create variable type product variation
      *
      * @param (int or object) $product
-     * @param $input_variations
      * @return bool
      */
-    public function createVariableProductVariations($product, $input_variations, $sku_type, $business_id = null,)
+    public function createVariableProductVariations($product, $input_variations, $sku_type, $business_id = null)
     {
         if (! is_object($product)) {
             $product = Product::find($product);
         }
 
-
-
-
-        //create product variations
+        // create product variations
         foreach ($input_variations as $key => $value) {
             $images = [];
             $variation_template_name = ! empty($value['name']) ? $value['name'] : null;
@@ -93,7 +85,7 @@ class ProductUtil extends Util
             if (empty($variation_template_id)) {
                 if ($variation_template_name != 'DUMMY') {
                     $variation_template = VariationTemplate::where('business_id', $business_id)
-                        ->whereRaw('LOWER(name)="' . strtolower($variation_template_name) . '"')
+                        ->whereRaw('LOWER(name)="'.strtolower($variation_template_name).'"')
                         ->with(['values'])
                         ->first();
                     if (empty($variation_template)) {
@@ -118,7 +110,7 @@ class ProductUtil extends Util
             ];
             $product_variation = ProductVariation::create($product_variation_data);
 
-            //create variations
+            // create variations
             if (! empty($value['variations'])) {
                 $variation_data = [];
 
@@ -127,7 +119,7 @@ class ProductUtil extends Util
                     ->count() + 1;
 
                 foreach ($value['variations'] as $k => $v) {
-                    //skip hidden variations
+                    // skip hidden variations
                     if (isset($v['is_hidden']) && $v['is_hidden'] == 1) {
                         continue;
                     }
@@ -144,7 +136,7 @@ class ProductUtil extends Util
                     } else {
                         if (! empty($variation_template)) {
                             $variation_value = VariationValueTemplate::where('variation_template_id', $variation_template->id)
-                                ->whereRaw('LOWER(name)="' . $variation_value_name . '"')
+                                ->whereRaw('LOWER(name)="'.$variation_value_name.'"')
                                 ->first();
                             if (empty($variation_value)) {
                                 $variation_value = VariationValueTemplate::create([
@@ -172,7 +164,7 @@ class ProductUtil extends Util
                         'sell_price_inc_tax' => $this->num_uf($v['sell_price_inc_tax']),
                     ];
                     $c++;
-                    $images[] = 'variation_images_' . $key . '_' . $k;
+                    $images[] = 'variation_images_'.$key.'_'.$k;
                 }
                 $variations = $product_variation->variations()->createMany($variation_data);
 
@@ -188,15 +180,13 @@ class ProductUtil extends Util
     /**
      * Update variable type product variation
      *
-     * @param $product_id
-     * @param $input_variations_edit
      * @return bool
      */
     public function updateVariableProductVariations($product_id, $input_variations_edit, $sku_type)
     {
         $product = Product::find($product_id);
 
-        //Update product variations
+        // Update product variations
         $product_variation_ids = [];
         $variations_ids = [];
 
@@ -207,7 +197,7 @@ class ProductUtil extends Util
             $product_variation->name = $value['name'];
             $product_variation->save();
 
-            //Update existing variations
+            // Update existing variations
             if (! empty($value['variations_edit'])) {
                 foreach ($value['variations_edit'] as $k => $v) {
                     $data = [
@@ -227,13 +217,13 @@ class ProductUtil extends Util
 
                     $variation->update($data);
 
-                    Media::uploadMedia($product->business_id, $variation, request(), 'edit_variation_images_' . $key . '_' . $k);
+                    Media::uploadMedia($product->business_id, $variation, request(), 'edit_variation_images_'.$key.'_'.$k);
 
                     $variations_ids[] = $k;
                 }
             }
 
-            //Add new variations
+            // Add new variations
             if (! empty($value['variations'])) {
                 $variation_data = [];
                 $c = Variation::withTrashed()
@@ -248,7 +238,7 @@ class ProductUtil extends Util
 
                     if (! empty($product_variation->variation_template_id)) {
                         $variation_value = VariationValueTemplate::where('variation_template_id', $product_variation->variation_template_id)
-                            ->whereRaw('LOWER(name)="' . $v['value'] . '"')
+                            ->whereRaw('LOWER(name)="'.$v['value'].'"')
                             ->first();
                         if (empty($variation_value)) {
                             $variation_value = VariationValueTemplate::create([
@@ -272,7 +262,7 @@ class ProductUtil extends Util
                         'sell_price_inc_tax' => $this->num_uf($v['sell_price_inc_tax']),
                     ];
                     $c++;
-                    $media[] = 'variation_images_' . $key . '_' . $k;
+                    $media[] = 'variation_images_'.$key.'_'.$k;
                 }
                 $new_variations = $product_variation->variations()->createMany($variation_data);
 
@@ -285,13 +275,13 @@ class ProductUtil extends Util
             }
         }
 
-        //get removed variations
+        // get removed variations
         $removed_variations = Variation::whereNotIn('id', $variations_ids)
             ->where('product_id', $product->id)
             ->pluck('id');
 
         foreach ($removed_variations as $removed_variation_id) {
-            //Check if purchase or sell exist for the deletable variation
+            // Check if purchase or sell exist for the deletable variation
             $count_purchase = PurchaseLine::join(
                 'transactions as T',
                 'purchase_lines.transaction_id',
@@ -320,7 +310,7 @@ class ProductUtil extends Util
 
             $is_variation_delatable = $count_purchase > 0 || $count_sell > 0 ? false : true;
 
-            //if purchase sell dont exists delete the variation
+            // if purchase sell dont exists delete the variation
             if ($is_variation_delatable) {
                 Variation::where('id', $removed_variation_id)
                     ->delete();
@@ -338,13 +328,9 @@ class ProductUtil extends Util
      * Checks if products has manage stock enabled then Updates quantity for product and its
      * variations
      *
-     * @param $location_id
-     * @param $product_id
-     * @param $variation_id
-     * @param $new_quantity
-     * @param $old_quantity = 0
-     * @param $number_format = null
-     * @param $uf_data = true, if false it will accept numbers in database format
+     * @param  $old_quantity  = 0
+     * @param  $number_format  = null
+     * @param  $uf_data  = true, if false it will accept numbers in database format
      * @return bool
      */
     public function updateProductQuantity($location_id, $product_id, $variation_id, $new_quantity, $old_quantity = 0, $number_format = null, $uf_data = true)
@@ -357,13 +343,13 @@ class ProductUtil extends Util
 
         $product = Product::find($product_id);
 
-        //Check if stock is enabled or not.
+        // Check if stock is enabled or not.
         if ($product->enable_stock == 1 && $qty_difference != 0) {
             $variation = Variation::where('id', $variation_id)
                 ->where('product_id', $product_id)
                 ->first();
 
-            //Add quantity in VariationLocationDetails
+            // Add quantity in VariationLocationDetails
             $variation_location_d = VariationLocationDetails::where('variation_id', $variation->id)
                 ->where('product_id', $product_id)
                 ->where('product_variation_id', $variation->product_variation_id)
@@ -371,7 +357,7 @@ class ProductUtil extends Util
                 ->first();
 
             if (empty($variation_location_d)) {
-                $variation_location_d = new VariationLocationDetails();
+                $variation_location_d = new VariationLocationDetails;
                 $variation_location_d->variation_id = $variation->id;
                 $variation_location_d->product_id = $product_id;
                 $variation_location_d->location_id = $location_id;
@@ -389,11 +375,7 @@ class ProductUtil extends Util
     /**
      * Checks if products has manage stock enabled then Decrease quantity for product and its variations
      *
-     * @param $product_id
-     * @param $variation_id
-     * @param $location_id
-     * @param $new_quantity
-     * @param $old_quantity = 0
+     * @param  $old_quantity  = 0
      * @return bool
      */
     public function decreaseProductQuantity($product_id, $variation_id, $location_id, $new_quantity, $old_quantity = 0)
@@ -402,15 +384,15 @@ class ProductUtil extends Util
 
         $product = Product::find($product_id);
 
-        //Check if stock is enabled or not.
+        // Check if stock is enabled or not.
         if ($product->enable_stock == 1) {
-            //Decrement Quantity in variations location table
+            // Decrement Quantity in variations location table
             $details = VariationLocationDetails::where('variation_id', $variation_id)
                 ->where('product_id', $product_id)
                 ->where('location_id', $location_id)
                 ->first();
 
-            //If location details not exists create new one
+            // If location details not exists create new one
             if (empty($details)) {
                 $variation = Variation::find($variation_id);
                 $details = VariationLocationDetails::create([
@@ -431,14 +413,12 @@ class ProductUtil extends Util
     /**
      * Decrease the product quantity of combo sub-products
      *
-     * @param $combo_details
-     * @param $location_id
      * @return void
      */
     public function decreaseProductQuantityCombo($combo_details, $location_id)
     {
-        //product_id = child product id
-        //variation id is child product variation id
+        // product_id = child product id
+        // variation id is child product variation id
         foreach ($combo_details as $details) {
             $this->decreaseProductQuantity(
                 $details['product_id'],
@@ -455,7 +435,7 @@ class ProductUtil extends Util
      * @param  int  $variation_id
      * @param  int  $business_id
      * @param  int  $location_id
-     * @param  bool  $check_qty (If false qty_available is not checked)
+     * @param  bool  $check_qty  (If false qty_available is not checked)
      * @return array
      */
     public function getDetailsFromVariation($variation_id, $business_id, $location_id = null, $check_qty = true)
@@ -474,7 +454,7 @@ class ProductUtil extends Util
             ->where('p.business_id', $business_id)
             ->where('variations.id', $variation_id);
 
-        //Add condition for check of quantity. (if stock is not enabled or qty_available > 0)
+        // Add condition for check of quantity. (if stock is not enabled or qty_available > 0)
         if ($check_qty) {
             $query->where(function ($query) {
                 $query->where('p.enable_stock', '!=', 1)
@@ -483,7 +463,7 @@ class ProductUtil extends Util
         }
 
         if (! empty($location_id) && $check_qty) {
-            //Check for enable stock, if enabled check for location id.
+            // Check for enable stock, if enabled check for location id.
             $query->where(function ($query) use ($location_id) {
                 $query->where('p.enable_stock', '!=', 1)
                     ->orWhere('vld.location_id', $location_id);
@@ -533,7 +513,7 @@ class ProductUtil extends Util
             'variations.default_purchase_price',
             'variations.sell_price_inc_tax',
             'variations.id as variation_id',
-            'variations.combo_variations',  //Used in combo products
+            'variations.combo_variations',  // Used in combo products
             'variations.wholesale_discount_type',
             'variations.wholesale_discount_amount',
             'units.short_name as unit',
@@ -569,7 +549,7 @@ class ProductUtil extends Util
      */
     public function calculateComboQuantity($location_id, $combo_variations)
     {
-        //get stock of the items and calcuate accordingly.
+        // get stock of the items and calcuate accordingly.
         $combo_qty = 0;
         foreach ($combo_variations as $key => $value) {
             $variation = Variation::with(['product', 'variation_location_details' => function ($q) use ($location_id) {
@@ -578,7 +558,7 @@ class ProductUtil extends Util
 
             $product = $variation->product;
 
-            //Dont calculate stock if disabled
+            // Dont calculate stock if disabled
             if ($product->enable_stock != 1) {
                 continue;
             }
@@ -637,7 +617,7 @@ class ProductUtil extends Util
      *
      * @param  array  $products
      * @param  int  $tax_id
-     * @param  array  $discount['discount_type', 'discount_amount']
+     * @param  array  $discount['discount_type',  'discount_amount']
      * @return mixed (false, array)
      */
     public function calculateInvoiceTotal($products, $tax_id, $discount = null, $uf_number = true)
@@ -648,14 +628,14 @@ class ProductUtil extends Util
 
         $output = ['total_before_tax' => 0, 'tax' => 0, 'discount' => 0, 'final_total' => 0];
 
-        //Sub Total
+        // Sub Total
         foreach ($products as $product) {
             $unit_price_inc_tax = $uf_number ? $this->num_uf($product['unit_price_inc_tax']) : $product['unit_price_inc_tax'];
             $quantity = $uf_number ? $this->num_uf($product['quantity']) : $product['quantity'];
 
             $output['total_before_tax'] += $quantity * $unit_price_inc_tax;
 
-            //Add modifier price to total if exists
+            // Add modifier price to total if exists
             if (! empty($product['modifier_price'])) {
                 foreach ($product['modifier_price'] as $key => $modifier_price) {
                     $modifier_price = $uf_number ? $this->num_uf($modifier_price) : $modifier_price;
@@ -667,7 +647,7 @@ class ProductUtil extends Util
             }
         }
 
-        //Calculate discount
+        // Calculate discount
         if (is_array($discount)) {
             $discount_amount = $uf_number ? $this->num_uf($discount['discount_amount']) : $discount['discount_amount'];
             if ($discount['discount_type'] == 'fixed') {
@@ -677,7 +657,7 @@ class ProductUtil extends Util
             }
         }
 
-        //Tax
+        // Tax
         $output['tax'] = 0;
         if (! empty($tax_id)) {
             $tax_details = TaxRate::find($tax_id);
@@ -687,7 +667,7 @@ class ProductUtil extends Util
             }
         }
 
-        //Calculate total
+        // Calculate total
         $output['final_total'] = $output['total_before_tax'] + $output['tax'] - $output['discount'];
 
         return $output;
@@ -704,7 +684,7 @@ class ProductUtil extends Util
         $business_id = request()->session()->get('user.business_id');
         $sku_prefix = Business::where('id', $business_id)->value('sku_prefix');
 
-        return $sku_prefix . str_pad($string, 4, '0', STR_PAD_LEFT);
+        return $sku_prefix.str_pad($string, 4, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -792,7 +772,7 @@ class ProductUtil extends Util
      *
      * @param  int  $business_id
      * @param  int  $product_id
-     * @param  int  $variation_id = null
+     * @param  int  $variation_id  = null
      * @return Obj
      */
     public function getDetailsFromProduct($business_id, $product_id, $variation_id = null)
@@ -835,9 +815,9 @@ class ProductUtil extends Util
                 if (! empty($product['transaction_sell_lines_id'])) {
                     $this->updateProductQuantity($input['location_id'], $product['product_id'], $product['variation_id'], $product['quantity'], 0, null, false);
 
-                    //Adjust quantity for combo items.
+                    // Adjust quantity for combo items.
                     if (isset($product['product_type']) && $product['product_type'] == 'combo') {
-                        //Giving quantity in minus will increase the qty
+                        // Giving quantity in minus will increase the qty
                         foreach ($product['combo'] as $value) {
                             $this->updateProductQuantity($input['location_id'], $value['product_id'], $value['variation_id'], $value['quantity'], 0, null, false);
                         }
@@ -857,11 +837,11 @@ class ProductUtil extends Util
                     $uf_quantity
                 );
 
-                //Adjust quantity for combo items.
+                // Adjust quantity for combo items.
                 if (isset($product['product_type']) && $product['product_type'] == 'combo') {
                     $this->decreaseProductQuantityCombo($product['combo'], $input['location_id']);
 
-                    //$this->decreaseProductQuantityCombo($product['variation_id'], $input['location_id'], $uf_quantity);
+                    // $this->decreaseProductQuantityCombo($product['variation_id'], $input['location_id'], $uf_quantity);
                 }
             }
         } elseif ($status_before == 'final' && $transaction->status == 'final') {
@@ -875,11 +855,11 @@ class ProductUtil extends Util
                         $uf_quantity
                     );
 
-                    //Adjust quantity for combo items.
+                    // Adjust quantity for combo items.
                     if (isset($product['product_type']) && $product['product_type'] == 'combo') {
                         $this->decreaseProductQuantityCombo($product['combo'], $input['location_id']);
 
-                        //$this->decreaseProductQuantityCombo($product['variation_id'], $input['location_id'], $uf_quantity);
+                        // $this->decreaseProductQuantityCombo($product['variation_id'], $input['location_id'], $uf_quantity);
                     }
                 }
             }
@@ -909,19 +889,19 @@ class ProductUtil extends Util
         if (($variation_details->default_purchase_price != $variation_data['pp_without_discount']) ||
             ($variation_details->sell_price_inc_tax != $variation_data['sell_price_inc_tax'])
         ) {
-            //Set default purchase price exc. tax
+            // Set default purchase price exc. tax
             $variation_details->default_purchase_price = $variation_data['pp_without_discount'];
 
-            //Set default purchase price inc. tax
+            // Set default purchase price inc. tax
             $variation_details->dpp_inc_tax = $this->calc_percentage($variation_details->default_purchase_price, $tax_rate, $variation_details->default_purchase_price);
 
-            //Set default sell price inc. tax
+            // Set default sell price inc. tax
             $variation_details->sell_price_inc_tax = $variation_data['sell_price_inc_tax'];
 
-            //set sell price inc. tax
+            // set sell price inc. tax
             $variation_details->default_sell_price = $this->calc_percentage_base($variation_details->sell_price_inc_tax, $tax_rate);
 
-            //set profit margin
+            // set profit margin
             $variation_details->profit_percent = $this->get_percent($variation_details->default_purchase_price, $variation_details->default_sell_price);
 
             $variation_details->save();
@@ -942,21 +922,20 @@ class ProductUtil extends Util
         // old formate
         if ($sku_type == 'with_out_variation') {
 
-            $sub_sku = $sku . $c;
+            $sub_sku = $sku.$c;
 
             if (in_array($barcode_type, ['C128', 'C39'])) {
-                $sub_sku = $sku . '-' . $c;
+                $sub_sku = $sku.'-'.$c;
             }
         } else {
 
             // new formate
-            $sub_sku = $sku . preg_replace('/[^a-zA-Z0-9]/', '', $value);
+            $sub_sku = $sku.preg_replace('/[^a-zA-Z0-9]/', '', $value);
 
             if (in_array($barcode_type, ['C128', 'C39'])) {
-                $sub_sku = $sku . preg_replace('/[^a-zA-Z0-9]/', '', $value);
+                $sub_sku = $sku.preg_replace('/[^a-zA-Z0-9]/', '', $value);
             }
         }
-
 
         return $sub_sku;
     }
@@ -1062,7 +1041,7 @@ class ProductUtil extends Util
             ->select(['price_inc_tax', 'price_type'])
             ->first();
 
-        if (!$price_group) {
+        if (! $price_group) {
             return [
                 'price_inc_tax' => '',
                 'price_exc_tax' => '',
@@ -1070,7 +1049,7 @@ class ProductUtil extends Util
         }
 
         if (isset($price_group->price_type) && $price_group->price_type == 'percentage') {
-            //calculate the price
+            // calculate the price
             $variation = Variation::find($variation_id);
             $price_inc_tax = $this->calc_percentage($variation->sell_price_inc_tax, $price_group->price_inc_tax);
         } else {
@@ -1133,7 +1112,7 @@ class ProductUtil extends Util
         foreach ($input as $key => $value) {
             $location_id = $key;
             $purchase_total = 0;
-            //Check if valid location
+            // Check if valid location
             if (array_key_exists($location_id, $locations)) {
                 $purchase_lines = [];
 
@@ -1154,11 +1133,11 @@ class ProductUtil extends Util
 
                 if ($qty > 0) {
                     $qty_formated = $this->num_f($qty);
-                    //Calculate transaction total
+                    // Calculate transaction total
                     $purchase_total += ($purchase_price_inc_tax * $qty);
                     $variation_id = $product->variations->first()->id;
 
-                    $purchase_line = new PurchaseLine();
+                    $purchase_line = new PurchaseLine;
                     $purchase_line->product_id = $product->id;
                     $purchase_line->variation_id = $variation_id;
                     $purchase_line->item_tax = $item_tax;
@@ -1174,7 +1153,7 @@ class ProductUtil extends Util
                     $this->updateProductQuantity($location_id, $product->id, $variation_id, $qty_formated);
                 }
 
-                //create transaction & purchase lines
+                // create transaction & purchase lines
                 if (! empty($purchase_lines)) {
                     $transaction = Transaction::create(
                         [
@@ -1203,7 +1182,7 @@ class ProductUtil extends Util
      * @param  array  $input_data
      * @param  array  $currency_details
      * @param  bool  $enable_product_editing
-     * @param  string  $before_status = null
+     * @param  string  $before_status  = null
      * @return array
      */
     public function createOrUpdatePurchaseLines($transaction, $input_data, $currency_details, $enable_product_editing, $before_status = null)
@@ -1219,7 +1198,7 @@ class ProductUtil extends Util
             }
 
             if (! empty($data['sub_unit_id'])) {
-                //Check for per-product multiplier first
+                // Check for per-product multiplier first
                 $product_for_multiplier = Product::find($data['product_id']);
                 $product_multipliers = $product_for_multiplier->sub_unit_multipliers ?? [];
                 if (! empty($product_multipliers[$data['sub_unit_id']])) {
@@ -1233,7 +1212,7 @@ class ProductUtil extends Util
 
             $new_quantity_f = $this->num_f($new_quantity);
             $old_qty = 0;
-            //update existing purchase line
+            // update existing purchase line
             if (isset($data['purchase_line_id'])) {
                 $purchase_line = PurchaseLine::findOrFail($data['purchase_line_id']);
                 $updated_purchase_line_ids[] = $purchase_line->id;
@@ -1241,12 +1220,12 @@ class ProductUtil extends Util
 
                 $this->updateProductStock($before_status, $transaction, $data['product_id'], $data['variation_id'], $new_quantity, $purchase_line->quantity, $currency_details);
             } else {
-                //create newly added purchase lines
-                $purchase_line = new PurchaseLine();
+                // create newly added purchase lines
+                $purchase_line = new PurchaseLine;
                 $purchase_line->product_id = $data['product_id'];
                 $purchase_line->variation_id = $data['variation_id'];
 
-                //Increase quantity only if status is received
+                // Increase quantity only if status is received
                 if ($transaction->status == 'received') {
                     $this->updateProductQuantity($transaction->location_id, $data['product_id'], $data['variation_id'], $new_quantity_f, 0, $currency_details);
                 }
@@ -1272,7 +1251,7 @@ class ProductUtil extends Util
 
             $updated_purchase_lines[] = $purchase_line;
 
-            //Edit product price
+            // Edit product price
             if ($enable_product_editing == 1 && $transaction->type == 'purchase') {
                 if (isset($data['default_sell_price'])) {
                     $variation_data['sell_price_inc_tax'] = ($this->num_uf($data['default_sell_price'], $currency_details)) / $multiplier;
@@ -1285,15 +1264,15 @@ class ProductUtil extends Util
             }
 
             if ($transaction->type == 'purchase_order') {
-                //Update purchase requisition line quantity received
+                // Update purchase requisition line quantity received
                 $this->updatePurchaseOrderLine($purchase_line->purchase_requisition_line_id, $purchase_line->quantity, $old_qty);
             }
 
-            //Update purchase order line quantity received
+            // Update purchase order line quantity received
             $this->updatePurchaseOrderLine($purchase_line->purchase_order_line_id, $purchase_line->quantity, $old_qty);
         }
 
-        //unset deleted purchase lines
+        // unset deleted purchase lines
         $delete_purchase_line_ids = [];
         $delete_purchase_lines = null;
         if (! empty($updated_purchase_line_ids)) {
@@ -1305,7 +1284,7 @@ class ProductUtil extends Util
                 foreach ($delete_purchase_lines as $delete_purchase_line) {
                     $delete_purchase_line_ids[] = $delete_purchase_line->id;
 
-                    //decrease deleted only if previous status was received
+                    // decrease deleted only if previous status was received
                     if ($before_status == 'received') {
                         $this->decreaseProductQuantity(
                             $delete_purchase_line->product_id,
@@ -1315,31 +1294,31 @@ class ProductUtil extends Util
                         );
                     }
 
-                    //If purchase order line set decrease quntity
+                    // If purchase order line set decrease quntity
                     if (! empty($delete_purchase_line->purchase_order_line_id)) {
                         $this->updatePurchaseOrderLine($delete_purchase_line->purchase_order_line_id, 0, $delete_purchase_line->quantity);
                     }
 
-                    //If purchase order line set decrease quntity
+                    // If purchase order line set decrease quntity
                     if (! empty($delete_purchase_line->purchase_requisition_line_id)) {
                         $this->updatePurchaseOrderLine($delete_purchase_line->purchase_requisition_line_id, 0, $delete_purchase_line->quantity);
                     }
                 }
 
-                //unset if purchase order line from purchase lines if exists
+                // unset if purchase order line from purchase lines if exists
                 if ($transaction->type == 'purchase_order') {
                     PurchaseLine::whereIn('purchase_order_line_id', $delete_purchase_line_ids)
                         ->update(['purchase_order_line_id' => null]);
                 }
 
-                //Delete deleted purchase lines
+                // Delete deleted purchase lines
                 PurchaseLine::where('transaction_id', $transaction->id)
                     ->whereIn('id', $delete_purchase_line_ids)
                     ->delete();
             }
         }
 
-        //update purchase lines
+        // update purchase lines
         if (! empty($updated_purchase_lines)) {
             $transaction->purchase_lines()->saveMany($updated_purchase_lines);
         }
@@ -1364,20 +1343,20 @@ class ProductUtil extends Util
      * @param  obj  $transaction
      * @param  int  $product_id
      * @param  int  $variation_id
-     * @param  decimal  $new_quantity in database format
-     * @param  decimal  $old_quantity in database format
+     * @param  decimal  $new_quantity  in database format
+     * @param  decimal  $old_quantity  in database format
      * @param  array  $currency_details
      */
     public function updateProductStock($status_before, $transaction, $product_id, $variation_id, $new_quantity, $old_quantity, $currency_details)
     {
         $new_quantity_f = $this->num_f($new_quantity);
         $old_qty = $this->num_f($old_quantity);
-        //Update quantity for existing products
+        // Update quantity for existing products
         if ($status_before == 'received' && $transaction->status == 'received') {
-            //if status received update existing quantity
+            // if status received update existing quantity
             $this->updateProductQuantity($transaction->location_id, $product_id, $variation_id, $new_quantity_f, $old_qty, $currency_details);
         } elseif ($status_before == 'received' && $transaction->status != 'received') {
-            //decrease quantity only if status changed from received to not received
+            // decrease quantity only if status changed from received to not received
             $this->decreaseProductQuantity(
                 $product_id,
                 $variation_id,
@@ -1408,7 +1387,7 @@ class ProductUtil extends Util
         })->first();
 
         if (! empty($sub_unit)) {
-            //Use per-product multiplier if available
+            // Use per-product multiplier if available
             $product_multipliers = $purchase_line->product->sub_unit_multipliers ?? [];
             $multiplier = ! empty($product_multipliers[$sub_unit->id])
                 ? $product_multipliers[$sub_unit->id]
@@ -1423,7 +1402,7 @@ class ProductUtil extends Util
             $purchase_line->quantity_adjusted = $purchase_line->quantity_adjusted / $multiplier;
         }
 
-        //SubUnits
+        // SubUnits
         $purchase_line->sub_units_options = $this->getSubUnits($business_id, $base_unit->id, false, $purchase_line->product_id);
 
         return $purchase_line;
@@ -1465,7 +1444,7 @@ class ProductUtil extends Util
     /**
      * Retrieves current stock of a variation for the given location
      *
-     * @param  int  $variation_id, int location_id
+     * @param  int  $variation_id,  int location_id
      * @return float
      */
     public function getCurrentStock($variation_id, $location_id)
@@ -1474,7 +1453,7 @@ class ProductUtil extends Util
             ->where('location_id', $location_id)
             ->value('qty_available');
 
-        if (null == $current_stock) {
+        if ($current_stock == null) {
             $current_stock = 0;
         }
 
@@ -1497,24 +1476,23 @@ class ProductUtil extends Util
         foreach ($transaction->purchase_lines as $purchase_line) {
             if ($purchase_line->product->enable_stock == 1) {
 
-                //Available quantity in the purchase line
+                // Available quantity in the purchase line
                 $purchase_line_qty_avlbl = $purchase_line->quantity_remaining;
 
                 if ($purchase_line_qty_avlbl <= 0) {
                     continue;
                 }
 
-                //update sell line purchase line mapping
+                // update sell line purchase line mapping
                 $sell_line_purchase_lines =
                     TransactionSellLinesPurchaseLines::where('purchase_line_id', 0)
-                    ->join('transaction_sell_lines as tsl', 'tsl.id', '=', 'transaction_sell_lines_purchase_lines.sell_line_id')
-                    ->join('transactions as t', 'tsl.transaction_id', '=', 't.id')
-                    ->where('t.location_id', $transaction->location_id)
-                    ->where('tsl.variation_id', $purchase_line->variation_id)
-                    ->where('tsl.product_id', $purchase_line->product_id)
-
-                    ->select('transaction_sell_lines_purchase_lines.*')
-                    ->get();
+                        ->join('transaction_sell_lines as tsl', 'tsl.id', '=', 'transaction_sell_lines_purchase_lines.sell_line_id')
+                        ->join('transactions as t', 'tsl.transaction_id', '=', 't.id')
+                        ->where('t.location_id', $transaction->location_id)
+                        ->where('tsl.variation_id', $purchase_line->variation_id)
+                        ->where('tsl.product_id', $purchase_line->product_id)
+                        ->select('transaction_sell_lines_purchase_lines.*')
+                        ->get();
 
                 foreach ($sell_line_purchase_lines as $slpl) {
                     if ($purchase_line_qty_avlbl > 0) {
@@ -1522,7 +1500,7 @@ class ProductUtil extends Util
                             $purchase_line_qty_avlbl -= $slpl->quantity;
                             $slpl->purchase_line_id = $purchase_line->id;
                             $slpl->save();
-                            //update purchase line quantity sold
+                            // update purchase line quantity sold
                             $purchase_line->quantity_sold += $slpl->quantity;
                             $purchase_line->save();
                         } else {
@@ -1531,7 +1509,7 @@ class ProductUtil extends Util
                             $slpl->quantity = $purchase_line_qty_avlbl;
                             $slpl->save();
 
-                            //update purchase line quantity sold
+                            // update purchase line quantity sold
                             $purchase_line->quantity_sold += $slpl->quantity;
                             $purchase_line->save();
 
@@ -1551,15 +1529,15 @@ class ProductUtil extends Util
     /**
      * Finds out most relevant descount for the product
      *
-     * @param  obj  $product, int $business_id, int $location_id, bool $is_cg,
-     * bool $is_spg
+     * @param  obj  $product,  int $business_id, int $location_id, bool $is_cg,
+     *                         bool $is_spg
      * @return obj discount
      */
     public function getProductDiscount($product, $business_id, $location_id, $is_cg = false, $price_group = null, $variation_id = null)
     {
         $now = \Carbon::now()->toDateTimeString();
 
-        //Search if both category and brand matches
+        // Search if both category and brand matches
         $query = Discount::where('business_id', $business_id)
             ->where('location_id', $location_id)
             ->where('is_active', 1)
@@ -1575,8 +1553,8 @@ class ProductUtil extends Util
                     }
                 })
                     ->orWhere(function ($sub_q) use ($product) {
-                        $sub_q->whereRaw('(brand_id="' . $product->brand_id . '" AND category_id IS NULL)')
-                            ->orWhereRaw('(category_id="' . $product->category_id . '" AND brand_id IS NULL)');
+                        $sub_q->whereRaw('(brand_id="'.$product->brand_id.'" AND category_id IS NULL)')
+                            ->orWhereRaw('(category_id="'.$product->category_id.'" AND brand_id IS NULL)');
                     });
 
                 if (! empty($variation_id)) {
@@ -1612,7 +1590,7 @@ class ProductUtil extends Util
     /**
      * Filters product as per the given inputs and return the details.
      *
-     * @param  string  $search_type (like or exact)
+     * @param  string  $search_type  (like or exact)
      * @return object
      */
     public function filterProduct($business_id, $search_term, $location_id = null, $not_for_selling = null, $price_group_id = null, $product_types = [], $search_fields = [], $check_qty = false, $search_type = 'like')
@@ -1626,12 +1604,12 @@ class ProductUtil extends Util
                 function ($join) use ($location_id) {
                     $join->on('variations.id', '=', 'VLD.variation_id');
 
-                    //Include Location
+                    // Include Location
                     if (! empty($location_id)) {
                         $join->where(function ($query) use ($location_id) {
                             $query->where('VLD.location_id', '=', $location_id);
-                            //Check null to show products even if no quantity is available in a location.
-                            //TODO: Maybe add a settings to show product not available at a location or not.
+                            // Check null to show products even if no quantity is available in a location.
+                            // TODO: Maybe add a settings to show product not available at a location or not.
                             $query->orWhereNull('VLD.location_id');
                         });
                     }
@@ -1663,44 +1641,44 @@ class ProductUtil extends Util
             $query->leftjoin('purchase_lines as pl', 'variations.id', '=', 'pl.variation_id');
         }
 
-        //Include search
+        // Include search
         if (! empty($search_term)) {
 
-            //Search with like condition
+            // Search with like condition
             if ($search_type == 'like') {
                 $query->where(function ($query) use ($search_term, $search_fields) {
                     if (in_array('name', $search_fields)) {
-                        $query->where('products.name', 'like', '%' . $search_term . '%');
+                        $query->where('products.name', 'like', '%'.$search_term.'%');
                     }
 
                     if (in_array('sku', $search_fields)) {
-                        $query->orWhere('sku', 'like', '%' . $search_term . '%');
+                        $query->orWhere('sku', 'like', '%'.$search_term.'%');
                     }
 
                     if (in_array('sub_sku', $search_fields)) {
-                        $query->orWhere('sub_sku', 'like', '%' . $search_term . '%');
+                        $query->orWhere('sub_sku', 'like', '%'.$search_term.'%');
                     }
 
                     if (in_array('lot', $search_fields)) {
-                        $query->orWhere('pl.lot_number', 'like', '%' . $search_term . '%');
+                        $query->orWhere('pl.lot_number', 'like', '%'.$search_term.'%');
                     }
 
                     if (in_array('product_custom_field1', $search_fields)) {
-                        $query->orWhere('product_custom_field1', 'like', '%' . $search_term . '%');
+                        $query->orWhere('product_custom_field1', 'like', '%'.$search_term.'%');
                     }
                     if (in_array('product_custom_field2', $search_fields)) {
-                        $query->orWhere('product_custom_field2', 'like', '%' . $search_term . '%');
+                        $query->orWhere('product_custom_field2', 'like', '%'.$search_term.'%');
                     }
                     if (in_array('product_custom_field3', $search_fields)) {
-                        $query->orWhere('product_custom_field3', 'like', '%' . $search_term . '%');
+                        $query->orWhere('product_custom_field3', 'like', '%'.$search_term.'%');
                     }
                     if (in_array('product_custom_field4', $search_fields)) {
-                        $query->orWhere('product_custom_field4', 'like', '%' . $search_term . '%');
+                        $query->orWhere('product_custom_field4', 'like', '%'.$search_term.'%');
                     }
                 });
             }
 
-            //Search with exact condition
+            // Search with exact condition
             if ($search_type == 'exact') {
                 $query->where(function ($query) use ($search_term, $search_fields) {
                     if (in_array('name', $search_fields)) {
@@ -1722,7 +1700,7 @@ class ProductUtil extends Util
             }
         }
 
-        //Include check for quantity
+        // Include check for quantity
         if ($check_qty) {
             $query->where('VLD.qty_available', '>', 0);
         }
@@ -1778,6 +1756,7 @@ class ProductUtil extends Util
             $item->name = e($item->name);
             $item->variation = e($item->variation);
             $item->sub_sku = e($item->sub_sku);
+
             return $item;
         });
 
@@ -1812,7 +1791,7 @@ class ProductUtil extends Util
 
             $location_filter .= "AND transactions.location_id=$location_id";
 
-            //If filter by location then hide products not available in that location
+            // If filter by location then hide products not available in that location
             $query->join('product_locations as pl', 'pl.product_id', '=', 'p.id')
                 ->where(function ($q) use ($location_id) {
                     $q->where('pl.location_id', $location_id);
@@ -1858,7 +1837,7 @@ class ProductUtil extends Util
             $query->where('p.repair_model_id', request()->get('repair_model_id'));
         }
 
-        //TODO::Check if result is correct after changing LEFT JOIN to INNER JOIN
+        // TODO::Check if result is correct after changing LEFT JOIN to INNER JOIN
         $pl_query_string = $this->get_pl_quantity_sum_string('pl');
 
         if ($for == 'view_product' && ! empty(request()->input('product_id'))) {
@@ -1941,7 +1920,7 @@ class ProductUtil extends Util
         foreach ($combo_variations as $key => $value) {
             $combo_variations[$key]['variation'] =
                 Variation::with(['product'])
-                ->find($value['variation_id']);
+                    ->find($value['variation_id']);
 
             $combo_variations[$key]['sub_units'] = $this->getSubUnits($business_id, $combo_variations[$key]['variation']['product']->unit_id, true);
 
@@ -1967,7 +1946,7 @@ class ProductUtil extends Util
             ->leftjoin('purchase_lines as pl', 'pl.variation_id', '=', 'variations.id')
             ->leftjoin('transactions as t', 'pl.transaction_id', '=', 't.id')
             ->where('t.location_id', $location_id)
-            //->where('t.status', 'received')
+            // ->where('t.status', 'received')
             ->where('p.business_id', $business_id)
             ->where('variations.id', $variation_id)
             ->select(
@@ -2011,9 +1990,9 @@ class ProductUtil extends Util
             ->first();
 
         if ($purchase_details->type == 'variable') {
-            $product_name = $purchase_details->product . ' - ' . $purchase_details->product_variation . ' - ' . $purchase_details->variation_name . ' (' . $purchase_details->sub_sku . ')';
+            $product_name = $purchase_details->product.' - '.$purchase_details->product_variation.' - '.$purchase_details->variation_name.' ('.$purchase_details->sub_sku.')';
         } else {
-            $product_name = $purchase_details->product . ' (' . $purchase_details->sku . ')';
+            $product_name = $purchase_details->product.' ('.$purchase_details->sku.')';
         }
 
         $output = [
@@ -2178,7 +2157,7 @@ class ProductUtil extends Util
                     'quantity_change' => $quantity_change,
                     'stock' => $this->roundQuantity($stock),
                     'type' => 'sell_transfer',
-                    'type_label' => __('lang_v1.stock_transfers') . ' (' . __('lang_v1.out') . ')',
+                    'type_label' => __('lang_v1.stock_transfers').' ('.__('lang_v1.out').')',
                     'ref_no' => $stock_line->ref_no,
                     'stock_in_second_unit' => $this->roundQuantity($stock_in_second_unit),
                 ]);
@@ -2193,7 +2172,7 @@ class ProductUtil extends Util
                     'quantity_change' => $quantity_change,
                     'stock' => $this->roundQuantity($stock),
                     'type' => 'purchase_transfer',
-                    'type_label' => __('lang_v1.stock_transfers') . ' (' . __('lang_v1.in') . ')',
+                    'type_label' => __('lang_v1.stock_transfers').' ('.__('lang_v1.in').')',
                     'ref_no' => $stock_line->ref_no,
                     'stock_in_second_unit' => $this->roundQuantity($stock_in_second_unit),
                 ]);
@@ -2370,7 +2349,7 @@ class ProductUtil extends Util
             $vld->save();
         }
 
-        //check if there are more such rows then delete it because one location can have only one variation_location_details
+        // check if there are more such rows then delete it because one location can have only one variation_location_details
         $vld_duplicate = VariationLocationDetails::join(
             'business_locations as bl',
             'bl.id',
@@ -2423,13 +2402,12 @@ class ProductUtil extends Util
             ->whereNotNull('p.alert_quantity')
             ->whereRaw('variation_location_details.qty_available <= p.alert_quantity');
 
-        //Check for permitted locations of a user
-        if (!empty($permitted_locations)) {
+        // Check for permitted locations of a user
+        if (! empty($permitted_locations)) {
             if ($permitted_locations != 'all') {
                 $query->whereIn('variation_location_details.location_id', $permitted_locations);
             }
         }
-
 
         if (! empty(request()->input('location_id'))) {
             $query->where('variation_location_details.location_id', request()->input('location_id'));

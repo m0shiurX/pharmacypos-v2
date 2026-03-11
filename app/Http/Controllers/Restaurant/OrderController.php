@@ -22,8 +22,6 @@ class OrderController extends Controller
     /**
      * Constructor
      *
-     * @param  Util  $commonUtil
-     * @param  RestaurantUtil  $restUtil
      * @return void
      */
     public function __construct(Util $commonUtil, RestaurantUtil $restUtil)
@@ -82,8 +80,8 @@ class OrderController extends Controller
             $user_id = request()->session()->get('user.id');
 
             $query = TransactionSellLine::leftJoin('transactions as t', 't.id', '=', 'transaction_sell_lines.transaction_id')
-                        ->where('t.business_id', $business_id)
-                        ->where('transaction_id', $id);
+                ->where('t.business_id', $business_id)
+                ->where('transaction_id', $id);
 
             if ($this->restUtil->is_service_staff($user_id)) {
                 $query->where('res_waiter_id', $user_id);

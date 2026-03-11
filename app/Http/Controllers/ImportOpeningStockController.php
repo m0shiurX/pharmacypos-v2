@@ -47,7 +47,7 @@ class ImportOpeningStockController extends Controller
         $date_format = session('business.date_format');
         $date_format = isset($date_formats[$date_format]) ? $date_formats[$date_format] : $date_format;
 
-        //Check if zip extension it loaded or not.
+        // Check if zip extension it loaded or not.
         if ($zip_loaded === false) {
             $notification = ['success' => 0,
                 'msg' => 'Please install/enable PHP Zip archive for import',
@@ -64,7 +64,6 @@ class ImportOpeningStockController extends Controller
     /**
      * Imports the uploaded file to database.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -79,7 +78,7 @@ class ImportOpeningStockController extends Controller
                 return $notAllowed;
             }
 
-            //Set maximum php execution time
+            // Set maximum php execution time
             ini_set('max_execution_time', 0);
             ini_set('memory_limit', -1);
 
@@ -87,7 +86,7 @@ class ImportOpeningStockController extends Controller
                 $file = $request->file('products_csv');
 
                 $parsed_array = Excel::toArray([], $file);
-                //Remove header row
+                // Remove header row
                 $imported_data = array_splice($parsed_array[0], 1);
 
                 $business_id = $request->session()->get('user.business_id');
@@ -102,17 +101,17 @@ class ImportOpeningStockController extends Controller
                 foreach ($imported_data as $key => $value) {
                     $row_no = $key + 1;
 
-                    //Check for product SKU, get product id, variation id.
+                    // Check for product SKU, get product id, variation id.
                     if (! empty($value[0])) {
                         $sku = $value[0];
                         $product_info = Variation::where('sub_sku', $sku)
-                                ->join('products AS P', 'variations.product_id', '=', 'P.id')
-                                ->leftjoin('tax_rates AS TR', 'P.tax', 'TR.id')
-                                ->where('P.business_id', $business_id)
-                                ->select(['P.id', 'variations.id as variation_id',
-                                    'P.enable_stock', 'TR.amount as tax_percent',
-                                    'TR.id as tax_id', ])
-                                ->first();
+                            ->join('products AS P', 'variations.product_id', '=', 'P.id')
+                            ->leftjoin('tax_rates AS TR', 'P.tax', 'TR.id')
+                            ->where('P.business_id', $business_id)
+                            ->select(['P.id', 'variations.id as variation_id',
+                                'P.enable_stock', 'TR.amount as tax_percent',
+                                'TR.id as tax_id', ])
+                            ->first();
                         if (empty($product_info)) {
                             $is_valid = false;
                             $error_msg = "Product with sku $sku not found in row no. $row_no";
@@ -128,12 +127,12 @@ class ImportOpeningStockController extends Controller
                         break;
                     }
 
-                    //Get location details.
+                    // Get location details.
                     if (! empty(trim($value[1]))) {
                         $location_name = trim($value[1]);
                         $location = BusinessLocation::where('name', $location_name)
-                                            ->where('business_id', $business_id)
-                                            ->first();
+                            ->where('business_id', $business_id)
+                            ->first();
                         if (empty($location)) {
                             $is_valid = false;
                             $error_msg = "Location with name '$location_name' not found in row no. $row_no";
@@ -165,12 +164,12 @@ class ImportOpeningStockController extends Controller
                         break;
                     }
 
-                    //Check for tra, location_id, opening_stock_product_id, type=opening stock.
+                    // Check for tra, location_id, opening_stock_product_id, type=opening stock.
                     $os_transaction = Transaction::where('business_id', $business_id)
-                            ->where('location_id', $location->id)
-                            ->where('type', 'opening_stock')
-                            ->where('opening_stock_product_id', $product_info->id)
-                            ->first();
+                        ->where('location_id', $location->id)
+                        ->where('type', 'opening_stock')
+                        ->where('opening_stock_product_id', $product_info->id)
+                        ->first();
 
                     $this->addOpeningStock($opening_stock, $product_info, $business_id, $unit_cost_before_tax, $os_transaction);
 
@@ -223,18 +222,18 @@ class ImportOpeningStockController extends Controller
         $transaction_date = request()->session()->get('financial_year.start');
         $transaction_date = \Carbon::createFromFormat('Y-m-d', $transaction_date)->toDateTimeString();
 
-        //Get product tax
+        // Get product tax
         $tax_percent = ! empty($product->tax_percent) ? $product->tax_percent : 0;
         $tax_id = ! empty($product->tax_id) ? $product->tax_id : null;
 
         $item_tax = $this->productUtil->calc_percentage($unit_cost_before_tax, $tax_percent);
 
-        //total before transaction tax
+        // total before transaction tax
         $total_before_trans_tax = $opening_stock['quantity'] * ($unit_cost_before_tax + $item_tax);
 
-        //Add opening stock transaction
+        // Add opening stock transaction
         if (empty($transaction)) {
-            $transaction = new Transaction();
+            $transaction = new Transaction;
             $transaction->type = 'opening_stock';
             $transaction->status = 'received';
             $transaction->opening_stock_product_id = $product->id;
@@ -250,7 +249,7 @@ class ImportOpeningStockController extends Controller
         $transaction->final_total += $total_before_trans_tax;
         $transaction->save();
 
-        //Create purchase line
+        // Create purchase line
         $transaction->purchase_lines()->create([
             'product_id' => $product->id,
             'variation_id' => $product->variation_id,
@@ -264,7 +263,7 @@ class ImportOpeningStockController extends Controller
             'exp_date' => ! empty($opening_stock['exp_date']) ? $opening_stock['exp_date'] : null,
             'lot_number' => ! empty($opening_stock['lot_number']) ? $opening_stock['lot_number'] : null,
         ]);
-        //Update variation location details
+        // Update variation location details
         $this->productUtil->updateProductQuantity($opening_stock['location_id'], $product->id, $product->variation_id, $opening_stock['quantity']);
     }
 }

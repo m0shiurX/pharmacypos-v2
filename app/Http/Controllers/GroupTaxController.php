@@ -19,8 +19,8 @@ class GroupTaxController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $tax_rates = TaxRate::where('business_id', $business_id)
-                        ->where('is_tax_group', '1')
-                        ->with(['sub_taxes']);
+                ->where('is_tax_group', '1')
+                ->with(['sub_taxes']);
 
             return Datatables::of($tax_rates)
                 ->addColumn(
@@ -55,13 +55,12 @@ class GroupTaxController extends Controller
         $taxes = TaxRate::where('business_id', $business_id)->where('is_tax_group', '0')->pluck('name', 'id');
 
         return view('tax_group.create')
-                ->with(compact('taxes'));
+            ->with(compact('taxes'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -135,7 +134,6 @@ class GroupTaxController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */

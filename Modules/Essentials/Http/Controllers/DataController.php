@@ -323,7 +323,7 @@ class DataController extends Controller
      */
     public function modifyAdminMenu()
     {
-        $module_util = new ModuleUtil();
+        $module_util = new ModuleUtil;
 
         $business_id = session()->get('user.business_id');
         $is_essentials_enabled = (bool) $module_util->hasThePermissionInSubscription($business_id, 'essentials_module');
@@ -331,18 +331,18 @@ class DataController extends Controller
         if ($is_essentials_enabled) {
             Menu::modify('admin-sidebar-menu', function ($menu) {
                 $menu->url(
-                        action([\Modules\Essentials\Http\Controllers\DashboardController::class, 'hrmDashboard']),
-                        __('essentials::lang.hrm'),
-                        ['icon' => 'fa fas fa-users', 'active' => request()->segment(1) == 'hrm', 'style' => config('app.env') == 'demo' ? 'background-color: #605ca8 !important;' : '']
-                    )
-                ->order(87);
+                    action([\Modules\Essentials\Http\Controllers\DashboardController::class, 'hrmDashboard']),
+                    __('essentials::lang.hrm'),
+                    ['icon' => 'fa fas fa-users', 'active' => request()->segment(1) == 'hrm', 'style' => config('app.env') == 'demo' ? 'background-color: #605ca8 !important;' : '']
+                )
+                    ->order(87);
 
                 $menu->url(
                     action([\Modules\Essentials\Http\Controllers\ToDoController::class, 'index']),
                     __('essentials::lang.essentials'),
                     ['icon' => 'fa fas fa-check-circle', 'active' => request()->segment(1) == 'essentials', 'style' => config('app.env') == 'demo' ? 'background-color: #001f3f !important;' : '']
                 )
-                ->order(87);
+                    ->order(87);
             });
         }
     }
@@ -396,8 +396,8 @@ class DataController extends Controller
             $allowance_deduction_ids = [];
             if (! empty($user)) {
                 $allowance_deduction_ids = EssentialsUserAllowancesAndDeduction::where('user_id', $user->id)
-                                            ->pluck('allowance_deduction_id')
-                                            ->toArray();
+                    ->pluck('allowance_deduction_id')
+                    ->toArray();
             }
 
             $locations = BusinessLocation::forDropdown($business_id, false, false, true, false);
@@ -418,7 +418,7 @@ class DataController extends Controller
     /**
      * Function to process model after being saved
      *
-     * @param  array  $data['event' => 'Event name', 'model_instance' => 'Model instance']
+     * @param  array  $data['event'  => 'Event name', 'model_instance' => 'Model instance']
      */
     public function afterModelSaved($data)
     {
@@ -434,12 +434,12 @@ class DataController extends Controller
 
             $non_deleteable_pc_ids = $this->getNonDeletablePayComponents($user->business_id, $user->id);
 
-            //delete  existing pay component
+            // delete  existing pay component
             EssentialsUserAllowancesAndDeduction::where('user_id', $user->id)
-                    ->whereNotIn('allowance_deduction_id', $non_deleteable_pc_ids)
-                    ->delete();
+                ->whereNotIn('allowance_deduction_id', $non_deleteable_pc_ids)
+                ->delete();
 
-            //if pay component exist add to db
+            // if pay component exist add to db
             if (! empty(request()->input('pay_components'))) {
                 $pay_components = request()->input('pay_components');
                 foreach ($pay_components as $key => $pay_component) {
@@ -466,7 +466,7 @@ class DataController extends Controller
         );
 
         $report_data = [
-            //left side data
+            // left side data
             [
                 [
                     'value' => $total_payroll,
@@ -475,7 +475,7 @@ class DataController extends Controller
                 ],
             ],
 
-            //right side data
+            // right side data
             [],
         ];
 
@@ -486,9 +486,9 @@ class DataController extends Controller
      * Calculates total payroll
      *
      * @param  int  $business_id
-     * @param  string  $start_date = null
-     * @param  string  $end_date = null
-     * @param  int  $location_id = null
+     * @param  string  $start_date  = null
+     * @param  string  $end_date  = null
+     * @param  int  $location_id  = null
      * @return array
      */
     private function __getTotalPayroll(
@@ -497,8 +497,8 @@ class DataController extends Controller
         $end_date = null,
         $location_id = null,
         $user_id = null
-        ) {
-        $transactionUtil = new TransactionUtil();
+    ) {
+        $transactionUtil = new TransactionUtil;
 
         $transaction_totals = $transactionUtil->getTransactionTotals(
             $business_id,
@@ -507,7 +507,7 @@ class DataController extends Controller
             $end_date,
             $location_id,
             $user_id
-            );
+        );
 
         return $transaction_totals['total_payroll'];
     }
@@ -523,15 +523,15 @@ class DataController extends Controller
         $events = [];
         if (in_array('todo', $data['events'])) {
             $todos = ToDo::where('business_id', $data['business_id'])
-                            ->with(['users'])
-                            ->where(function ($query) use ($data) {
-                                $query->where('created_by', $data['user_id'])
-                                    ->orWhereHas('users', function ($q) use ($data) {
-                                        $q->where('user_id', $data['user_id']);
-                                    });
-                            })
-                            ->whereBetween(DB::raw('date(date)'), [$data['start_date'], $data['end_date']])
-                            ->get();
+                ->with(['users'])
+                ->where(function ($query) use ($data) {
+                    $query->where('created_by', $data['user_id'])
+                        ->orWhereHas('users', function ($q) use ($data) {
+                            $q->where('user_id', $data['user_id']);
+                        });
+                })
+                ->whereBetween(DB::raw('date(date)'), [$data['start_date'], $data['end_date']])
+                ->get();
 
             foreach ($todos as $todo) {
                 $events[] = [
@@ -566,9 +566,9 @@ class DataController extends Controller
             }
 
             $holidays = $holidays_query->whereDate('start_date', '>=',
-                            $data['start_date'])
-                            ->whereDate('start_date', '<=', $data['end_date'])
-                            ->get();
+                $data['start_date'])
+                ->whereDate('start_date', '<=', $data['end_date'])
+                ->get();
 
             foreach ($holidays as $holiday) {
                 $events[] = [
@@ -586,23 +586,23 @@ class DataController extends Controller
 
         if (in_array('leaves', $data['events'])) {
             $leaves_query = EssentialsLeave::where('essentials_leaves.business_id', $data['business_id'])
-                        ->join('users as u', 'u.id', '=', 'essentials_leaves.user_id')
-                        ->join('essentials_leave_types as lt', 'lt.id', '=', 'essentials_leaves.essentials_leave_type_id')
-                        ->select([
-                            'essentials_leaves.id',
-                            DB::raw("CONCAT(COALESCE(u.surname, ''), ' ', COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, '')) as user"),
-                            'lt.leave_type',
-                            'start_date',
-                            'end_date',
-                        ]);
+                ->join('users as u', 'u.id', '=', 'essentials_leaves.user_id')
+                ->join('essentials_leave_types as lt', 'lt.id', '=', 'essentials_leaves.essentials_leave_type_id')
+                ->select([
+                    'essentials_leaves.id',
+                    DB::raw("CONCAT(COALESCE(u.surname, ''), ' ', COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, '')) as user"),
+                    'lt.leave_type',
+                    'start_date',
+                    'end_date',
+                ]);
 
             if (! empty($data['user_id'])) {
                 $leaves_query->where('essentials_leaves.user_id', $data['user_id']);
             }
 
             $leaves = $leaves_query->whereDate('essentials_leaves.start_date', '>=', $data['start_date'])
-                            ->whereDate('essentials_leaves.start_date', '<=', $data['end_date'])
-                            ->get();
+                ->whereDate('essentials_leaves.start_date', '<=', $data['end_date'])
+                ->get();
             foreach ($leaves as $leave) {
                 $events[] = [
                     'title' => $leave->user,
@@ -686,10 +686,10 @@ class DataController extends Controller
     public function getNonDeletablePayComponents($business_id, $user_id)
     {
         $ads = EssentialsAllowanceAndDeduction::join('essentials_user_allowance_and_deductions as euad', 'euad.allowance_deduction_id', '=', 'essentials_allowances_and_deductions.id')
-                ->whereNotNull('essentials_allowances_and_deductions.applicable_date')
-                ->where('business_id', $business_id)
-                ->where('euad.user_id', $user_id)
-                ->get();
+            ->whereNotNull('essentials_allowances_and_deductions.applicable_date')
+            ->where('business_id', $business_id)
+            ->where('euad.user_id', $user_id)
+            ->get();
 
         $ids = $ads->pluck('id')->toArray();
 
@@ -699,15 +699,14 @@ class DataController extends Controller
     /**
      * Returns todo dropdown
      *
-     * @param $business_id
      * @return array
      */
     public function getTodosDropdown($business_id)
     {
         $todos = ToDo::where('business_id', $business_id)
-                    ->select(DB::raw("CONCAT(task, ' (', task_id , ')') AS task_name"), 'id')
-                    ->pluck('task_name', 'id')
-                    ->toArray();
+            ->select(DB::raw("CONCAT(task, ' (', task_id , ')') AS task_name"), 'id')
+            ->pluck('task_name', 'id')
+            ->toArray();
 
         return $todos;
     }
@@ -715,15 +714,14 @@ class DataController extends Controller
     /**
      * Returns task for user
      *
-     * @param $user_id
      * @return array
      */
     public function getAssignedTaskForUser($user_id)
     {
         $task_ids = DB::table('essentials_todos_users')
-                    ->where('user_id', $user_id)
-                    ->pluck('todo_id')
-                    ->toArray();
+            ->where('user_id', $user_id)
+            ->pluck('todo_id')
+            ->toArray();
 
         return $task_ids;
     }

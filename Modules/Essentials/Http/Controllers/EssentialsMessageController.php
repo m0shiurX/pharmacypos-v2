@@ -45,8 +45,8 @@ class EssentialsMessageController extends Controller
         }
 
         $query = EssentialsMessage::where('business_id', $business_id)
-                        ->with(['sender'])
-                        ->orderBy('created_at', 'ASC');
+            ->with(['sender'])
+            ->orderBy('created_at', 'ASC');
 
         $permitted_locations = auth()->user()->permitted_locations();
         if ($permitted_locations != 'all') {
@@ -60,13 +60,12 @@ class EssentialsMessageController extends Controller
         $business_locations = BusinessLocation::forDropdown($business_id);
 
         return view('essentials::messages.index')
-                ->with(compact('messages', 'business_locations'));
+            ->with(compact('messages', 'business_locations'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -95,15 +94,15 @@ class EssentialsMessageController extends Controller
                 ];
 
                 if (! empty($input['message'])) {
-                    //Get last message sent to the same users
+                    // Get last message sent to the same users
                     $last_message = EssentialsMessage::where('location_id', $input['location_id'])
-                                                    ->orWhereNull('location_id')
-                                                    ->orderBy('created_at', 'desc')
-                                                    ->first();
+                        ->orWhereNull('location_id')
+                        ->orderBy('created_at', 'desc')
+                        ->first();
 
                     $message = EssentialsMessage::create($input);
 
-                    //Check if min 10min passed from last message to the same user
+                    // Check if min 10min passed from last message to the same user
                     $database_notification = empty($last_message) || $last_message->created_at->diffInMinutes(\Carbon::now()) > 10;
                     $this->__notify($message, $database_notification);
 
@@ -143,9 +142,9 @@ class EssentialsMessageController extends Controller
                 $user_id = request()->user()->id;
 
                 EssentialsMessage::where('business_id', $business_id)
-                            ->where('user_id', $user_id)
-                            ->where('id', $id)
-                            ->delete();
+                    ->where('user_id', $user_id)
+                    ->where('id', $id)
+                    ->delete();
 
                 $output = ['success' => true,
                     'msg' => __('lang_v1.deleted_success'),
@@ -171,7 +170,7 @@ class EssentialsMessageController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
         $query = User::where('id', '!=', $message->user_id)
-                    ->where('business_id', $business_id);
+            ->where('business_id', $business_id);
 
         $users = null;
         if (empty($message->location_id)) {
@@ -205,9 +204,9 @@ class EssentialsMessageController extends Controller
         }
 
         $query = EssentialsMessage::where('business_id', $business_id)
-                        ->where('user_id', '!=', auth()->user()->id)
-                        ->with(['sender'])
-                        ->orderBy('created_at', 'ASC');
+            ->where('user_id', '!=', auth()->user()->id)
+            ->with(['sender'])
+            ->orderBy('created_at', 'ASC');
 
         if (! empty($last_chat_time)) {
             $query->where('created_at', '>', $last_chat_time);

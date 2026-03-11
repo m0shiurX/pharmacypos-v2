@@ -33,7 +33,7 @@ class LocationSettingsController extends Controller
      */
     public function index($location_id)
     {
-        //Check for locations access permission
+        // Check for locations access permission
         if (! auth()->user()->can('business_settings.access') ||
             ! auth()->user()->can_access_this_location($location_id)
         ) {
@@ -43,7 +43,7 @@ class LocationSettingsController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         $location = BusinessLocation::where('business_id', $business_id)
-                        ->findorfail($location_id);
+            ->findorfail($location_id);
 
         $printers = Printer::forDropdown($business_id);
 
@@ -51,11 +51,11 @@ class LocationSettingsController extends Controller
         $receiptPrinterType = $this->receiptPrinterType;
 
         $invoice_layouts = InvoiceLayout::where('business_id', $business_id)
-                            ->get()
-                            ->pluck('name', 'id');
+            ->get()
+            ->pluck('name', 'id');
         $invoice_schemes = InvoiceScheme::where('business_id', $business_id)
-                            ->get()
-                            ->pluck('name', 'id');
+            ->get()
+            ->pluck('name', 'id');
 
         return view('location_settings.index')
             ->with(compact('location', 'printReceiptOnInvoice', 'receiptPrinterType', 'printers', 'invoice_layouts', 'invoice_schemes'));
@@ -64,13 +64,12 @@ class LocationSettingsController extends Controller
     /**
      * Update the settings
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function updateSettings($location_id, Request $request)
     {
         try {
-            //Check for locations access permission
+            // Check for locations access permission
             if (! auth()->user()->can('business_settings.access') ||
                 ! auth()->user()->can_access_this_location($location_id)
             ) {
@@ -79,7 +78,7 @@ class LocationSettingsController extends Controller
 
             $input = $request->only(['print_receipt_on_invoice', 'receipt_printer_type', 'printer_id', 'invoice_layout_id', 'invoice_scheme_id']);
 
-            //Auto set to browser in demo.
+            // Auto set to browser in demo.
             if (config('app.env') == 'demo') {
                 $input['receipt_printer_type'] = 'browser';
             }
@@ -87,7 +86,7 @@ class LocationSettingsController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $location = BusinessLocation::where('business_id', $business_id)
-                            ->findorfail($location_id);
+                ->findorfail($location_id);
 
             $location->fill($input);
             $location->update();

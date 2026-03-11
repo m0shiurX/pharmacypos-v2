@@ -33,5 +33,5 @@ return [
     'expense_delete_success' => 'Gider başarıyla silindi',
     'expense_for' => 'Gideri',
     'expense_for_help' => 'Giderin ilişkili olduğu kullanıcıyı (e-posta/kullanıcı adı) seçin (İsteğe bağlı)',
-    'import_expense' => 'Gideri içe aktar'
+    'import_expense' => 'Gideri içe aktar',
 ];

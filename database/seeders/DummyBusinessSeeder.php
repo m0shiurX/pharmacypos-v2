@@ -5,12 +5,12 @@ namespace Database\Seeders;
 use App\NotificationTemplate;
 use App\User;
 use App\Utils\InstallUtil;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Carbon\Carbon;
 
 class DummyBusinessSeeder extends Seeder
 {
@@ -1285,7 +1285,7 @@ class DummyBusinessSeeder extends Seeder
 
         DB::table('product_locations')->insert($product_locations);
 
-        //Roles and permissions for business 1
+        // Roles and permissions for business 1
         $admin_role1 = Role::create([
             'name' => 'Admin#1',
             'business_id' => 1,
@@ -1315,10 +1315,10 @@ class DummyBusinessSeeder extends Seeder
         $woocommerce1->assignRole('Admin#1');
         Permission::create(['name' => 'location.1']);
 
-        //give location.1 permissions
+        // give location.1 permissions
         $cashier1->givePermissionTo('location.1');
 
-        //Roles and permissions for business 2
+        // Roles and permissions for business 2
         $admin_role2 = Role::create([
             'name' => 'Admin#2',
             'business_id' => 2,
@@ -1338,7 +1338,7 @@ class DummyBusinessSeeder extends Seeder
         $admin2->assignRole('Admin#2');
         Permission::create(['name' => 'location.2']);
 
-        //Roles and permissions for business 3
+        // Roles and permissions for business 3
         $admin_role3 = Role::create([
             'name' => 'Admin#3',
             'business_id' => 3,
@@ -1357,7 +1357,7 @@ class DummyBusinessSeeder extends Seeder
         $admin3->assignRole('Admin#3');
         Permission::create(['name' => 'location.3']);
 
-        //Roles and permissions for business 4
+        // Roles and permissions for business 4
         $admin_role4 = Role::create([
             'name' => 'Admin#4',
             'business_id' => 4,
@@ -1377,7 +1377,7 @@ class DummyBusinessSeeder extends Seeder
         $admin4->assignRole('Admin#4');
         Permission::create(['name' => 'location.4']);
 
-        //Roles and permissions for business 5
+        // Roles and permissions for business 5
         $admin_role5 = Role::create([
             'name' => 'Admin#5',
             'business_id' => 5,
@@ -1417,7 +1417,7 @@ class DummyBusinessSeeder extends Seeder
         $admin6 = User::findOrFail(12);
         $admin6->assignRole('Admin#6');
 
-        //Essential Module : Dummy Data
+        // Essential Module : Dummy Data
         $essentials_leave_types = [
             ['id' => '1', 'leave_type' => 'Sick Leave', 'max_leave_count' => null, 'leave_count_interval' => null, 'business_id' => '1', 'created_at' => '2019-08-07 00:00:36', 'updated_at' => '2019-08-07 00:00:36'],
             ['id' => '2', 'leave_type' => 'Vacation Leaves', 'max_leave_count' => null, 'leave_count_interval' => null, 'business_id' => '1', 'created_at' => '2019-08-07 00:00:49', 'updated_at' => '2019-08-07 00:00:49'],
@@ -1426,7 +1426,7 @@ class DummyBusinessSeeder extends Seeder
         ];
         DB::table('essentials_leave_types')->insert($essentials_leave_types);
 
-        //Repair Module Dummy Data [product/device(categories) added above]
+        // Repair Module Dummy Data [product/device(categories) added above]
         $repair_device_models = [
             ['id' => '1', 'business_id' => '4', 'name' => 'Samsung Galaxy M21', 'repair_checklist' => '"MIC|WiFi|Bluetooth|Sound|Camera|Ram"', 'brand_id' => '24', 'device_id' => '48', 'created_by' => '1', 'created_at' => '2020-05-07 21:07:24', 'updated_at' => '2020-05-11 12:35:00'],
             ['id' => '2', 'business_id' => '4', 'name' => 'Samsung Galaxy S20+', 'repair_checklist' => '"MIC|WiFi|Bluetooth|Sound|Camera|Ram"', 'brand_id' => '24', 'device_id' => '48', 'created_by' => '1', 'created_at' => '2020-05-07 21:08:11', 'updated_at' => '2020-05-11 12:34:34'],
@@ -1466,7 +1466,6 @@ class DummyBusinessSeeder extends Seeder
             ['id' => '8', 'user_id' => '2', 'essentials_shift_id' => '1', 'start_date' => $start_of_week, 'end_date' => $end_of_week, 'created_at' => '2020-05-11 21:29:45', 'updated_at' => '2020-05-11 21:29:45'],
         ];
         DB::table('essentials_user_shifts')->insert($essentials_user_shifts);
-
 
         $gym_classes = [
             // Business 1
@@ -1529,7 +1528,7 @@ class DummyBusinessSeeder extends Seeder
         $locations = DB::table('business_locations')->get();
 
         foreach ($locations as $location) {
-            if (!$location->zatca_details) {
+            if (! $location->zatca_details) {
                 $zatca_details = [
                     'portal_mode' => 'developer-portal',
                     'otp' => '111222',
@@ -1561,7 +1560,7 @@ class DummyBusinessSeeder extends Seeder
 
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
 
-        $installUtil = new InstallUtil();
+        $installUtil = new InstallUtil;
         $installUtil->createExistingProductsVariationsToTemplate();
 
         DB::commit();

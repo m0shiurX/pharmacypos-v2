@@ -42,7 +42,7 @@ class LabelsController extends Controller
         $purchase_id = $request->get('purchase_id', false);
         $product_id = $request->get('product_id', false);
 
-        //Get products for the business
+        // Get products for the business
         $products = [];
         $price_groups = [];
         if ($purchase_id) {
@@ -51,18 +51,18 @@ class LabelsController extends Controller
             $products = $this->productUtil->getDetailsFromProduct($business_id, $product_id);
         }
 
-        //get price groups
+        // get price groups
         $price_groups = [];
         if (! empty($purchase_id) || ! empty($product_id)) {
             $price_groups = SellingPriceGroup::where('business_id', $business_id)
-                                    ->active()
-                                    ->pluck('name', 'id');
+                ->active()
+                ->pluck('name', 'id');
         }
 
         $barcode_settings = Barcode::where('business_id', $business_id)
-                                ->orWhereNull('business_id')
-                                ->select(DB::raw('CONCAT(name, ", ", COALESCE(description, "")) as name, id, is_default'))
-                                ->get();
+            ->orWhereNull('business_id')
+            ->select(DB::raw('CONCAT(name, ", ", COALESCE(description, "")) as name, id, is_default'))
+            ->get();
         $default = $barcode_settings->where('is_default', 1)->first();
         $barcode_settings = $barcode_settings->pluck('name', 'id');
 
@@ -87,11 +87,11 @@ class LabelsController extends Controller
                 $products = $this->productUtil->getDetailsFromProduct($business_id, $product_id, $variation_id);
 
                 $price_groups = SellingPriceGroup::where('business_id', $business_id)
-                                            ->active()
-                                            ->pluck('name', 'id');
+                    ->active()
+                    ->pluck('name', 'id');
 
                 return view('labels.partials.show_table_rows')
-                        ->with(compact('products', 'index', 'price_groups'));
+                    ->with(compact('products', 'index', 'price_groups'));
             }
         }
     }
@@ -180,14 +180,14 @@ class LabelsController extends Controller
             // 'autoArabic' => true
             //             ]
             //         );
-            //print_r($mpdf);exit;
+            // print_r($mpdf);exit;
 
             $i = 0;
             $len = count($product_details_page_wise);
             $is_first = false;
             $is_last = false;
 
-            //$original_aspect_ratio = 4;//(w/h)
+            // $original_aspect_ratio = 4;//(w/h)
             $factor = (($barcode_details->width / $barcode_details->height)) / ($barcode_details->is_continuous ? 2 : 4);
             $html = '';
             foreach ($product_details_page_wise as $page => $page_products) {
@@ -200,9 +200,9 @@ class LabelsController extends Controller
                 }
 
                 $output = view('labels.partials.preview_2')
-                            ->with(compact('print', 'page_products', 'business_name', 'barcode_details', 'margin_top', 'margin_left', 'paper_width', 'paper_height', 'is_first', 'is_last', 'factor'))->render();
+                    ->with(compact('print', 'page_products', 'business_name', 'barcode_details', 'margin_top', 'margin_left', 'paper_width', 'paper_height', 'is_first', 'is_last', 'factor'))->render();
                 print_r($output);
-                //$mpdf->WriteHTML($output);
+                // $mpdf->WriteHTML($output);
 
                 // if($i < $len - 1){
                 //     // '', '', '', '', '', '', $margin_left, $margin_left, $margin_top, $margin_top, '', '', '', '', '', '', 0, 0, 0, 0, '', [$barcode_details->paper_width*1, $barcode_details->paper_height*1]
@@ -214,9 +214,9 @@ class LabelsController extends Controller
 
             print_r('<script>window.print()</script>');
             exit;
-            //return $output;
+            // return $output;
 
-            //$mpdf->Output();
+            // $mpdf->Output();
 
             // $page_height = null;
             // if ($barcode_details->is_continuous) {
@@ -237,6 +237,6 @@ class LabelsController extends Controller
             $output = __('lang_v1.barcode_label_error');
         }
 
-        //return $output;
+        // return $output;
     }
 }

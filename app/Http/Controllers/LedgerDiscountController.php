@@ -14,7 +14,6 @@ class LedgerDiscountController extends Controller
     /**
      * Constructor
      *
-     * @param  Util  $commonUtil
      * @return void
      */
     public function __construct(
@@ -46,7 +45,6 @@ class LedgerDiscountController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -120,8 +118,8 @@ class LedgerDiscountController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         $discount = Transaction::where('business_id', $business_id)
-                    ->where('type', 'ledger_discount')
-                    ->find($id);
+            ->where('type', 'ledger_discount')
+            ->find($id);
 
         $contact = Contact::find($discount->contact_id);
 
@@ -131,7 +129,6 @@ class LedgerDiscountController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -153,9 +150,9 @@ class LedgerDiscountController extends Controller
             }
 
             Transaction::where('business_id', $business_id)
-                    ->where('type', 'ledger_discount')
-                    ->where('id', $id)
-                    ->update($transaction_data);
+                ->where('type', 'ledger_discount')
+                ->where('id', $id)
+                ->update($transaction_data);
 
             $output = ['success' => true, 'msg' => __('lang_v1.success')];
         } catch (\Exception $e) {
@@ -187,9 +184,9 @@ class LedgerDiscountController extends Controller
 
         try {
             Transaction::where('business_id', $business_id)
-                    ->where('type', 'ledger_discount')
-                    ->where('id', $id)
-                    ->delete();
+                ->where('type', 'ledger_discount')
+                ->where('id', $id)
+                ->delete();
 
             $output = ['success' => true, 'msg' => __('lang_v1.success')];
         } catch (\Exception $e) {

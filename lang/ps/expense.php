@@ -33,5 +33,5 @@ return [
     'expense_delete_success' => 'مصاریف په بریالیتوب سره پاک شوه',
     'expense_for' => 'مصاریف لپاره',
     'expense_for_help' => 'کاروونکی (بریښنالیک/نوم) غوره کړئ چې لګښت ورسره تړاو لري (اختیاري)',
-    'import_expense' => 'لګښت وارد کړئ'
+    'import_expense' => 'لګښت وارد کړئ',
 ];

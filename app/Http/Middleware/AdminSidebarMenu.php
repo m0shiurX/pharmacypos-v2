@@ -12,7 +12,6 @@ class AdminSidebarMenu
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -22,12 +21,12 @@ class AdminSidebarMenu
         }
 
         Menu::create('admin-sidebar-menu', function ($menu) {
-            $enabled_modules = !empty(session('business.enabled_modules')) ? session('business.enabled_modules') : [];
+            $enabled_modules = ! empty(session('business.enabled_modules')) ? session('business.enabled_modules') : [];
 
-            $common_settings = !empty(session('business.common_settings')) ? session('business.common_settings') : [];
-            $pos_settings = !empty(session('business.pos_settings')) ? json_decode(session('business.pos_settings'), true) : [];
+            $common_settings = ! empty(session('business.common_settings')) ? session('business.common_settings') : [];
+            $pos_settings = ! empty(session('business.pos_settings')) ? json_decode(session('business.pos_settings'), true) : [];
 
-            $is_admin = auth()->user()->hasRole('Admin#' . session('business.id')) ? true : false;
+            $is_admin = auth()->user()->hasRole('Admin#'.session('business.id')) ? true : false;
 
             $menu->url(action([\App\Http\Controllers\HomeController::class, 'index']), __('home.home'), ['icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="tw-size-5 tw-shrink-0" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -36,7 +35,7 @@ class AdminSidebarMenu
             <path d="M10 12h4v4h-4z" />
           </svg>', 'active' => request()->segment(1) == 'home'])->order(5);
 
-            //Contacts dropdown
+            // Contacts dropdown
             if (auth()->user()->can('supplier.view') || auth()->user()->can('customer.view') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own')) {
                 $menu->dropdown(
                     __('contact.contacts'),
@@ -69,7 +68,7 @@ class AdminSidebarMenu
                 )->order(15);
             }
 
-            //Products & Inventory dropdown
+            // Products & Inventory dropdown
             if (
                 auth()->user()->can('product.view') || auth()->user()->can('product.create') ||
                 auth()->user()->can('brand.view') || auth()->user()->can('unit.view') ||
@@ -98,7 +97,7 @@ class AdminSidebarMenu
                         }
                         if (auth()->user()->can('category.view') || auth()->user()->can('category.create')) {
                             $sub->url(
-                                action([\App\Http\Controllers\TaxonomyController::class, 'index']) . '?type=product',
+                                action([\App\Http\Controllers\TaxonomyController::class, 'index']).'?type=product',
                                 __('category.categories'),
                                 ['icon' => '', 'active' => request()->segment(1) == 'taxonomies' && request()->get('type') == 'product']
                             );
@@ -118,7 +117,7 @@ class AdminSidebarMenu
                             );
                         }
 
-                        //Stock Transfers
+                        // Stock Transfers
                         if (in_array('stock_transfers', $enabled_modules) && (auth()->user()->can('purchase.view') || auth()->user()->can('view_own_purchase'))) {
                             $sub->url(
                                 action([\App\Http\Controllers\StockTransferController::class, 'index']),
@@ -127,7 +126,7 @@ class AdminSidebarMenu
                             );
                         }
 
-                        //Stock Adjustment
+                        // Stock Adjustment
                         if (in_array('stock_adjustment', $enabled_modules) && (auth()->user()->can('purchase.view') || auth()->user()->can('view_own_purchase'))) {
                             $sub->url(
                                 action([\App\Http\Controllers\StockAdjustmentController::class, 'index']),
@@ -148,7 +147,7 @@ class AdminSidebarMenu
                 )->order(20);
             }
 
-            //Purchase dropdown
+            // Purchase dropdown
             if (in_array('purchases', $enabled_modules) && (auth()->user()->can('purchase.view') || auth()->user()->can('purchase.create') || auth()->user()->can('purchase.update'))) {
                 $menu->dropdown(
                     __('purchase.purchases'),
@@ -184,11 +183,11 @@ class AdminSidebarMenu
                   </svg>', 'id' => 'tour_step6']
                 )->order(25);
             }
-            //Sell dropdown
+            // Sell dropdown
             if ($is_admin || auth()->user()->hasAnyPermission(['sell.view', 'sell.create', 'direct_sell.access', 'view_own_sell_only', 'view_commission_agent_sell', 'access_shipping', 'access_own_shipping', 'access_commission_agent_shipping', 'access_sell_return', 'direct_sell.view', 'direct_sell.update', 'access_own_sell_return'])) {
                 $menu->dropdown(
                     __('sale.sale'),
-                    function ($sub) use ($enabled_modules, $is_admin, $pos_settings) {
+                    function ($sub) use ($enabled_modules, $is_admin) {
                         if ($is_admin || auth()->user()->hasAnyPermission(['sell.view', 'sell.create', 'direct_sell.access', 'direct_sell.view', 'view_own_sell_only', 'view_commission_agent_sell', 'access_shipping', 'access_own_shipping', 'access_commission_agent_shipping'])) {
                             $sub->url(
                                 action([\App\Http\Controllers\SellController::class, 'index']),
@@ -239,8 +238,7 @@ class AdminSidebarMenu
                 )->order(30);
             }
 
-
-            //Expenses & Accounts dropdown
+            // Expenses & Accounts dropdown
             if (
                 (in_array('expenses', $enabled_modules) && (auth()->user()->can('all_expense.access') || auth()->user()->can('view_own_expense'))) ||
                 (auth()->user()->can('account.access') && in_array('account', $enabled_modules))
@@ -264,7 +262,7 @@ class AdminSidebarMenu
                             }
                         }
 
-                        //Payment Accounts
+                        // Payment Accounts
                         if (auth()->user()->can('account.access') && in_array('account', $enabled_modules)) {
                             $sub->url(
                                 action([\App\Http\Controllers\AccountController::class, 'index']),
@@ -283,7 +281,7 @@ class AdminSidebarMenu
                 )->order(45);
             }
 
-            //Reports dropdown
+            // Reports dropdown
             if (
                 auth()->user()->can('purchase_n_sell_report.view') || auth()->user()->can('contacts_report.view')
                 || auth()->user()->can('stock_report.view') || auth()->user()->can('tax_report.view')
@@ -364,23 +362,22 @@ class AdminSidebarMenu
                 )->order(55);
             }
 
-
-            //Booking menu
+            // Booking menu
             if (in_array('booking', $enabled_modules) && (auth()->user()->can('crud_all_bookings') || auth()->user()->can('crud_own_bookings'))) {
                 $menu->url(action([\App\Http\Controllers\Restaurant\BookingController::class, 'index']), __('restaurant.bookings'), ['icon' => '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11.5 21h-5.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v6" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M15 19l2 2l4 -4" /></svg>', 'active' => request()->segment(1) == 'bookings'])->order(65);
             }
 
-            //Kitchen menu
+            // Kitchen menu
             if (in_array('kitchen', $enabled_modules)) {
                 $menu->url(action([\App\Http\Controllers\Restaurant\KitchenController::class, 'index']), __('restaurant.kitchen'), ['icon' => '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-flame"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12c2 -2.96 0 -7 -1 -8c0 3.038 -1.773 4.741 -3 6c-1.226 1.26 -2 3.24 -2 5a6 6 0 1 0 12 0c0 -1.532 -1.056 -3.94 -2 -5c-1.786 3 -2.791 3 -4 2z" /></svg>', 'active' => request()->segment(1) == 'modules' && request()->segment(2) == 'kitchen'])->order(70);
             }
 
-            //Service Staff menu
+            // Service Staff menu
             if (in_array('service_staff', $enabled_modules)) {
                 $menu->url(action([\App\Http\Controllers\Restaurant\OrderController::class, 'index']), __('restaurant.orders'), ['icon' => '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="18"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-baseline-density-medium"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h16" /><path d="M4 12h16" /><path d="M4 4h16" /></svg>', 'active' => request()->segment(1) == 'modules' && request()->segment(2) == 'orders'])->order(75);
             }
 
-            //User management dropdown
+            // User management dropdown
             if (auth()->user()->can('user.view') || auth()->user()->can('user.create') || auth()->user()->can('roles.view')) {
                 $menu->dropdown(
                     __('user.user_management'),
@@ -414,11 +411,11 @@ class AdminSidebarMenu
                     <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
-                  </svg>',]
+                  </svg>', ]
                 )->order(80);
             }
 
-            //Settings Dropdown
+            // Settings Dropdown
             if (
                 auth()->user()->can('business_settings.access') ||
                 auth()->user()->can('invoice_settings.access') ||
@@ -429,7 +426,7 @@ class AdminSidebarMenu
             ) {
                 $menu->dropdown(
                     __('business.settings'),
-                    function ($sub) use ($enabled_modules) {
+                    function ($sub) {
                         if (auth()->user()->can('business_settings.access')) {
                             $sub->url(
                                 action([\App\Http\Controllers\BusinessController::class, 'getBusinessSettings']),
@@ -453,7 +450,7 @@ class AdminSidebarMenu
                             );
                         }
 
-                        //Notification Templates
+                        // Notification Templates
                         if (auth()->user()->can('send_notifications')) {
                             $sub->url(
                                 action([\App\Http\Controllers\NotificationTemplateController::class, 'index']),
@@ -462,7 +459,7 @@ class AdminSidebarMenu
                             );
                         }
 
-                        //Backup
+                        // Backup
                         if (auth()->user()->can('backup')) {
                             $sub->url(
                                 action([\App\Http\Controllers\BackUpController::class, 'index']),
@@ -481,7 +478,7 @@ class AdminSidebarMenu
             }
         });
 
-        //Add menus from modules
+        // Add menus from modules
         $moduleUtil = new ModuleUtil;
         $moduleUtil->getModuleData('modifyAdminMenu');
 

@@ -31,17 +31,16 @@ class AccountTypeController extends Controller
         $business_id = session()->get('user.business_id');
 
         $account_types = AccountType::where('business_id', $business_id)
-                                     ->whereNull('parent_account_type_id')
-                                     ->get();
+            ->whereNull('parent_account_type_id')
+            ->get();
 
         return view('account_types.create')
-                ->with(compact('account_types'));
+            ->with(compact('account_types'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -72,7 +71,6 @@ class AccountTypeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\AccountType  $accountType
      * @return \Illuminate\Http\Response
      */
     public function show(AccountType $accountType)
@@ -95,20 +93,19 @@ class AccountTypeController extends Controller
         $business_id = session()->get('user.business_id');
 
         $account_type = AccountType::where('business_id', $business_id)
-                                     ->findOrFail($id);
+            ->findOrFail($id);
 
         $account_types = AccountType::where('business_id', $business_id)
-                                     ->whereNull('parent_account_type_id')
-                                     ->get();
+            ->whereNull('parent_account_type_id')
+            ->get();
 
         return view('account_types.edit')
-                ->with(compact('account_types', 'account_type'));
+            ->with(compact('account_types', 'account_type'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\AccountType  $accountType
      * @return \Illuminate\Http\Response
      */
@@ -123,13 +120,13 @@ class AccountTypeController extends Controller
             $business_id = $request->session()->get('user.business_id');
 
             $account_type = AccountType::where('business_id', $business_id)
-                                     ->findOrFail($id);
+                ->findOrFail($id);
 
-            //Account type is changed to subtype update all its sub type's parent type
+            // Account type is changed to subtype update all its sub type's parent type
             if (empty($account_type->parent_account_type_id) && ! empty($input['parent_account_type_id'])) {
                 AccountType::where('business_id', $business_id)
-                        ->where('parent_account_type_id', $account_type->id)
-                        ->update(['parent_account_type_id' => $input['parent_account_type_id']]);
+                    ->where('parent_account_type_id', $account_type->id)
+                    ->update(['parent_account_type_id' => $input['parent_account_type_id']]);
             }
 
             $account_type->update($input);
@@ -163,13 +160,13 @@ class AccountTypeController extends Controller
         $business_id = session()->get('user.business_id');
 
         AccountType::where('business_id', $business_id)
-                                     ->where('id', $id)
-                                     ->delete();
+            ->where('id', $id)
+            ->delete();
 
-        //Upadete parent account if set
+        // Upadete parent account if set
         AccountType::where('business_id', $business_id)
-                 ->where('parent_account_type_id', $id)
-                 ->update(['parent_account_type_id' => null]);
+            ->where('parent_account_type_id', $id)
+            ->update(['parent_account_type_id' => null]);
 
         $output = ['success' => true,
             'msg' => __('lang_v1.deleted_success'),

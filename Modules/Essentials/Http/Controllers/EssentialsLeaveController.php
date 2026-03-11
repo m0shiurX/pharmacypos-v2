@@ -69,20 +69,20 @@ class EssentialsLeaveController extends Controller
         }
         if (request()->ajax()) {
             $leaves = EssentialsLeave::where('essentials_leaves.business_id', $business_id)
-                        ->join('users as u', 'u.id', '=', 'essentials_leaves.user_id')
-                        ->join('essentials_leave_types as lt', 'lt.id', '=', 'essentials_leaves.essentials_leave_type_id')
-                        ->select([
-                            'essentials_leaves.id',
-                            DB::raw("CONCAT(COALESCE(u.surname, ''), ' ', COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, '')) as user"),
-                            'lt.leave_type',
-                            'start_date',
-                            'end_date',
-                            'ref_no',
-                            'essentials_leaves.status',
-                            'essentials_leaves.business_id',
-                            'reason',
-                            'status_note',
-                        ]);
+                ->join('users as u', 'u.id', '=', 'essentials_leaves.user_id')
+                ->join('essentials_leave_types as lt', 'lt.id', '=', 'essentials_leaves.essentials_leave_type_id')
+                ->select([
+                    'essentials_leaves.id',
+                    DB::raw("CONCAT(COALESCE(u.surname, ''), ' ', COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, '')) as user"),
+                    'lt.leave_type',
+                    'start_date',
+                    'end_date',
+                    'ref_no',
+                    'essentials_leaves.status',
+                    'essentials_leaves.business_id',
+                    'reason',
+                    'status_note',
+                ]);
 
             if (! empty(request()->input('user_id'))) {
                 $leaves->where('essentials_leaves.user_id', request()->input('user_id'));
@@ -104,7 +104,7 @@ class EssentialsLeaveController extends Controller
                 $start = request()->start_date;
                 $end = request()->end_date;
                 $leaves->whereDate('essentials_leaves.start_date', '>=', $start)
-                            ->whereDate('essentials_leaves.start_date', '<=', $end);
+                    ->whereDate('essentials_leaves.start_date', '<=', $end);
             }
 
             return Datatables::of($leaves)
@@ -187,7 +187,6 @@ class EssentialsLeaveController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -241,9 +240,9 @@ class EssentialsLeaveController extends Controller
     private function __addLeave($input, $user_id = null)
     {
         $input['user_id'] = ! empty($user_id) ? $user_id : request()->session()->get('user.id');
-        //Update reference count
+        // Update reference count
         $ref_count = $this->moduleUtil->setAndGetReferenceCount('leave');
-        //Generate reference number
+        // Generate reference number
         if (empty($input['ref_no'])) {
             $settings = request()->session()->get('business.essentials_settings');
             $settings = ! empty($settings) ? json_decode($settings, true) : [];
@@ -281,12 +280,9 @@ class EssentialsLeaveController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
-    public function update(Request $request)
-    {
-    }
+    public function update(Request $request) {}
 
     /**
      * Remove the specified resource from storage.
@@ -336,7 +332,7 @@ class EssentialsLeaveController extends Controller
             $input = $request->only(['status', 'leave_id', 'status_note']);
 
             $leave = EssentialsLeave::where('business_id', $business_id)
-                            ->find($input['leave_id']);
+                ->find($input['leave_id']);
 
             $leave->status = $input['status'];
             $leave->status_note = $input['status_note'];
@@ -376,12 +372,12 @@ class EssentialsLeaveController extends Controller
         }
 
         $leave = EssentialsLeave::where('business_id', $business_id)
-                                ->find($id);
+            ->find($id);
 
         $activities = Activity::forSubject($leave)
-                           ->with(['causer', 'subject'])
-                           ->latest()
-                           ->get();
+            ->with(['causer', 'subject'])
+            ->latest()
+            ->get();
 
         return view('essentials::leave.activity_modal')->with(compact('leave', 'activities'));
     }
@@ -408,20 +404,20 @@ class EssentialsLeaveController extends Controller
         }
 
         $query = EssentialsLeave::where('business_id', $business_id)
-                            ->where('user_id', $user_id)
-                            ->with(['leave_type'])
-                            ->select(
-                                'status',
-                                'essentials_leave_type_id',
-                                'start_date',
-                                'end_date'
-                            );
+            ->where('user_id', $user_id)
+            ->with(['leave_type'])
+            ->select(
+                'status',
+                'essentials_leave_type_id',
+                'start_date',
+                'end_date'
+            );
 
         if (! empty(request()->start_date) && ! empty(request()->end_date)) {
             $start = request()->start_date;
             $end = request()->end_date;
             $query->whereDate('start_date', '>=', $start)
-                        ->whereDate('start_date', '<=', $end);
+                ->whereDate('start_date', '<=', $end);
         }
         $leaves = $query->get();
         $statuses = $this->leave_statuses;
@@ -444,9 +440,9 @@ class EssentialsLeaveController extends Controller
         }
 
         $leave_types = EssentialsLeaveType::where('business_id', $business_id)
-                                    ->get();
+            ->get();
         $user = User::where('business_id', $business_id)
-                    ->find($user_id);
+            ->find($user_id);
 
         return view('essentials::leave.user_leave_summary')->with(compact('leaves_summary', 'leave_types', 'statuses', 'user', 'status_summary'));
     }

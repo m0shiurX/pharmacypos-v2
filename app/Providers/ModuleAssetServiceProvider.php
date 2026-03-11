@@ -2,14 +2,13 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Cache;
 use App\Utils\ModuleUtil;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
 
 class ModuleAssetServiceProvider extends ServiceProvider
 {
-
     /**
      * Bootstrap any application services.
      */
@@ -21,7 +20,7 @@ class ModuleAssetServiceProvider extends ServiceProvider
             if (request()->ajax()) {
                 return;
             }
-            
+
             $moduleAssets = $this->getModuleAssets();
             $view->with('moduleAssets', $moduleAssets);
         });
@@ -48,18 +47,18 @@ class ModuleAssetServiceProvider extends ServiceProvider
      */
     protected function buildModuleAssets(): array
     {
-        $moduleUtil = new ModuleUtil();
-        
+        $moduleUtil = new ModuleUtil;
+
         // Get asset data from all module DataControllers
         $moduleAssetsData = $moduleUtil->getModuleData('getAssets');
-        
+
         // Combine all module assets
         $assets = ['js' => [], 'css' => []];
-        
+
         foreach ($moduleAssetsData as $moduleName => $moduleAssets) {
             if (is_array($moduleAssets)) {
                 // Add JS assets
-                if (!empty($moduleAssets['js']) && is_array($moduleAssets['js'])) {
+                if (! empty($moduleAssets['js']) && is_array($moduleAssets['js'])) {
                     foreach ($moduleAssets['js'] as $js) {
                         $assets['js'][] = [
                             'path' => $js,
@@ -67,9 +66,9 @@ class ModuleAssetServiceProvider extends ServiceProvider
                         ];
                     }
                 }
-                
+
                 // Add CSS assets
-                if (!empty($moduleAssets['css']) && is_array($moduleAssets['css'])) {
+                if (! empty($moduleAssets['css']) && is_array($moduleAssets['css'])) {
                     foreach ($moduleAssets['css'] as $css) {
                         $assets['css'][] = [
                             'path' => $css,
@@ -79,9 +78,7 @@ class ModuleAssetServiceProvider extends ServiceProvider
                 }
             }
         }
-        
+
         return $assets;
     }
-
-
-} 
+}

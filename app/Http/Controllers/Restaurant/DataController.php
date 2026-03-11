@@ -53,8 +53,8 @@ class DataController extends Controller
                 if ($this->commonUtil->isModuleEnabled('tables')) {
                     $tables_enabled = true;
                     $tables = ResTable::where('business_id', $business_id)
-                            ->where('location_id', $location_id)
-                            ->pluck('name', 'id');
+                        ->where('location_id', $location_id)
+                        ->pluck('name', 'id');
                 }
             } else {
                 $tables = [];
@@ -69,7 +69,7 @@ class DataController extends Controller
             $is_service_staff_required = (! empty($pos_settings['is_service_staff_required']) && $pos_settings['is_service_staff_required'] == 1) ? true : false;
 
             return view('restaurant.partials.pos_table_dropdown')
-                    ->with(compact('tables', 'waiters', 'view_data', 'waiters_enabled', 'tables_enabled', 'is_service_staff_required'));
+                ->with(compact('tables', 'waiters', 'view_data', 'waiters_enabled', 'tables_enabled', 'is_service_staff_required'));
         }
     }
 
@@ -90,7 +90,8 @@ class DataController extends Controller
                 'res_waiter_id' => $res_waiter_id, ]);
     }
 
-    public function checkStaffPin(Request $request){
+    public function checkStaffPin(Request $request)
+    {
         $service_staff_pin = $request->get('service_staff_pin');
         $user_id = $request->get('user_id');
 

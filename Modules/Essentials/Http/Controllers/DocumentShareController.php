@@ -48,8 +48,8 @@ class DocumentShareController extends Controller
             $roles = $this->moduleUtil->getDropdownForRoles($business_id);
 
             $shared_documents = DocumentShare::where('document_id', $id)
-                                ->get()
-                                ->groupBy('value_type');
+                ->get()
+                ->groupBy('value_type');
 
             $shared_role = [];
             if (! empty($shared_documents['role'])) {
@@ -62,14 +62,13 @@ class DocumentShareController extends Controller
             }
 
             return view('essentials::document_share.edit')
-                    ->with(compact('users', 'id', 'roles', 'shared_user', 'shared_role', 'type'));
+                ->with(compact('users', 'id', 'roles', 'shared_user', 'shared_role', 'type'));
         }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function update(Request $request)
@@ -97,18 +96,18 @@ class DocumentShareController extends Controller
                     ];
                     $doc_share = DocumentShare::updateOrCreate($share);
 
-                    //Notify document share only if newly created
+                    // Notify document share only if newly created
                     if ($doc_share->wasRecentlyCreated) {
                         $this->notify($document_obj, $user_id);
                     }
                 }
             }
 
-            //deleting not existing users
+            // deleting not existing users
             DocumentShare::where('document_id', $document['document_id'])
-                    ->where('value_type', 'user')
-                    ->whereNotIn('value', $existing_user_id)
-                    ->delete();
+                ->where('value_type', 'user')
+                ->whereNotIn('value', $existing_user_id)
+                ->delete();
 
             if (! empty($document['role'])) {
                 foreach ($document['role'] as $key => $role_id) {
@@ -123,11 +122,11 @@ class DocumentShareController extends Controller
                 }
             }
 
-            //deleting not existing roles
+            // deleting not existing roles
             DocumentShare::where('document_id', $document['document_id'])
-                       ->where('value_type', 'role')
-                       ->whereNotIn('value', $existing_role_id)
-                       ->delete();
+                ->where('value_type', 'role')
+                ->whereNotIn('value', $existing_role_id)
+                ->delete();
 
             $output = [
                 'success' => true,

@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use App\Business;
+use App\Contact;
 use App\Notifications\CustomerNotification;
 use App\Notifications\RecurringExpenseNotification;
 use App\Notifications\RecurringInvoiceNotification;
@@ -12,8 +13,6 @@ use App\Restaurant\Booking;
 use App\System;
 use Config;
 use Notification;
-use App\Contact;
-
 
 class NotificationUtil extends Util
 {
@@ -29,8 +28,8 @@ class NotificationUtil extends Util
     public function autoSendNotification($business_id, $notification_type, $transaction, $contact)
     {
         $notification_template = NotificationTemplate::where('business_id', $business_id)
-                ->where('template_for', $notification_type)
-                ->first();
+            ->where('template_for', $notification_type)
+            ->first();
 
         $business = Business::findOrFail($business_id);
         $data['email_settings'] = $business->email_settings;
@@ -50,7 +49,7 @@ class NotificationUtil extends Util
                 $data['sms_body'] = $tag_replaced_data['sms_body'];
                 $data['whatsapp_text'] = $tag_replaced_data['whatsapp_text'];
 
-                //Auto send email
+                // Auto send email
                 if (! empty($notification_template->auto_send) && ! empty($contact->email)) {
                     $data['subject'] = $tag_replaced_data['subject'];
                     $data['to_email'] = $contact->email;
@@ -61,10 +60,10 @@ class NotificationUtil extends Util
                     try {
                         if (array_key_exists($notification_type, $customer_notifications)) {
                             Notification::route('mail', $data['to_email'])
-                                            ->notify(new CustomerNotification($data));
+                                ->notify(new CustomerNotification($data));
                         } elseif (array_key_exists($notification_type, $supplier_notifications)) {
                             Notification::route('mail', $data['to_email'])
-                                            ->notify(new SupplierNotification($data));
+                                ->notify(new SupplierNotification($data));
                         }
                         $this->activityLog($transaction, 'email_notification_sent', null, [], false, $business_id);
                     } catch (\Exception $e) {
@@ -72,7 +71,7 @@ class NotificationUtil extends Util
                     }
                 }
 
-                //Auto send sms
+                // Auto send sms
                 if (! empty($notification_template->auto_send_sms)) {
                     $data['mobile_number'] = $contact->mobile;
                     if (! empty($contact->mobile)) {
@@ -109,10 +108,10 @@ class NotificationUtil extends Util
     {
         $business = Business::findOrFail($business_id);
         $booking = Booking::where('business_id', $business_id)
-                    ->with(['customer', 'table', 'correspondent', 'waiter', 'location', 'business'])
-                    ->findOrFail($booking_id);
+            ->with(['customer', 'table', 'correspondent', 'waiter', 'location', 'business'])
+            ->findOrFail($booking_id);
         foreach ($data as $key => $value) {
-            //Replace contact name
+            // Replace contact name
             if (strpos($value, '{contact_name}') !== false) {
                 $contact_name = $booking->customer->name;
 
@@ -166,27 +165,27 @@ class NotificationUtil extends Util
                 $data[$key] = str_replace('{contact_custom_field_10}', $contact_custom_field_10, $data[$key]);
             }
 
-            //Replace table
+            // Replace table
             if (strpos($value, '{table}') !== false) {
                 $table = ! empty($booking->table->name) ? $booking->table->name : '';
 
                 $data[$key] = str_replace('{table}', $table, $data[$key]);
             }
 
-            //Replace start_time
+            // Replace start_time
             if (strpos($value, '{start_time}') !== false) {
                 $start_time = $this->format_date($booking->booking_start, true);
 
                 $data[$key] = str_replace('{start_time}', $start_time, $data[$key]);
             }
 
-            //Replace end_time
+            // Replace end_time
             if (strpos($value, '{end_time}') !== false) {
                 $end_time = $this->format_date($booking->booking_end, true);
 
                 $data[$key] = str_replace('{end_time}', $end_time, $data[$key]);
             }
-            //Replace location
+            // Replace location
             if (strpos($value, '{location}') !== false) {
                 $location = $booking->location->name;
 
@@ -241,27 +240,27 @@ class NotificationUtil extends Util
                 $data[$key] = str_replace('{location_custom_field_4}', $location_custom_field_4, $data[$key]);
             }
 
-            //Replace service_staff
+            // Replace service_staff
             if (strpos($value, '{service_staff}') !== false) {
                 $service_staff = ! empty($booking->waiter) ? $booking->waiter->user_full_name : '';
 
                 $data[$key] = str_replace('{service_staff}', $service_staff, $data[$key]);
             }
 
-            //Replace service_staff
+            // Replace service_staff
             if (strpos($value, '{correspondent}') !== false) {
                 $correspondent = ! empty($booking->correspondent) ? $booking->correspondent->user_full_name : '';
 
                 $data[$key] = str_replace('{correspondent}', $correspondent, $data[$key]);
             }
 
-            //Replace business_name
+            // Replace business_name
             if (strpos($value, '{business_name}') !== false) {
                 $business_name = $business->name;
                 $data[$key] = str_replace('{business_name}', $business_name, $data[$key]);
             }
 
-            //Replace business_logo
+            // Replace business_logo
             if (strpos($value, '{business_logo}') !== false) {
                 $logo_name = $business->logo;
                 $business_logo = ! empty($logo_name) ? '<img src="'.url('storage/business_logos/'.$logo_name).'" alt="Business Logo" >' : '';
@@ -293,7 +292,7 @@ class NotificationUtil extends Util
 
         $is_superadmin_settings_allowed = System::getProperty('allow_email_settings_to_businesses');
 
-        //Check if prefered email setting is superadmin email settings
+        // Check if prefered email setting is superadmin email settings
         if (! empty($is_superadmin_settings_allowed) && ! empty($email_settings['use_superadmin_settings']) && $check_superadmin) {
             $email_settings['mail_driver'] = config('mail.mailers.smtp.transport');
             $email_settings['mail_host'] = config('mail.mailers.smtp.host');
@@ -316,68 +315,67 @@ class NotificationUtil extends Util
         Config::set('mail.from.name', $email_settings['mail_from_name']);
     }
 
-    public function replaceHmsBookingTags($data, $transaction, $adults, $childrens, $customer){
-        
+    public function replaceHmsBookingTags($data, $transaction, $adults, $childrens, $customer)
+    {
+
         $business = Business::findOrFail($transaction->business_id);
 
         foreach ($data as $key => $value) {
-            //Replace contact name
+            // Replace contact name
             if (strpos($value, '{customer_name}') !== false) {
-                $data[$key] = str_replace('{customer_name}',$customer->name , $data[$key]);
+                $data[$key] = str_replace('{customer_name}', $customer->name, $data[$key]);
             }
 
-            //Replace business name
-             if (strpos($value, '{business_name}') !== false) {
-                $data[$key] = str_replace('{business_name}',$business->name, $data[$key]);
-            }
-            //Replace business name
+            // Replace business name
             if (strpos($value, '{business_name}') !== false) {
-                $data[$key] = str_replace('{business_name}',$business->name, $data[$key]);
+                $data[$key] = str_replace('{business_name}', $business->name, $data[$key]);
             }
-             //Replace business_logo
-             if (strpos($value, '{business_logo}') !== false) {
+            // Replace business name
+            if (strpos($value, '{business_name}') !== false) {
+                $data[$key] = str_replace('{business_name}', $business->name, $data[$key]);
+            }
+            // Replace business_logo
+            if (strpos($value, '{business_logo}') !== false) {
                 $logo_name = $business->logo;
                 $business_logo = ! empty($logo_name) ? '<img src="'.url('storage/business_logos/'.$logo_name).'" alt="Business Logo" >' : '';
                 $data[$key] = str_replace('{business_logo}', $business_logo, $data[$key]);
             }
 
-            //Replace business id
-             if (strpos($value, '{booking_id}') !== false) {
-                $data[$key] = str_replace('{booking_id}',$transaction->ref_no, $data[$key]);
+            // Replace business id
+            if (strpos($value, '{booking_id}') !== false) {
+                $data[$key] = str_replace('{booking_id}', $transaction->ref_no, $data[$key]);
             }
 
-            //Replace business status
+            // Replace business status
             if (strpos($value, '{booking_status}') !== false) {
-                $data[$key] = str_replace('{booking_status}',$transaction->status, $data[$key]);
+                $data[$key] = str_replace('{booking_status}', $transaction->status, $data[$key]);
             }
 
-            //Replace arrival date
+            // Replace arrival date
             if (strpos($value, '{arrival_date}') !== false) {
 
                 $start_date = $this->format_date($transaction->hms_booking_arrival_date_time, true);
-                
-                $data[$key] = str_replace('{arrival_date}',$start_date, $data[$key]);
+
+                $data[$key] = str_replace('{arrival_date}', $start_date, $data[$key]);
             }
 
-            //Replace arrival date
+            // Replace arrival date
             if (strpos($value, '{departure_date}') !== false) {
                 $end_time = $this->format_date($transaction->hms_booking_departure_date_time, true);
-                $data[$key] = str_replace('{departure_date}',$end_time, $data[$key]);
+                $data[$key] = str_replace('{departure_date}', $end_time, $data[$key]);
             }
 
-            //Replace adults
+            // Replace adults
             if (strpos($value, '{adults}') !== false) {
-            $data[$key] = str_replace('{adults}',$adults, $data[$key]);
+                $data[$key] = str_replace('{adults}', $adults, $data[$key]);
             }
-            //Replace childrens
+            // Replace childrens
             if (strpos($value, '{childrens}') !== false) {
-                $data[$key] = str_replace('{childrens}',$childrens, $data[$key]);
+                $data[$key] = str_replace('{childrens}', $childrens, $data[$key]);
             }
 
         }
 
         return $data;
     }
-
 }
-

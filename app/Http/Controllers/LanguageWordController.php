@@ -34,13 +34,13 @@ class LanguageWordController extends Controller
 
             foreach ($moduleDirs as $moduleDir) {
                 $moduleName = basename($moduleDir);
-                $langPath = $moduleDir . '/Resources/lang';
+                $langPath = $moduleDir.'/Resources/lang';
 
                 if (File::exists($langPath)) {
                     $modules[] = [
                         'name' => $moduleName,
                         'path' => $langPath,
-                        'display_name' => ucfirst(str_replace('_', ' ', $moduleName))
+                        'display_name' => ucfirst(str_replace('_', ' ', $moduleName)),
                     ];
                 }
             }
@@ -58,19 +58,19 @@ class LanguageWordController extends Controller
         $module = $request->input('module', 'main');
         $file_type = $request->input('file_type', 'lang_v1');
 
-        if (!$language || !array_key_exists($language, config('constants.langs'))) {
+        if (! $language || ! array_key_exists($language, config('constants.langs'))) {
             return response()->json(['error' => 'Invalid language'], 400);
         }
 
         $file_path = $this->getLanguageFilePath($module, $language, $file_type);
 
-        if (!File::exists($file_path)) {
+        if (! File::exists($file_path)) {
             return response()->json(['words' => []]);
         }
 
         $words = include $file_path;
 
-        if (!is_array($words)) {
+        if (! is_array($words)) {
             $words = [];
         }
 
@@ -83,8 +83,8 @@ class LanguageWordController extends Controller
                 'language' => $language,
                 'module' => $module,
                 'file_type' => $file_type,
-                'file_exists' => File::exists($file_path)
-            ]
+                'file_exists' => File::exists($file_path),
+            ],
         ]);
     }
 
@@ -94,7 +94,7 @@ class LanguageWordController extends Controller
     private function getLanguageFilePath($module, $language, $file_type)
     {
         if ($module === 'main') {
-            return lang_path($language . '/' . $file_type . '.php');
+            return lang_path($language.'/'.$file_type.'.php');
         } else {
             return base_path("Modules/{$module}/Resources/lang/{$language}/{$file_type}.php");
         }
@@ -109,9 +109,9 @@ class LanguageWordController extends Controller
             'word_key' => 'required|string|max:255',
             'word_value' => 'required|string|max:1000',
             'languages' => 'required|array|min:1',
-            'languages.*' => 'string|in:' . implode(',', array_keys(config('constants.langs'))),
+            'languages.*' => 'string|in:'.implode(',', array_keys(config('constants.langs'))),
             'modules' => 'required|array|min:1',
-            'file_type' => 'required|string'
+            'file_type' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -148,8 +148,8 @@ class LanguageWordController extends Controller
                 'word_value' => $word_value,
                 'modules' => $modules,
                 'languages' => $languages,
-                'file_type' => $file_type
-            ]
+                'file_type' => $file_type,
+            ],
         ]);
     }
 
@@ -161,9 +161,9 @@ class LanguageWordController extends Controller
         $validator = Validator::make($request->all(), [
             'word_key' => 'required|string|max:255',
             'word_value' => 'required|string|max:1000',
-            'language' => 'required|string|in:' . implode(',', array_keys(config('constants.langs'))),
+            'language' => 'required|string|in:'.implode(',', array_keys(config('constants.langs'))),
             'module' => 'required|string',
-            'file_type' => 'required|string'
+            'file_type' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -188,8 +188,8 @@ class LanguageWordController extends Controller
                     'word_value' => $word_value,
                     'module' => $module,
                     'language' => $language,
-                    'file_type' => $file_type
-                ]
+                    'file_type' => $file_type,
+                ],
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -203,9 +203,9 @@ class LanguageWordController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'word_key' => 'required|string|max:255',
-            'language' => 'required|string|in:' . implode(',', array_keys(config('constants.langs'))),
+            'language' => 'required|string|in:'.implode(',', array_keys(config('constants.langs'))),
             'module' => 'required|string',
-            'file_type' => 'required|string'
+            'file_type' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -220,18 +220,18 @@ class LanguageWordController extends Controller
         try {
             $file_path = $this->getLanguageFilePath($module, $language, $file_type);
 
-            if (!File::exists($file_path)) {
-                throw new \Exception('Language file does not exist: ' . $file_path);
+            if (! File::exists($file_path)) {
+                throw new \Exception('Language file does not exist: '.$file_path);
             }
 
             $words = include $file_path;
 
-            if (!is_array($words)) {
+            if (! is_array($words)) {
                 $words = [];
             }
 
-            if (!array_key_exists($word_key, $words)) {
-                throw new \Exception('Word key does not exist: ' . $word_key);
+            if (! array_key_exists($word_key, $words)) {
+                throw new \Exception('Word key does not exist: '.$word_key);
             }
 
             unset($words[$word_key]);
@@ -242,7 +242,7 @@ class LanguageWordController extends Controller
                 'success' => true,
                 'message' => 'Word deleted successfully',
                 'file_path' => $file_path,
-                'word_key' => $word_key
+                'word_key' => $word_key,
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -266,7 +266,7 @@ class LanguageWordController extends Controller
 
         // Create directory if it doesn't exist
         $dir = dirname($file_path);
-        if (!File::exists($dir)) {
+        if (! File::exists($dir)) {
             File::makeDirectory($dir, 0755, true);
         }
 
@@ -274,7 +274,7 @@ class LanguageWordController extends Controller
         $words = [];
         if (File::exists($file_path)) {
             $words = include $file_path;
-            if (!is_array($words)) {
+            if (! is_array($words)) {
                 $words = [];
             }
         }
@@ -291,7 +291,7 @@ class LanguageWordController extends Controller
             'file_type' => $file_type,
             'word_key' => $word_key,
             'word_value' => $word_value,
-            'file_path' => $file_path
+            'file_path' => $file_path,
         ];
     }
 
@@ -303,7 +303,7 @@ class LanguageWordController extends Controller
         $content = "<?php\n\nreturn [\n";
 
         foreach ($words as $key => $value) {
-            $content .= "    '" . addslashes($key) . "' => '" . addslashes($value) . "',\n";
+            $content .= "    '".addslashes($key)."' => '".addslashes($value)."',\n";
         }
 
         $content .= "];\n";
@@ -319,9 +319,9 @@ class LanguageWordController extends Controller
         $validator = Validator::make($request->all(), [
             'words_text' => 'required|string',
             'languages' => 'required|array|min:1',
-            'languages.*' => 'string|in:' . implode(',', array_keys(config('constants.langs'))),
+            'languages.*' => 'string|in:'.implode(',', array_keys(config('constants.langs'))),
             'modules' => 'required|array|min:1',
-            'file_type' => 'required|string'
+            'file_type' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -339,7 +339,7 @@ class LanguageWordController extends Controller
 
         foreach ($lines as $line) {
             $line = trim($line);
-            if (!empty($line)) {
+            if (! empty($line)) {
                 // If line contains "=>" assume it's key => value format
                 if (strpos($line, '=>') !== false) {
                     $parts = explode('=>', $line, 2);
@@ -351,7 +351,7 @@ class LanguageWordController extends Controller
                     $value = $line;
                 }
 
-                if (!empty($key)) {
+                if (! empty($key)) {
                     $words[$this->formatWordKey($key)] = $value;
                 }
             }
@@ -378,7 +378,7 @@ class LanguageWordController extends Controller
             'results' => $results,
             'errors' => $errors,
             'message' => 'Words added successfully to selected languages and modules',
-            'total_words' => count($words)
+            'total_words' => count($words),
         ]);
     }
 
@@ -401,7 +401,7 @@ class LanguageWordController extends Controller
             \Log::info('Checking module path:', ['path' => $langPath, 'exists' => File::exists($langPath)]);
 
             if (File::exists($langPath)) {
-                $enPath = $langPath . '/en';
+                $enPath = $langPath.'/en';
                 \Log::info('Checking English path:', ['path' => $enPath, 'exists' => File::exists($enPath)]);
 
                 if (File::exists($enPath)) {
@@ -432,7 +432,7 @@ class LanguageWordController extends Controller
             'general' => ['general', 'common', 'basic', 'default'],
             'core' => ['core', 'system', 'admin', 'user', 'auth', 'permission'],
             'report' => ['report', 'export', 'print', 'download'],
-            'lang' => ['lang', 'language', 'translation']
+            'lang' => ['lang', 'language', 'translation'],
         ];
 
         $word_key_lower = strtolower($word_key);

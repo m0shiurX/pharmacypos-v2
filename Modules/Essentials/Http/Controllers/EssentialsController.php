@@ -31,12 +31,9 @@ class EssentialsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
-    public function store(Request $request)
-    {
-    }
+    public function store(Request $request) {}
 
     /**
      * Show the specified resource.
@@ -61,19 +58,14 @@ class EssentialsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
-    public function update(Request $request)
-    {
-    }
+    public function update(Request $request) {}
 
     /**
      * Remove the specified resource from storage.
      *
      * @return Response
      */
-    public function destroy()
-    {
-    }
+    public function destroy() {}
 }

@@ -19,7 +19,6 @@ class KnowledgeBaseController extends Controller
     /**
      * Constructor
      *
-     * @param  ModuleUtil  $moduleUtil
      * @return void
      */
     public function __construct(ModuleUtil $moduleUtil)
@@ -41,16 +40,16 @@ class KnowledgeBaseController extends Controller
 
         $user_id = auth()->user()->id;
         $knowledge_bases = KnowledgeBase::where('business_id', $business_id)
-                                    ->where('kb_type', 'knowledge_base')
-                                    ->whereNull('parent_id')
-                                    ->with(['children', 'children.children'])
-                                    ->where(function ($query) use ($user_id) {
-                                        $query->whereHas('users', function ($q) use ($user_id) {
-                                            $q->where('user_id', $user_id);
-                                        })->orWhere('created_by', $user_id)
-                                        ->orWhere('share_with', 'public');
-                                    })
-                                    ->get();
+            ->where('kb_type', 'knowledge_base')
+            ->whereNull('parent_id')
+            ->with(['children', 'children.children'])
+            ->where(function ($query) use ($user_id) {
+                $query->whereHas('users', function ($q) use ($user_id) {
+                    $q->where('user_id', $user_id);
+                })->orWhere('created_by', $user_id)
+                    ->orWhere('share_with', 'public');
+            })
+            ->get();
 
         return view('essentials::knowledge_base.index')->with(compact('knowledge_bases'));
     }
@@ -71,19 +70,18 @@ class KnowledgeBaseController extends Controller
         $users = null;
         if (! empty(request()->input('parent'))) {
             $parent = KnowledgeBase::where('business_id', $business_id)
-                                ->findOrFail(request()->input('parent'));
+                ->findOrFail(request()->input('parent'));
         } else {
             $users = User::forDropdown($business_id, false);
         }
 
         return view('essentials::knowledge_base.create')
-                    ->with(compact('parent', 'users'));
+            ->with(compact('parent', 'users'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -139,8 +137,8 @@ class KnowledgeBaseController extends Controller
         }
 
         $kb_object = KnowledgeBase::where('business_id', $business_id)
-                                    ->with(['children', 'children.children', 'users'])
-                                    ->find($id);
+            ->with(['children', 'children.children', 'users'])
+            ->find($id);
         $users = [];
 
         if (count($kb_object->users) > 0) {
@@ -154,18 +152,18 @@ class KnowledgeBaseController extends Controller
             $knowledge_base = $kb_object;
         } elseif ($kb_object->kb_type == 'section') {
             $knowledge_base = KnowledgeBase::where('business_id', $business_id)
-                                    ->with(['children', 'children.children'])
-                                    ->find($kb_object->parent_id);
+                ->with(['children', 'children.children'])
+                ->find($kb_object->parent_id);
             $section_id = $kb_object->id;
         } elseif ($kb_object->kb_type == 'article') {
             $section = KnowledgeBase::where('business_id', $business_id)
-                                    ->find($kb_object->parent_id);
+                ->find($kb_object->parent_id);
 
             $section_id = $section->id;
             $article_id = $kb_object->id;
             $knowledge_base = KnowledgeBase::where('business_id', $business_id)
-                                    ->with(['children', 'children.children'])
-                                    ->find($section->parent_id);
+                ->with(['children', 'children.children'])
+                ->find($section->parent_id);
         }
 
         return view('essentials::knowledge_base.show')->with(compact('kb_object', 'knowledge_base', 'section_id', 'article_id', 'users'));
@@ -185,8 +183,8 @@ class KnowledgeBaseController extends Controller
         }
 
         $kb = KnowledgeBase::where('business_id', $business_id)
-                            ->with(['users'])
-                            ->findOrFail($id);
+            ->with(['users'])
+            ->findOrFail($id);
 
         $users = [];
 
@@ -200,7 +198,6 @@ class KnowledgeBaseController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
      * @param  int  $id
      * @return Response
      */
@@ -258,8 +255,8 @@ class KnowledgeBaseController extends Controller
         if (request()->ajax()) {
             try {
                 KnowledgeBase::where('business_id', $business_id)
-                            ->where('id', $id)
-                            ->delete();
+                    ->where('id', $id)
+                    ->delete();
 
                 $output = [
                     'success' => true,

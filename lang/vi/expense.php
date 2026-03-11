@@ -33,6 +33,6 @@ return [
     'expense_delete_success' => 'Chi phí đã xóa thành công',
     'expense_for' => 'Chi phí cho',
     'expense_for_help' => 'Chọn người dùng (email/tên đăng nhập) mà chi phí liên quan đến (Tùy chọn)',
-    'import_expense' => 'Nhập chi phí'
+    'import_expense' => 'Nhập chi phí',
 
 ];

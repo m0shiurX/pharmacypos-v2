@@ -23,8 +23,8 @@ class PrinterController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $printer = Printer::where('business_id', $business_id)
-                        ->select(['name', 'connection_type',
-                            'capability_profile', 'char_per_line', 'ip_address', 'port', 'path', 'id', ]);
+                ->select(['name', 'connection_type',
+                    'capability_profile', 'char_per_line', 'ip_address', 'port', 'path', 'id', ]);
 
             return Datatables::of($printer)
                 ->editColumn('capability_profile', function ($row) {
@@ -72,7 +72,6 @@ class PrinterController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -148,7 +147,6 @@ class PrinterController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */

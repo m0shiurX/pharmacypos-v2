@@ -26,7 +26,6 @@ class PurchaseReturnController extends Controller
     /**
      * Constructor
      *
-     * @param  TransactionUtil  $transactionUtil
      * @return void
      */
     public function __construct(TransactionUtil $transactionUtil, ProductUtil $productUtil)
@@ -110,30 +109,30 @@ class PurchaseReturnController extends Controller
                 ->addColumn('action', function ($row) {
                     $html = '<div class="btn-group">
                                     <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info tw-w-max dropdown-toggle" 
-                                        data-toggle="dropdown" aria-expanded="false">' .
-                        __('messages.actions') .
+                                        data-toggle="dropdown" aria-expanded="false">'.
+                        __('messages.actions').
                         '<span class="caret"></span><span class="sr-only">Toggle Dropdown
                                         </span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right" role="menu">';
                     if (! empty($row->return_parent_id)) {
-                        $html .= '<li><a href="' . action([\App\Http\Controllers\PurchaseReturnController::class, 'add'], $row->return_parent_id) . '" ><i class="glyphicon glyphicon-edit"></i>' .
-                            __('messages.edit') .
+                        $html .= '<li><a href="'.action([\App\Http\Controllers\PurchaseReturnController::class, 'add'], $row->return_parent_id).'" ><i class="glyphicon glyphicon-edit"></i>'.
+                            __('messages.edit').
                             '</a></li>';
                     } else {
-                        $html .= '<li><a href="' . action([\App\Http\Controllers\CombinedPurchaseReturnController::class, 'edit'], $row->id) . '" ><i class="glyphicon glyphicon-edit"></i>' .
-                            __('messages.edit') .
+                        $html .= '<li><a href="'.action([\App\Http\Controllers\CombinedPurchaseReturnController::class, 'edit'], $row->id).'" ><i class="glyphicon glyphicon-edit"></i>'.
+                            __('messages.edit').
                             '</a></li>';
                     }
 
                     if ($row->payment_status != 'paid') {
-                        $html .= '<li><a href="' . action([\App\Http\Controllers\TransactionPaymentController::class, 'addPayment'], [$row->id]) . '" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i>' . __('purchase.add_payment') . '</a></li>';
+                        $html .= '<li><a href="'.action([\App\Http\Controllers\TransactionPaymentController::class, 'addPayment'], [$row->id]).'" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i>'.__('purchase.add_payment').'</a></li>';
                     }
 
-                    $html .= '<li><a href="' . action([\App\Http\Controllers\TransactionPaymentController::class, 'show'], [$row->id]) . '" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i>' . __('purchase.view_payments') . '</a></li>';
+                    $html .= '<li><a href="'.action([\App\Http\Controllers\TransactionPaymentController::class, 'show'], [$row->id]).'" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i>'.__('purchase.view_payments').'</a></li>';
 
-                    $html .= '<li><a href="' . action([\App\Http\Controllers\PurchaseReturnController::class, 'destroy'], $row->id) . '" class="delete_purchase_return" ><i class="fa fa-trash"></i>' .
-                        __('messages.delete') .
+                    $html .= '<li><a href="'.action([\App\Http\Controllers\PurchaseReturnController::class, 'destroy'], $row->id).'" class="delete_purchase_return" ><i class="fa fa-trash"></i>'.
+                        __('messages.delete').
                         '</a></li>';
                     $html .= '</ul></div>';
 
@@ -149,7 +148,7 @@ class PurchaseReturnController extends Controller
                 ->editColumn('name', function ($row) {
                     $name = ! empty($row->name) ? $row->name : '';
 
-                    return $name . ' ' . $row->supplier_business_name;
+                    return $name.' '.$row->supplier_business_name;
                 })
                 ->editColumn(
                     'payment_status',
@@ -159,7 +158,7 @@ class PurchaseReturnController extends Controller
                 ->editColumn('parent_purchase', function ($row) {
                     $html = '';
                     if (! empty($row->parent_purchase)) {
-                        $html = '<a href="#" data-href="' . action([\App\Http\Controllers\PurchaseController::class, 'show'], [$row->return_parent_id]) . '" class="btn-modal" data-container=".view_modal">' . $row->parent_purchase . '</a>';
+                        $html = '<a href="#" data-href="'.action([\App\Http\Controllers\PurchaseController::class, 'show'], [$row->return_parent_id]).'" class="btn-modal" data-container=".view_modal">'.$row->parent_purchase.'</a>';
                     }
 
                     return $html;
@@ -167,14 +166,14 @@ class PurchaseReturnController extends Controller
                 ->addColumn('payment_due', function ($row) {
                     $due = $row->final_total - $row->amount_paid;
 
-                    return '<span class="display_currency payment_due" data-currency_symbol="true" data-orig-value="' . $due . '">' . $due . '</sapn>';
+                    return '<span class="display_currency payment_due" data-currency_symbol="true" data-orig-value="'.$due.'">'.$due.'</sapn>';
                 })
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can('purchase.view')) {
                             $return_id = ! empty($row->return_parent_id) ? $row->return_parent_id : $row->id;
 
-                            return  action([\App\Http\Controllers\PurchaseReturnController::class, 'show'], [$return_id]);
+                            return action([\App\Http\Controllers\PurchaseReturnController::class, 'show'], [$return_id]);
                         } else {
                             return '';
                         }
@@ -226,7 +225,6 @@ class PurchaseReturnController extends Controller
     /**
      * Saves Purchase returns in the database.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -255,7 +253,7 @@ class PurchaseReturnController extends Controller
 
                 $multiplier = 1;
                 if (! empty($purchase_line->sub_unit->base_unit_multiplier)) {
-                    //Use per-product multiplier if available
+                    // Use per-product multiplier if available
                     $product_for_multiplier = Product::find($purchase_line->product_id);
                     $product_multipliers = $product_for_multiplier->sub_unit_multipliers ?? [];
                     $multiplier = ! empty($product_multipliers[$purchase_line->sub_unit_id])
@@ -268,7 +266,7 @@ class PurchaseReturnController extends Controller
                 $purchase_line->save();
                 $return_total += $purchase_line->purchase_price_inc_tax * $purchase_line->quantity_returned;
 
-                //Decrease quantity in variation location details
+                // Decrease quantity in variation location details
                 if ($old_return_qty != $purchase_line->quantity_returned) {
                     $this->productUtil->decreaseProductQuantity(
                         $purchase_line->product_id,
@@ -289,7 +287,7 @@ class PurchaseReturnController extends Controller
             ];
 
             if (empty($request->input('ref_no'))) {
-                //Update reference count
+                // Update reference count
                 $ref_count = $this->transactionUtil->setAndGetReferenceCount('purchase_return');
                 $return_transaction_data['ref_no'] = $this->transactionUtil->generateReferenceNumber('purchase_return', $ref_count);
             }
@@ -320,7 +318,7 @@ class PurchaseReturnController extends Controller
                 $this->transactionUtil->activityLog($return_transaction, 'added');
             }
 
-            //update payment status
+            // update payment status
             $this->transactionUtil->updatePaymentStatus($return_transaction->id, $return_transaction->final_total);
 
             $output = [
@@ -331,7 +329,7 @@ class PurchaseReturnController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,
@@ -376,7 +374,7 @@ class PurchaseReturnController extends Controller
             }
         }
 
-        //For combined purchase return return_parent is empty
+        // For combined purchase return return_parent is empty
         if (empty($purchase->return_parent) && ! empty($purchase->tax)) {
             if ($purchase->tax->is_tax_group) {
                 $purchase_taxes = $this->transactionUtil->sumGroupTaxDetails($this->transactionUtil->groupTaxDetails($purchase->tax, $purchase->tax_amount));
@@ -443,10 +441,10 @@ class PurchaseReturnController extends Controller
                     }
                 }
 
-                //Delete Transaction
+                // Delete Transaction
                 $purchase_return->delete();
 
-                //Delete account transactions
+                // Delete account transactions
                 AccountTransaction::where('transaction_id', $id)->delete();
 
                 DB::commit();
@@ -458,7 +456,7 @@ class PurchaseReturnController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => false,

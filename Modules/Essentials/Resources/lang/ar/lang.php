@@ -1,6 +1,6 @@
 <?php
 
-return[
+return [
     'essentials' => 'أساسيات',
     'document' => 'وثيقة',
     'description' => 'وصف',

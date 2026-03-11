@@ -23,7 +23,7 @@ class BarcodeController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $barcodes = Barcode::where('business_id', $business_id)
-                        ->select(['name', 'description', 'id', 'is_default']);
+                ->select(['name', 'description', 'id', 'is_default']);
 
             return Datatables::of($barcodes)
                 ->addColumn(
@@ -71,7 +71,6 @@ class BarcodeController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -88,10 +87,10 @@ class BarcodeController extends Controller
             $input['business_id'] = $business_id;
 
             if (! empty($request->input('is_default'))) {
-                //get_default
+                // get_default
                 $default = Barcode::where('business_id', $business_id)
-                                ->where('is_default', 1)
-                                ->update(['is_default' => 0]);
+                    ->where('is_default', 1)
+                    ->update(['is_default' => 0]);
                 $input['is_default'] = 1;
             }
             if (! empty($request->input('is_continuous'))) {
@@ -120,7 +119,6 @@ class BarcodeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Barcode  $barcode
      * @return \Illuminate\Http\Response
      */
     public function show(Barcode $barcode)
@@ -150,7 +148,6 @@ class BarcodeController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -242,11 +239,11 @@ class BarcodeController extends Controller
 
         if (request()->ajax()) {
             try {
-                //get_default
+                // get_default
                 $business_id = request()->session()->get('user.business_id');
                 $default = Barcode::where('business_id', $business_id)
-                                ->where('is_default', 1)
-                                 ->update(['is_default' => 0]);
+                    ->where('is_default', 1)
+                    ->update(['is_default' => 0]);
 
                 $barcode = Barcode::find($id);
                 $barcode->is_default = 1;

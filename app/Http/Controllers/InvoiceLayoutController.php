@@ -47,7 +47,6 @@ class InvoiceLayoutController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -70,7 +69,7 @@ class InvoiceLayoutController extends Controller
             $business_id = $request->session()->get('user.business_id');
             $input['business_id'] = $business_id;
 
-            //Set value for checkboxes
+            // Set value for checkboxes
             $checkboxes = ['show_business_name', 'show_location_name', 'show_landmark', 'show_city', 'show_state', 'show_country', 'show_zip_code', 'show_mobile_number', 'show_alternate_number', 'show_email', 'show_tax_1', 'show_tax_2', 'show_logo', 'show_barcode', 'show_payments', 'show_customer', 'show_client_id',
                 'show_brand', 'show_sku', 'show_cat_code', 'show_sale_description', 'show_sales_person', 'show_expiry',
                 'show_lot', 'show_previous_bal', 'show_image', 'show_reward_point', 'show_qr_code',
@@ -79,7 +78,7 @@ class InvoiceLayoutController extends Controller
                 $input[$name] = ! empty($request->input($name)) ? 1 : 0;
             }
 
-            //Upload Logo
+            // Upload Logo
             $logo_name = $this->commonUtil->uploadFile($request, 'logo', 'invoice_logos', 'image');
             if (! empty($logo_name)) {
                 $input['logo'] = $logo_name;
@@ -91,14 +90,14 @@ class InvoiceLayoutController extends Controller
             }
 
             if (! empty($request->input('is_default'))) {
-                //get_default
+                // get_default
                 $default = InvoiceLayout::where('business_id', $business_id)
-                                ->where('is_default', 1)
-                                ->update(['is_default' => 0]);
+                    ->where('is_default', 1)
+                    ->update(['is_default' => 0]);
                 $input['is_default'] = 1;
             }
 
-            //Module info
+            // Module info
             if ($request->has('module_info')) {
                 $input['module_info'] = json_encode($request->input('module_info'));
             }
@@ -128,7 +127,6 @@ class InvoiceLayoutController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\InvoiceLayout  $invoiceLayout
      * @return \Illuminate\Http\Response
      */
     public function show(InvoiceLayout $invoiceLayout)
@@ -150,20 +148,19 @@ class InvoiceLayoutController extends Controller
 
         $invoice_layout = InvoiceLayout::findOrFail($id);
 
-        //Module info
+        // Module info
         $invoice_layout->module_info = json_decode($invoice_layout->module_info, true);
         $invoice_layout->table_tax_headings = ! empty($invoice_layout->table_tax_headings) ? json_decode($invoice_layout->table_tax_headings) : ['', '', '', ''];
 
         $designs = $this->getDesigns();
 
         return view('invoice_layout.edit')
-                ->with(compact('invoice_layout', 'designs'));
+            ->with(compact('invoice_layout', 'designs'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\InvoiceLayout  $invoiceLayout
      * @return \Illuminate\Http\Response
      */
@@ -195,27 +192,27 @@ class InvoiceLayoutController extends Controller
                 $input[$name] = ! empty($request->input($name)) ? 1 : 0;
             }
 
-            //Upload Logo
+            // Upload Logo
             $logo_name = $this->commonUtil->uploadFile($request, 'logo', 'invoice_logos', 'image');
             if (! empty($logo_name)) {
                 $input['logo'] = $logo_name;
             }
 
-            //Upload letter head
+            // Upload letter head
             $letter_head = $this->commonUtil->uploadFile($request, 'letter_head', 'invoice_logos', 'image');
             if (! empty($letter_head)) {
                 $input['letter_head'] = $letter_head;
             }
 
             if (! empty($request->input('is_default'))) {
-                //get_default
+                // get_default
                 $default = InvoiceLayout::where('business_id', $business_id)
-                                ->where('is_default', 1)
-                                ->update(['is_default' => 0]);
+                    ->where('is_default', 1)
+                    ->update(['is_default' => 0]);
                 $input['is_default'] = 1;
             }
 
-            //Module info
+            // Module info
             if ($request->has('module_info')) {
                 $input['module_info'] = json_encode($request->input('module_info'));
             }
@@ -231,8 +228,8 @@ class InvoiceLayoutController extends Controller
             $input['qr_code_fields'] = ! empty($request->input('qr_code_fields')) ? json_encode($request->input('qr_code_fields')) : null;
 
             InvoiceLayout::where('id', $id)
-                        ->where('business_id', $business_id)
-                        ->update($input);
+                ->where('business_id', $business_id)
+                ->update($input);
             $output = ['success' => 1,
                 'msg' => __('invoice.layout_updated_success'),
             ];
@@ -256,7 +253,7 @@ class InvoiceLayoutController extends Controller
             'slim' => __('lang_v1.slim').' ('.__('lang_v1.recomended_for_80mm').')',
             'slim2' => __('lang_v1.slim').' 2 ('.__('lang_v1.recomended_for_58mm').')',
             'english-arabic' => 'English-Arabic ('.__('lang_v1.for_normal_printer').')',
-            
+
         ];
     }
 }

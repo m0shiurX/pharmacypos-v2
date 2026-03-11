@@ -1416,7 +1416,7 @@ return [
     'carousel_image' => 'Gambar karusel :number',
     'display_screen' => 'Layar Tampilan',
     'enable_customer_display_screen' => 'Aktifkan Layar Tampilan Pelanggan',
-    'customer_display_instraction' => "Agar layar tampilan pelanggan berfungsi, pastikan layar tersebut dibuka di browser yang sama dengan layar POS dalam tab baru. Dan tab tersebut dicerminkan ke monitor tampilan pelanggan lainnya.",
+    'customer_display_instraction' => 'Agar layar tampilan pelanggan berfungsi, pastikan layar tersebut dibuka di browser yang sama dengan layar POS dalam tab baru. Dan tab tersebut dicerminkan ke monitor tampilan pelanggan lainnya.',
     'data_parameter_type' => 'Jenis Parameter Data',
     'format_4' => 'Format 4',
     'aging_report' => 'Laporan Penuaan',

@@ -29,11 +29,11 @@ class EssentialsAllowanceAndDeduction extends Model
     public static function forDropdown($business_id)
     {
         $ads = EssentialsAllowanceAndDeduction::whereNull('applicable_date')
-                    ->where('business_id', $business_id)
-                    ->select('id', 'description', 'type', 'amount', 'amount_type')
-                    ->get();
+            ->where('business_id', $business_id)
+            ->select('id', 'description', 'type', 'amount', 'amount_type')
+            ->get();
 
-        $util = new Util();
+        $util = new Util;
         $pay_components = [];
         foreach ($ads as $ad) {
             if ($ad->amount_type != 'percent') {

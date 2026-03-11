@@ -44,9 +44,7 @@ class NewLeaveNotification extends Notification
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
-    {
-    }
+    public function toMail($notifiable) {}
 
     /**
      * Get the array representation of the notification.
