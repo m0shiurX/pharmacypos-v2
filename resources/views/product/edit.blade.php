@@ -387,12 +387,12 @@
               @endif
 
               @can('product.opening_stock')
-              <button type="submit" @if(empty($product->enable_stock)) disabled="true" @endif id="opening_stock_button"  value="update_n_edit_opening_stock" class="tw-dw-btn tw-text-white tw-dw-btn-lg bg-purple submit_product_form">@lang('lang_v1.update_n_edit_opening_stock')</button>
+              <button type="submit" @if(empty($product->enable_stock)) disabled="true" @endif id="opening_stock_button"  value="update_n_edit_opening_stock" class="tw-dw-btn tw-dw-btn-lg tw-text-white tw-bg-purple-600 hover:tw-bg-purple-700 submit_product_form">@lang('lang_v1.update_n_edit_opening_stock')</button>
               @endif
 
-              <button type="submit" value="save_n_add_another" class="tw-dw-btn tw-text-white tw-dw-btn-lg bg-maroon submit_product_form">@lang('lang_v1.update_n_add_another')</button>
+              <button type="submit" value="save_n_add_another" class="tw-dw-btn tw-dw-btn-lg tw-text-white tw-bg-red-800 hover:tw-bg-red-900 submit_product_form">@lang('lang_v1.update_n_add_another')</button>
 
-              <button type="submit" value="submit" class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-lg submit_product_form">@lang('messages.update')</button>
+              <button type="submit" value="submit" class="tw-dw-btn tw-dw-btn-primary tw-dw-btn-lg tw-text-white submit_product_form">@lang('messages.update')</button>
             </div>
           </div>
         </div>

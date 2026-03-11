@@ -202,6 +202,9 @@
 							@lang('restaurant.service_staff')
 						</th>
 					@endif
+					<th class="text-center col-md-2">
+						@lang('receipt.discount')
+					</th>
 					<th class="text-center col-md-2 {{$hide_tax}}">
 						@lang('sale.price_inc_tax')
 					</th>

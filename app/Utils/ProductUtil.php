@@ -534,6 +534,8 @@ class ProductUtil extends Util
             'variations.sell_price_inc_tax',
             'variations.id as variation_id',
             'variations.combo_variations',  //Used in combo products
+            'variations.wholesale_discount_type',
+            'variations.wholesale_discount_amount',
             'units.short_name as unit',
             'units.id as unit_id',
             'units.allow_decimal as unit_allow_decimal',

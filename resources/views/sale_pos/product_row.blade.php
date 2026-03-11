@@ -24,27 +24,27 @@
 			value="{{$so_line->id}}">
 		@endif
 		@php
-			$product_name = e($product->product_name) . '<br/>' . $product->sub_sku ;
-			if(!empty($product->brand)){ $product_name .= ' ' . $product->brand ;}
+			$product_name = e($product->product_name) . ' <small class="text-muted">(' . $product->sub_sku . ')</small>';
+			if(!empty($product->brand)){ $product_name .= ' <small class="text-muted">' . $product->brand . '</small>';}
 		@endphp
 
 		@if( ($edit_price || $edit_discount) && empty($is_direct_sell) )
-		<div title="@lang('lang_v1.pos_edit_product_price_help')" style="display: inline">
-		<span class="text-link text-info cursor-pointer" data-toggle="modal" data-target="#row_edit_product_price_modal_{{$row_count}}">
+		<span class="text-link text-info cursor-pointer" title="@lang('lang_v1.pos_edit_product_price_help')" data-toggle="modal" data-target="#row_edit_product_price_modal_{{$row_count}}">
 			{!! $product_name !!}
-			&nbsp;<i class="fa fa-info-circle"></i>
+			&nbsp;<i class="fa fa-info-circle" style="font-size:11px"></i>
 		</span>
-		</div>
 		@else
 			{!! $product_name !!}
 		@endif
+		@if(!empty($is_direct_sell))
 		<img src="@if(count($product->media) > 0)
 						{{$product->media->first()->display_url}}
 					@elseif(!empty($product->product_image))
 						{{asset('/uploads/img/' . rawurlencode($product->product_image))}}
 					@else
 						{{asset('/img/default.png')}}
-					@endif" alt="product-img" loading="lazy"style="height:50px;display: inline;margin-left: 3px; border: black;border-radius: 5px; margin-top: 5px; width: 50px;object-fit: cover;">
+					@endif" alt="product-img" loading="lazy" style="height:50px;display:inline;margin-left:3px;border-radius:5px;margin-top:5px;width:50px;object-fit:cover;">
+		@endif
 
 
 		<input type="hidden" class="enable_sr_no" value="{{$product->enable_sr_no}}">
@@ -74,7 +74,7 @@
 				$unit_price_inc_tax = $so_line->unit_price_inc_tax;
 			}
 
-			$discount_type = !empty($product->line_discount_type) ? $product->line_discount_type : 'fixed';
+			$discount_type = !empty($product->line_discount_type) ? $product->line_discount_type : 'percentage';
 			$discount_amount = !empty($product->line_discount_amount) ? $product->line_discount_amount : 0;
 			
 			if(!empty($discount)) {
@@ -113,8 +113,8 @@
 			@include('sale_pos.partials.row_edit_product_price_modal')
 		</div> 
 		@endif
-<br>
-		<small class="text-muted p-1">
+		<br>
+		<small class="text-muted" style="font-size:11px">
 			@if($product->enable_stock)
 			{{ @num_format($product->qty_available) }} {{$product->unit}} @lang('lang_v1.in_stock')
 			@else
@@ -396,6 +396,18 @@
 				</div>
 			</td>
 		@endif
+		<td style="">
+			@if($edit_discount)
+			{!! Form::text("products[$row_count][line_discount_amount]", @num_format($discount_amount), ['class' => 'form-control input_number row_discount_amount input-sm', 'style' => 'width:65px', 'placeholder' => '0']); !!}
+			{!! Form::select("products[$row_count][line_discount_type]", ['percentage' => '%', 'fixed' => __('lang_v1.fixed')], $discount_type , ['class' => 'form-control row_discount_type input-sm', 'style' => 'width:65px;margin-top:2px']); !!}
+			@else
+			{!! Form::hidden("products[$row_count][line_discount_amount]", @num_format($discount_amount), ['class' => 'row_discount_amount']); !!}
+			{!! Form::hidden("products[$row_count][line_discount_type]", $discount_type, ['class' => 'row_discount_type']); !!}
+			@endif
+			@if(!empty($discount))
+				<small class="text-muted">{{ $discount->name }}</small>
+			@endif
+		</td>
 	@endif
 	<td class="{{$hide_tax}}">
 		<input type="text" style="width: auto" name="products[{{$row_count}}][unit_price_inc_tax]" class="form-control pos_unit_price_inc_tax input_number" value="{{@num_format($unit_price_inc_tax)}}" @if(!$edit_price) readonly @endif @if(!empty($pos_settings['enable_msp'])) data-rule-min-value="{{$unit_price_inc_tax}}" data-msg-min-value="{{__('lang_v1.minimum_selling_price_error_msg', ['price' => @num_format($unit_price_inc_tax)])}}" @endif>
@@ -405,15 +417,15 @@
 			{!! Form::select("products[$row_count][warranty_id]", $warranties, $warranty_id, ['placeholder' => __('messages.please_select'), 'class' => 'form-control']); !!}
 		</td>
 	@endif
-	<td class="text-center">
+	<td class="text-center" style="vertical-align:middle">
 		@php
 			$subtotal_type = !empty($pos_settings['is_pos_subtotal_editable']) ? 'text' : 'hidden';
 
 		@endphp
 		<input style="width: auto" type="{{$subtotal_type}}" class="form-control pos_line_total @if(!empty($pos_settings['is_pos_subtotal_editable'])) input_number @endif" value="{{@num_format($product->quantity_ordered*$unit_price_inc_tax )}}">
-		<span class="display_currency pos_line_total_text @if(!empty($pos_settings['is_pos_subtotal_editable'])) hide @endif" data-currency_symbol="true">{{$product->quantity_ordered*$unit_price_inc_tax}}</span>
+		<span class="display_currency pos_line_total_text tw-font-semibold @if(!empty($pos_settings['is_pos_subtotal_editable'])) hide @endif" data-currency_symbol="true">{{$product->quantity_ordered*$unit_price_inc_tax}}</span>
 	</td>
-	<td class="text-center v-center">
+	<td class="text-center" style="vertical-align:middle">
 		<i class="fa fa-times text-danger pos_remove_row cursor-pointer" aria-hidden="true"></i>
 	</td>
 </tr>

@@ -137,4 +137,7 @@ return [
     'previous_due' => 'সাবেক',
     'cash' => 'নগদ',
     'multiplier' => 'গুণক',
+    'wholesale_discount' => 'পাইকারি ছাড়',
+    'discount_type' => 'ছাড়ের ধরন',
+    'discount_amount' => 'ছাড়ের পরিমাণ',
 ];

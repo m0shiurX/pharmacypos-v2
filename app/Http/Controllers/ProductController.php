@@ -528,6 +528,14 @@ class ProductController extends Controller
 
             if ($product->type == 'single') {
                 $this->productUtil->createSingleProductVariation($product->id, $product->sku, $request->input('single_dpp'), $request->input('single_dpp_inc_tax'), $request->input('profit_percent'), $request->input('single_dsp'), $request->input('single_dsp_inc_tax'));
+
+                //Save wholesale discount
+                if ($request->filled('wholesale_discount_amount') && $this->productUtil->num_uf($request->input('wholesale_discount_amount')) > 0) {
+                    $product->variations()->update([
+                        'wholesale_discount_type' => $request->input('wholesale_discount_type', 'percentage'),
+                        'wholesale_discount_amount' => $this->productUtil->num_uf($request->input('wholesale_discount_amount')),
+                    ]);
+                }
             } elseif ($product->type == 'variable') {
                 if (! empty($request->input('product_variation'))) {
                     $input_variations = $request->input('product_variation');
@@ -833,6 +841,11 @@ class ProductController extends Controller
                 $variation->profit_percent = $this->productUtil->num_uf($single_data['profit_percent']);
                 $variation->default_sell_price = $this->productUtil->num_uf($single_data['single_dsp']);
                 $variation->sell_price_inc_tax = $this->productUtil->num_uf($single_data['single_dsp_inc_tax']);
+
+                //Save wholesale discount
+                $variation->wholesale_discount_type = $request->input('wholesale_discount_type', 'percentage');
+                $variation->wholesale_discount_amount = $this->productUtil->num_uf($request->input('wholesale_discount_amount', 0));
+
                 $variation->save();
 
                 Media::uploadMedia($product->business_id, $variation, $request, 'variation_images');

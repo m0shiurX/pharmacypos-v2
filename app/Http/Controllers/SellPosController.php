@@ -1906,6 +1906,12 @@ class SellPosController extends Controller
 
             $discount = $this->productUtil->getProductDiscount($product, $business_id, $location_id, $is_cg, $price_group, $variation_id);
 
+            //For direct sells (wholesale), apply wholesale discount from product if no other discount
+            if ($is_direct_sell && empty($discount) && !empty($product->wholesale_discount_amount) && $product->wholesale_discount_amount > 0) {
+                $product->line_discount_type = $product->wholesale_discount_type ?? 'percentage';
+                $product->line_discount_amount = $product->wholesale_discount_amount;
+            }
+
             if ($is_direct_sell) {
                 $edit_discount = auth()->user()->can('edit_product_discount_from_sale_screen');
                 $edit_price = auth()->user()->can('edit_product_price_from_sale_screen');

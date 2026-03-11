@@ -20,6 +20,7 @@
           <th>@lang('product.default_purchase_price')</th>
           <th>@lang('product.profit_percent') @show_tooltip(__('tooltip.profit_percent'))</th>
           <th>@lang('product.default_selling_price')</th>
+          <th>@lang('lang_v1.wholesale_discount')</th>
           <th>@lang('lang_v1.product_image')</th>
         </tr>
         @foreach($product_deatails->variations as $variation )
@@ -54,6 +55,16 @@
                         {!! Form::text('single_dsp', @num_format($variation->default_sell_price), ['class' => 'form-control input-sm dsp input_number', 'placeholder' => __('product.exc_of_tax'), 'id' => 'single_dsp', 'required']); !!}
 
                         {!! Form::text('single_dsp_inc_tax', @num_format($variation->sell_price_inc_tax), ['class' => 'form-control input-sm hide input_number', 'placeholder' => __('product.inc_of_tax'), 'id' => 'single_dsp_inc_tax', 'required']); !!}
+                    </td>
+                    <td>
+                        <div class="col-sm-6">
+                          {!! Form::label('wholesale_discount_type', __('lang_v1.discount_type') . ':') !!}
+                          {!! Form::select('wholesale_discount_type', ['percentage' => __('lang_v1.percentage'), 'fixed' => __('lang_v1.fixed')], $variation->wholesale_discount_type ?? 'percentage', ['class' => 'form-control input-sm']); !!}
+                        </div>
+                        <div class="col-sm-6">
+                          {!! Form::label('wholesale_discount_amount', __('lang_v1.discount_amount') . ':') !!}
+                          {!! Form::text('wholesale_discount_amount', @num_format($variation->wholesale_discount_amount ?? 0), ['class' => 'form-control input-sm input_number', 'placeholder' => __('lang_v1.discount_amount')]); !!}
+                        </div>
                     </td>
                     <td>
                         @php 
