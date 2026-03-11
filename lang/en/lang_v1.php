@@ -1623,6 +1623,7 @@ return [
     'invoice_synced_to_zatca_cannot_be_edited' => 'This invoice has been successfully synced to ZATCA and cannot be edited.',
     'multiplier' => 'Multiplier',
     'wholesale_discount' => 'Wholesale Discount',
+    'wholesale' => 'Wholesale',
     'discount_type' => 'Discount Type',
     'discount_amount' => 'Discount Amount',
 ];

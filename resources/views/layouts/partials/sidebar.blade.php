@@ -8,8 +8,8 @@
 	</a> --}}
 
     <a href="{{route('home')}}"
-        class="tw-flex tw-items-center tw-justify-center tw-w-full tw-border-r tw-h-15 tw-bg-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'green'}}@endif-800 tw-shrink-0 tw-border-green-500/30">
-        <p class="tw-text-lg tw-font-medium tw-text-white side-bar-heading tw-text-center">
+        class="tw-flex tw-items-center tw-justify-center tw-w-full tw-border-r tw-min-h-[57px] tw-bg-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'green'}}@endif-800 tw-shrink-0 tw-border-green-500/30 tw-py-3">
+        <p class="tw-text-lg tw-font-medium tw-text-white side-bar-heading tw-text-center tw-m-0">
             {{ Session::get('business.name') }} <span class="tw-inline-block tw-w-3 tw-h-3 tw-bg-green-400 tw-rounded-full" title="Online"></span>
         </p>
     </a>

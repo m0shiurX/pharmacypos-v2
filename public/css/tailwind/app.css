@@ -1847,6 +1847,10 @@ html {
   margin: 16px;
 }
 
+.tw-m-0 {
+  margin: 0px;
+}
+
 .tw--mx-4 {
   margin-left: -1rem;
   margin-right: -1rem;
@@ -2104,6 +2108,22 @@ html {
 
 .tw-min-h-\[80vh\] {
   min-height: 80vh;
+}
+
+.tw-min-h-\[60px\] {
+  min-height: 60px;
+}
+
+.tw-min-h-\[588px\] {
+  min-height: 588px;
+}
+
+.tw-min-h-\[58px\] {
+  min-height: 58px;
+}
+
+.tw-min-h-\[57px\] {
+  min-height: 57px;
 }
 
 .\!tw-w-80 {

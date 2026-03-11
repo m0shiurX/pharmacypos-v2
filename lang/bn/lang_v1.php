@@ -138,6 +138,7 @@ return [
     'cash' => 'নগদ',
     'multiplier' => 'গুণক',
     'wholesale_discount' => 'পাইকারি ছাড়',
+    'wholesale' => 'পাইকারি',
     'discount_type' => 'ছাড়ের ধরন',
     'discount_amount' => 'ছাড়ের পরিমাণ',
 ];

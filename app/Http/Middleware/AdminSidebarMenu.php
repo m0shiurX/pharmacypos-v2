@@ -204,6 +204,13 @@ class AdminSidebarMenu
                                     ['icon' => '', 'active' => request()->segment(1) == 'pos' && request()->segment(2) == 'create']
                                 );
                             }
+                            if (auth()->user()->can('direct_sell.access')) {
+                                $sub->url(
+                                    action([\App\Http\Controllers\SellController::class, 'create']),
+                                    __('lang_v1.wholesale'),
+                                    ['icon' => '', 'active' => request()->segment(1) == 'sells' && request()->segment(2) == 'create']
+                                );
+                            }
                         }
 
                         if (in_array('add_sale', $enabled_modules) && ($is_admin || auth()->user()->hasAnyPermission(['draft.view_all', 'draft.view_own']))) {
