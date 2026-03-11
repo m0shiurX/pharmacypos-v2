@@ -409,6 +409,6 @@
 		<span class="display_currency pos_line_total_text tw-font-semibold @if(!empty($pos_settings['is_pos_subtotal_editable'])) hide @endif" data-currency_symbol="true">{{$product->quantity_ordered*$unit_price_inc_tax}}</span>
 	</td>
 	<td class="text-center" style="vertical-align:middle">
-		<i class="fa fa-times text-danger pos_remove_row cursor-pointer" aria-hidden="true"></i>
+		<i class="fa fa-times text-danger pos_remove_row cursor-pointer" style="font-size:14px" aria-hidden="true"></i>
 	</td>
 </tr>

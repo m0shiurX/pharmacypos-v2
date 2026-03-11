@@ -191,7 +191,7 @@
 		<table class="table table-condensed table-bordered table-hover" id="pos_table" style="margin-bottom:0;table-layout:fixed">
 			<thead>
 				<tr style="background:#f8f9fa">
-					<th class="tw-text-xs tw-uppercase tw-tracking-wide tw-text-gray-600 tw-font-semibold tw-py-2" style="width:30%">	
+					<th class="tw-text-xs tw-uppercase tw-tracking-wide tw-text-gray-600 tw-font-semibold tw-py-2" style="width:36%">	
 						@lang('sale.product') @show_tooltip(__('lang_v1.tooltip_sell_product_column'))
 					</th>
 					<th class="text-center tw-text-xs tw-uppercase tw-tracking-wide tw-text-gray-600 tw-font-semibold tw-py-2" style="width:18%">
@@ -211,7 +211,7 @@
 					<th class="text-center tw-text-xs tw-uppercase tw-tracking-wide tw-text-gray-600 tw-font-semibold tw-py-2" style="width:12%">
 						@lang('sale.subtotal')
 					</th>
-					<th class="text-center tw-py-2" style="width:30px"><i class="fas fa-times tw-text-gray-400" aria-hidden="true"></i></th>
+					<th class="text-center tw-py-2" style="width:4%"><i class="fas tw-size-5 fa-times tw-text-gray-400" aria-hidden="true"></i></th>
 				</tr>
 			</thead>
 			<tbody>
