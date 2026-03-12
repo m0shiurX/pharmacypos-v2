@@ -58,7 +58,8 @@ class ImportProductsController extends Controller
 
         // Check if zip extension it loaded or not.
         if ($zip_loaded === false) {
-            $output = ['success' => 0,
+            $output = [
+                'success' => 0,
                 'msg' => 'Please install/enable PHP Zip archive for import',
             ];
 
@@ -149,8 +150,8 @@ class ImportProductsController extends Controller
                             $source_image = file_get_contents($image_name);
 
                             $path = parse_url($image_name, PHP_URL_PATH);
-                            $new_name = time().'_'.basename($path);
-                            $dest_img = public_path().'/uploads/'.config('constants.product_img_path').'/'.$new_name;
+                            $new_name = time() . '_' . basename($path);
+                            $dest_img = public_path() . '/uploads/' . config('constants.product_img_path') . '/' . $new_name;
                             file_put_contents($dest_img, $source_image);
                             $product_array['image'] = $new_name;
                         } else {
@@ -653,6 +654,10 @@ class ImportProductsController extends Controller
                             if (! empty($location_ids)) {
                                 $product->product_locations()->sync($location_ids);
                             }
+                        } else {
+                            // If no locations specified, assign all business locations
+                            $all_location_ids = $business_locations->pluck('id')->toArray();
+                            $product->product_locations()->sync($all_location_ids);
                         }
 
                         // Create single product variation
@@ -687,16 +692,18 @@ class ImportProductsController extends Controller
                 }
             }
 
-            $output = ['success' => 1,
+            $output = [
+                'success' => 1,
                 'msg' => __('product.file_imported_successfully'),
             ];
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
-            $output = ['success' => 0,
+            $output = [
+                'success' => 0,
                 'msg' => $e->getMessage(),
             ];
 
@@ -823,8 +830,10 @@ class ImportProductsController extends Controller
             ->where('location_id', $location_id)
             ->count();
         if ($count == 0) {
-            DB::table('product_locations')->insert(['product_id' => $product->id,
-                'location_id' => $location_id, ]);
+            DB::table('product_locations')->insert([
+                'product_id' => $product->id,
+                'location_id' => $location_id,
+            ]);
         }
     }
 
