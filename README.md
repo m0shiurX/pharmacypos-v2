@@ -12,8 +12,8 @@ php artisan key:generate
 
 # Run migrations + seed
 php artisan migrate --force
-php artisan db:seed          # if seeders create initial business/admin user
-
+php artisan db:seed          # if seeders create initial business/admin
+php artisan pharmacy:import-medicines
 # Build frontend assets
 npm install
 npm run tw:build             # Tailwind CSS
@@ -26,3 +26,6 @@ php artisan view:cache
 
 # Set permissions
 chmod -R 775 storage bootstrap/cache
+
+#Also used for importing
+php artisan pharmacy:import-medicines --file=/path/to/custom.csv --business_id=1
