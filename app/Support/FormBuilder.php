@@ -63,7 +63,7 @@ class FormBuilder
             $this->setModel($options['model']);
         }
 
-        $html = '<form'.$this->attributes($attributes).'>';
+        $html = '<form' . $this->attributes($attributes) . '>';
 
         // Add CSRF token for non-GET forms
         if ($htmlMethod !== 'GET') {
@@ -107,7 +107,7 @@ class FormBuilder
         $value = $value ?? ucfirst(str_replace(['_', '-'], ' ', $name));
         $options['for'] = $options['for'] ?? $name;
 
-        return new HtmlString('<label'.$this->attributes($options).'>'.e($value).'</label>');
+        return new HtmlString('<label' . $this->attributes($options) . '>' . e($value) . '</label>');
     }
 
     /**
@@ -176,7 +176,7 @@ class FormBuilder
             $options['value'] = $value;
         }
 
-        return new HtmlString('<input'.$this->attributes($options).'>');
+        return new HtmlString('<input' . $this->attributes($options) . '>');
     }
 
     /**
@@ -198,7 +198,7 @@ class FormBuilder
 
         $value = $this->getValueAttribute($name, $value);
 
-        return new HtmlString('<textarea'.$this->attributes($options).'>'.e($value ?? '').'</textarea>');
+        return new HtmlString('<textarea' . $this->attributes($options) . '>' . e($value ?? '') . '</textarea>');
     }
 
     /**
@@ -215,23 +215,23 @@ class FormBuilder
         // Handle multiple select
         if (isset($selectAttributes['multiple']) && $selectAttributes['multiple']) {
             if (! str_ends_with($name, '[]')) {
-                $selectAttributes['name'] = $name.'[]';
+                $selectAttributes['name'] = $name . '[]';
             }
         }
 
         $selected = $this->getValueAttribute($name, $selected);
 
-        $html = '<select'.$this->attributes($selectAttributes).'>';
+        $html = '<select' . $this->attributes($selectAttributes) . '>';
 
         // Add placeholder option
         if (isset($selectAttributes['placeholder'])) {
-            $html .= '<option value="">'.e($selectAttributes['placeholder']).'</option>';
+            $html .= '<option value="">' . e($selectAttributes['placeholder']) . '</option>';
         }
 
         foreach ((array) $list as $value => $display) {
             if (is_array($display)) {
                 // Optgroup
-                $html .= '<optgroup label="'.e($value).'">';
+                $html .= '<optgroup label="' . e($value) . '">';
                 foreach ($display as $optValue => $optDisplay) {
                     $html .= $this->getSelectOption($optValue, $optDisplay, $selected);
                 }
@@ -273,7 +273,7 @@ class FormBuilder
      */
     public function submit(?string $value = null, array $options = []): HtmlString
     {
-        return new HtmlString('<input type="submit"'.$this->attributes(array_merge($options, ['value' => $value])).'>');
+        return new HtmlString('<input type="submit"' . $this->attributes(array_merge($options, ['value' => $value])) . '>');
     }
 
     /**
@@ -293,7 +293,7 @@ class FormBuilder
         $options['value'] = $value;
 
         if (! isset($options['id'])) {
-            $options['id'] = $this->getIdAttribute($name, $options).'_'.$value;
+            $options['id'] = $this->getIdAttribute($name, $options) . '_' . $value;
         }
 
         if ($checked === true || $checked === 1 || $checked === '1') {
@@ -315,12 +315,15 @@ class FormBuilder
             unset($options['checked']);
         }
 
-        return new HtmlString('<input'.$this->attributes($options).'>');
+        return new HtmlString('<input' . $this->attributes($options) . '>');
     }
 
     protected function getSelectOption($value, $display, $selected): string
     {
         $isSelected = false;
+        if ($selected instanceof \Illuminate\Support\Collection) {
+            $selected = $selected->toArray();
+        }
         if (is_array($selected)) {
             $isSelected = in_array((string) $value, array_map('strval', $selected));
         } elseif (! is_null($selected)) {
@@ -329,7 +332,7 @@ class FormBuilder
 
         $selectedAttr = $isSelected ? ' selected="selected"' : '';
 
-        return '<option value="'.e($value).'"'.$selectedAttr.'>'.e($display).'</option>';
+        return '<option value="' . e($value) . '"' . $selectedAttr . '>' . e($display) . '</option>';
     }
 
     protected function getValueAttribute(string $name, $value = null)
@@ -391,10 +394,10 @@ class FormBuilder
             } elseif ($value === false || $value === null) {
                 continue;
             } else {
-                $html[] = $key.'="'.e($value).'"';
+                $html[] = $key . '="' . e($value) . '"';
             }
         }
 
-        return count($html) > 0 ? ' '.implode(' ', $html) : '';
+        return count($html) > 0 ? ' ' . implode(' ', $html) : '';
     }
 }
