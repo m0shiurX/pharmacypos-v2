@@ -19,7 +19,7 @@ return [
     'document_size_limit' => '5000000', // in Bytes,
     'image_size_limit' => '5000000', // in Bytes
 
-    'asset_version' => 670,
+    'asset_version' => 671,
 
     'disable_purchase_in_other_currency' => true,
 
