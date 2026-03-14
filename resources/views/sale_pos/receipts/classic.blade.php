@@ -4,6 +4,17 @@
         size: auto;
         margin-bottom: 5mm;
     }
+
+    .table-slim > thead > tr > th,
+    .table-slim > tbody > tr > td {
+        padding: 2px 4px !important;
+        font-size: 12px !important;
+        line-height: 1.3 !important;
+    }
+
+    .table-slim {
+        margin-bottom: 0 !important;
+    }
 </style>
 @if (isset($receipt_details->total_due) && $receipt_details->total_due === 0)
     <!-- PAID Watermark -->
@@ -30,7 +41,7 @@
 
         <!-- business information here -->
         <div class="col-xs-12 text-center">
-            <h2 class="text-center">
+            <h2 class="text-center" style="margin: 5px 0; font-size: 22px;">
                 <!-- Shop & Location Name  -->
                 @if (!empty($receipt_details->display_name))
                     {{ $receipt_details->display_name }}
@@ -38,7 +49,7 @@
             </h2>
 
             <!-- Address -->
-            <p>
+            <p style="margin-bottom: 2px;">
                 @if (!empty($receipt_details->address))
                     <small class="text-center">
                         {!! $receipt_details->address !!}
@@ -57,7 +68,7 @@
                     <br>{{ $receipt_details->location_custom_fields }}
                 @endif
             </p>
-            <p>
+            <p style="margin-bottom: 2px;">
                 @if (!empty($receipt_details->sub_heading_line1))
                     {{ $receipt_details->sub_heading_line1 }}
                 @endif
@@ -74,7 +85,7 @@
                     <br>{{ $receipt_details->sub_heading_line5 }}
                 @endif
             </p>
-            <p>
+            <p style="margin-bottom: 2px;">
                 @if (!empty($receipt_details->tax_info1))
                     <b>{{ $receipt_details->tax_label1 }}</b> {{ $receipt_details->tax_info1 }}
                 @endif
@@ -88,7 +99,7 @@
 
     <!-- Title of receipt -->
     @if (!empty($receipt_details->invoice_heading))
-        <h3 class="text-center">
+        <h3 class="text-center" style="margin: 5px 0; font-size: 16px;">
             <u>{!! $receipt_details->invoice_heading !!}</u>
         </h3>
     @endif
@@ -291,7 +302,7 @@
     <div class="col-xs-12">
         <br />
         @php
-            $p_width = 45;
+            $p_width = 40;
         @endphp
         @if (!empty($receipt_details->item_discount_label))
             @php
@@ -306,6 +317,7 @@
         <table class="table table-responsive table-slim">
             <thead>
                 <tr>
+                    <th width="5%" class="text-center">#</th>
                     <th width="{{ $p_width }}%">{{ $receipt_details->table_product_label }}</th>
                     <th class="text-right" width="15%">{{ $receipt_details->table_qty_label }}</th>
                     <th class="text-right" width="15%">{{ $receipt_details->table_unit_price_label }}</th>
@@ -321,6 +333,7 @@
             <tbody>
                 @forelse($receipt_details->lines as $line)
                     <tr>
+                        <td class="text-center">{{ $loop->iteration }}</td>
                         <td>
                             @if (!empty($line['image']))
                                 <img src="{{ $line['image'] }}" alt="Image" width="50"
@@ -392,10 +405,10 @@
                         @endif
                         @if (!empty($receipt_details->item_discount_label))
                             <td class="text-right">
-                                {{ $line['total_line_discount'] ?? '0.00' }}
-
                                 @if (!empty($line['line_discount_percent']))
-                                    ({{ $line['line_discount_percent'] }}%)
+                                    {{ $line['line_discount_percent'] }}%
+                                @else
+                                    0%
                                 @endif
                             </td>
                         @endif
@@ -429,7 +442,7 @@
                     @endif
                 @empty
                     <tr>
-                        <td colspan="4">&nbsp;</td>
+                        <td colspan="5">&nbsp;</td>
                         @if (!empty($receipt_details->discounted_unit_price_label))
                             <td></td>
                         @endif
@@ -444,247 +457,160 @@
 </div>
 
 <div class="row" style="color: #000000 !important;">
-    <div class="col-md-12">
-        <hr />
-    </div>
+    <div class="col-xs-6"></div>
     <div class="col-xs-6">
-
         <table class="table table-slim">
-
-            @if (!empty($receipt_details->payments))
-                @foreach ($receipt_details->payments as $payment)
+            <tbody>
+                @if (!empty($receipt_details->total_quantity_label))
                     <tr>
-                        <td>{{ $payment['method'] }}</td>
-                        <td class="text-right">{{ $payment['amount'] }}</td>
-                        <td class="text-right">{{ $payment['date'] }}</td>
+                        <th>{!! $receipt_details->total_quantity_label !!}</th>
+                        <td class="text-right">{{ $receipt_details->total_quantity }}</td>
                     </tr>
-                @endforeach
-            @endif
+                @endif
 
-            <!-- Total Paid-->
-            @if (!empty($receipt_details->total_paid))
+                @if (!empty($receipt_details->total_items_label))
+                    <tr>
+                        <th>{!! $receipt_details->total_items_label !!}</th>
+                        <td class="text-right">{{ $receipt_details->total_items }}</td>
+                    </tr>
+                @endif
+
                 <tr>
-                    <th>
-                        {!! $receipt_details->total_paid_label !!}
-                    </th>
+                    <th>{!! $receipt_details->subtotal_label !!}</th>
+                    <td class="text-right">{{ $receipt_details->subtotal }}</td>
+                </tr>
+
+                @if (!empty($receipt_details->total_exempt_uf))
+                    <tr>
+                        <th>@lang('lang_v1.exempt')</th>
+                        <td class="text-right">{{ $receipt_details->total_exempt }}</td>
+                    </tr>
+                @endif
+
+                @if (!empty($receipt_details->shipping_charges))
+                    <tr>
+                        <th>{!! $receipt_details->shipping_charges_label !!}</th>
+                        <td class="text-right">{{ $receipt_details->shipping_charges }}</td>
+                    </tr>
+                @endif
+
+                @if (!empty($receipt_details->packing_charge))
+                    <tr>
+                        <th>{!! $receipt_details->packing_charge_label !!}</th>
+                        <td class="text-right">{{ $receipt_details->packing_charge }}</td>
+                    </tr>
+                @endif
+
+                @if (!empty($receipt_details->discount))
+                    <tr>
+                        <th>{!! $receipt_details->discount_label !!}</th>
+                        <td class="text-right">(-) {{ $receipt_details->discount }}</td>
+                    </tr>
+                @endif
+
+                @if (!empty($receipt_details->total_line_discount))
+                    <tr>
+                        <th>{!! $receipt_details->line_discount_label !!}</th>
+                        <td class="text-right">(-) {{ $receipt_details->total_line_discount }}</td>
+                    </tr>
+                @endif
+
+                @if (!empty($receipt_details->additional_expenses))
+                    @foreach ($receipt_details->additional_expenses as $key => $val)
+                        <tr>
+                            <td>{{ $key }}:</td>
+                            <td class="text-right">(+) {{ $val }}</td>
+                        </tr>
+                    @endforeach
+                @endif
+
+                @if (!empty($receipt_details->reward_point_label))
+                    <tr>
+                        <th>{!! $receipt_details->reward_point_label !!}</th>
+                        <td class="text-right">(-) {{ $receipt_details->reward_point_amount }}</td>
+                    </tr>
+                @endif
+
+                @if (!empty($receipt_details->tax))
+                    <tr>
+                        <th>{!! $receipt_details->tax_label !!}</th>
+                        <td class="text-right">(+) {{ $receipt_details->tax }}</td>
+                    </tr>
+                @endif
+
+                @if ($receipt_details->round_off_amount > 0)
+                    <tr>
+                        <th>{!! $receipt_details->round_off_label !!}</th>
+                        <td class="text-right">{{ $receipt_details->round_off }}</td>
+                    </tr>
+                @endif
+
+                <tr>
+                    <th>{!! $receipt_details->total_label !!}</th>
                     <td class="text-right">
-                        {{ $receipt_details->total_paid }}
+                        @if (!empty($receipt_details->total_in_words))
+                            <small style="text-transform: capitalize;">(  
+                                {{ ucfirst($receipt_details->total_in_words) }}
+                                @php $currency_text = $receipt_details->currency_name ?? ($receipt_details->currency_code ?? null); @endphp
+                                @if (!empty($currency_text))
+                                    {{ ' ' . strtoupper($currency_text) }}
+                                @endif
+                                )
+                            </small>
+                        @endif
+                        {{ $receipt_details->total }}
                     </td>
                 </tr>
-            @endif
 
-            {{-- 1. Today Due --}}
-            @if (!empty($receipt_details->total_due) && !empty($receipt_details->total_due_label))
-                <tr>
-                    <th>
-                        {!! $receipt_details->total_due_label !!}
-                    </th>
-                    <td class="text-right">
-                        {{ $receipt_details->total_due }}
-                    </td>
-                </tr>
-            @endif
+                @if (!empty($receipt_details->payments))
+                    @foreach ($receipt_details->payments as $payment)
+                        <tr>
+                            <td>{{ $payment['method'] }}</td>
+                            <td class="text-right">{{ $payment['amount'] }}</td>
+                        </tr>
+                    @endforeach
+                @endif
 
-            {{-- 2. Previous Due --}}
-            @php
-                $__prev_due_display = null;
-                if (!empty($receipt_details->all_due) && !empty($receipt_details->total_due)) {
-                    $__all_due_num = floatval(preg_replace('/[^\d\.\-]/', '', (string) $receipt_details->all_due));
-                    $__total_due_num = floatval(preg_replace('/[^\d\.\-]/', '', (string) $receipt_details->total_due));
-                    $__prev_due_val = $__all_due_num - $__total_due_num;
-                    $__prev_due_display =
-                        ($receipt_details->currency['symbol'] ?? '') . number_format(max($__prev_due_val, 0), 2);
-                }
-            @endphp
+                @if (!empty($receipt_details->total_paid))
+                    <tr>
+                        <th>{!! $receipt_details->total_paid_label !!}</th>
+                        <td class="text-right">{{ $receipt_details->total_paid }}</td>
+                    </tr>
+                @endif
 
-            @if (!empty($__prev_due_display))
-                <tr>
-                    <th>
-                        {{ __('Previous Due') }}
-                    </th>
-                    <td class="text-right">
-                        {!! $__prev_due_display !!}
-                    </td>
-                </tr>
-            @endif
+                @if (!empty($receipt_details->total_due) && !empty($receipt_details->total_due_label))
+                    <tr>
+                        <th>{!! $receipt_details->total_due_label !!}</th>
+                        <td class="text-right">{{ $receipt_details->total_due }}</td>
+                    </tr>
+                @endif
 
-            {{-- 3. Total Due --}}
-            @if (!empty($receipt_details->all_due))
-                <tr>
-                    <th>
-                        {!! $receipt_details->all_bal_label !!}
-                    </th>
-                    <td class="text-right">
-                        {{ $receipt_details->all_due }}
-                    </td>
-                </tr>
-            @endif
+                @php
+                    $__prev_due_display = null;
+                    if (!empty($receipt_details->all_due) && !empty($receipt_details->total_due)) {
+                        $__all_due_num = floatval(preg_replace('/[^\d\.\-]/', '', (string) $receipt_details->all_due));
+                        $__total_due_num = floatval(preg_replace('/[^\d\.\-]/', '', (string) $receipt_details->total_due));
+                        $__prev_due_val = $__all_due_num - $__total_due_num;
+                        $__prev_due_display =
+                            ($receipt_details->currency['symbol'] ?? '') . number_format(max($__prev_due_val, 0), 2);
+                    }
+                @endphp
+
+                @if (!empty($__prev_due_display))
+                    <tr>
+                        <th>{{ __('Previous Due') }}</th>
+                        <td class="text-right">{!! $__prev_due_display !!}</td>
+                    </tr>
+                @endif
+
+                @if (!empty($receipt_details->all_due))
+                    <tr>
+                        <th>{!! $receipt_details->all_bal_label !!}</th>
+                        <td class="text-right">{{ $receipt_details->all_due }}</td>
+                    </tr>
+                @endif
+            </tbody>
         </table>
-    </div>
-
-    <div class="col-xs-6" style="min-height: 400px !important;">
-        <div class="table-responsive">
-            <table class="table table-slim">
-                <tbody>
-                    @if (!empty($receipt_details->total_quantity_label))
-                        <tr>
-                            <th style="width: 40%">
-                                {!! $receipt_details->total_quantity_label !!}
-                            </th>
-                            <td class="text-right">
-                                {{ $receipt_details->total_quantity }}
-                            </td>
-                        </tr>
-                    @endif
-
-                    @if (!empty($receipt_details->total_items_label))
-                        <tr>
-                            <th style="width: 40%">
-                                {!! $receipt_details->total_items_label !!}
-                            </th>
-                            <td class="text-right">
-                                {{ $receipt_details->total_items }}
-                            </td>
-                        </tr>
-                    @endif
-                    <tr>
-                        <th style="width: 40%">
-                            {!! $receipt_details->subtotal_label !!}
-                        </th>
-                        <td class="text-right">
-                            {{ $receipt_details->subtotal }}
-                        </td>
-                    </tr>
-                    @if (!empty($receipt_details->total_exempt_uf))
-                        <tr>
-                            <th style="width: 40%">
-                                @lang('lang_v1.exempt')
-                            </th>
-                            <td class="text-right">
-                                {{ $receipt_details->total_exempt }}
-                            </td>
-                        </tr>
-                    @endif
-                    <!-- Shipping Charges -->
-                    @if (!empty($receipt_details->shipping_charges))
-                        <tr>
-                            <th style="width: 40%">
-                                {!! $receipt_details->shipping_charges_label !!}
-                            </th>
-                            <td class="text-right">
-                                {{ $receipt_details->shipping_charges }}
-                            </td>
-                        </tr>
-                    @endif
-
-                    @if (!empty($receipt_details->packing_charge))
-                        <tr>
-                            <th style="width: 40%">
-                                {!! $receipt_details->packing_charge_label !!}
-                            </th>
-                            <td class="text-right">
-                                {{ $receipt_details->packing_charge }}
-                            </td>
-                        </tr>
-                    @endif
-
-                    <!-- Discount -->
-                    @if (!empty($receipt_details->discount))
-                        <tr>
-                            <th>
-                                {!! $receipt_details->discount_label !!}
-                            </th>
-
-                            <td class="text-right">
-                                (-) {{ $receipt_details->discount }}
-                            </td>
-                        </tr>
-                    @endif
-
-                    @if (!empty($receipt_details->total_line_discount))
-                        <tr>
-                            <th>
-                                {!! $receipt_details->line_discount_label !!}
-                            </th>
-
-                            <td class="text-right">
-                                (-) {{ $receipt_details->total_line_discount }}
-                            </td>
-                        </tr>
-                    @endif
-
-                    @if (!empty($receipt_details->additional_expenses))
-                        @foreach ($receipt_details->additional_expenses as $key => $val)
-                            <tr>
-                                <td>
-                                    {{ $key }}:
-                                </td>
-
-                                <td class="text-right">
-                                    (+)
-                                    {{ $val }}
-                                </td>
-                            </tr>
-                        @endforeach
-                    @endif
-
-                    @if (!empty($receipt_details->reward_point_label))
-                        <tr>
-                            <th>
-                                {!! $receipt_details->reward_point_label !!}
-                            </th>
-
-                            <td class="text-right">
-                                (-) {{ $receipt_details->reward_point_amount }}
-                            </td>
-                        </tr>
-                    @endif
-
-                    <!-- Tax -->
-                    @if (!empty($receipt_details->tax))
-                        <tr>
-                            <th>
-                                {!! $receipt_details->tax_label !!}
-                            </th>
-                            <td class="text-right">
-                                (+) {{ $receipt_details->tax }}
-                            </td>
-                        </tr>
-                    @endif
-
-                    @if ($receipt_details->round_off_amount > 0)
-                        <tr>
-                            <th>
-                                {!! $receipt_details->round_off_label !!}
-                            </th>
-                            <td class="text-right">
-                                {{ $receipt_details->round_off }}
-                            </td>
-                        </tr>
-                    @endif
-
-                    <!-- Total -->
-                    <tr>
-                        <th>
-                            {!! $receipt_details->total_label !!}
-                        </th>
-                        <td class="text-right" style="width: 60%">
-                            @if (!empty($receipt_details->total_in_words))
-                                <small style="text-transform: capitalize;">(
-                                    {{ ucfirst($receipt_details->total_in_words) }}
-                                    @php $currency_text = $receipt_details->currency_name ?? ($receipt_details->currency_code ?? null); @endphp
-                                    @if (!empty($currency_text))
-                                        {{ ' ' . strtoupper($currency_text) }}
-                                    @endif
-                                    )
-                                </small>
-                            @endif
-                            {{ $receipt_details->total }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
     </div>
 
     <div class="border-bottom col-md-12">
@@ -719,7 +645,7 @@
     style="position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; background-color: white !important; padding: 15px !important;">
     <div class="row" style="color: #000000 !important;">
         @if (!empty($receipt_details->footer_text))
-            <div class="@if ($receipt_details->show_barcode || $receipt_details->show_qr_code) col-xs-8 @else col-xs-12 @endif">wi
+            <div class="@if ($receipt_details->show_barcode || $receipt_details->show_qr_code) col-xs-8 @else col-xs-12 @endif">
                 {!! $receipt_details->footer_text !!}
             </div>
         @endif
