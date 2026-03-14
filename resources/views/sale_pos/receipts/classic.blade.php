@@ -330,7 +330,7 @@
                     <th class="text-right" width="15%">{{ $receipt_details->table_subtotal_label }}</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody style="border-bottom: 1px solid #000000 !important;">
                 @forelse($receipt_details->lines as $line)
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
@@ -457,8 +457,8 @@
 </div>
 
 <div class="row" style="color: #000000 !important;">
-    <div class="col-xs-6"></div>
-    <div class="col-xs-6">
+    <div class="col-xs-8"></div>
+    <div class="col-xs-4">
         <table class="table table-slim">
             <tbody>
                 @if (!empty($receipt_details->total_quantity_label))
