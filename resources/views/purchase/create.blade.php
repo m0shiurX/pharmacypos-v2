@@ -45,7 +45,7 @@
 				</strong>
 				<div id="supplier_address_div"></div>
 			</div>
-			<div class="@if(!empty($default_purchase_status)) col-sm-4 @else col-sm-3 @endif">
+			<div class="@if(!empty($default_purchase_status)) col-sm-4 @else col-sm-3 @endif" style="display:none;">
 				<div class="form-group">
 					{!! Form::label('ref_no', __('purchase.ref_no').':') !!}
 					@show_tooltip(__('lang_v1.leave_empty_to_autogenerate'))
@@ -75,11 +75,11 @@
 					$search_disable = false; 
 				@endphp
 			@else
-				@php $default_location = null;
-				$search_disable = true;
+				@php $default_location = current(array_keys($business_locations));
+				$search_disable = false;
 				@endphp
 			@endif
-			<div class="col-sm-3">
+			<div class="col-sm-3" style="display:none;">
 				<div class="form-group">
 					{!! Form::label('location_id', __('purchase.business_location').':*') !!}
 					@show_tooltip(__('tooltip.purchase_location'))
@@ -104,7 +104,7 @@
 				</div>
 			</div>
 
-			<div class="col-md-3">
+			<div class="col-md-3" style="display:none;">
 		          <div class="form-group">
 		            <div class="multi-input">
 		              {!! Form::label('pay_term_number', __('contact.pay_term') . ':') !!} @show_tooltip(__('tooltip.pay_term'))
@@ -120,7 +120,7 @@
 		        </div>
 		    </div>
 
-			<div class="col-sm-3">
+			<div class="col-sm-3" style="display:none;">
                 <div class="form-group">
                     {!! Form::label('document', __('purchase.attach_document') . ':') !!}
                     {!! Form::file('document', ['id' => 'upload_document', 'accept' => implode(',', array_keys(config('constants.document_upload_mimes_types')))]); !!}
@@ -223,29 +223,6 @@
 	@endcomponent
 
 	@component('components.widget', ['class' => 'box-primary'])
-		<div class="row">
-			<div class="col-sm-12 missing-product-warning">
-			</div>
-			<div class="col-sm-2 text-center">
-				<button type="button" class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-sm" data-toggle="modal" data-target="#import_purchase_products_modal">@lang('product.import_products')</button>
-			</div>
-			<div class="col-sm-8">
-				<div class="form-group">
-					<div class="input-group">
-						<span class="input-group-addon">
-							<i class="fa fa-search"></i>
-						</span>
-						{!! Form::text('search_product', null, ['class' => 'form-control mousetrap', 'id' => 'search_product', 'placeholder' => __('lang_v1.search_product_placeholder'), 'disabled' => $search_disable]); !!}
-					</div>
-				</div>
-			</div>
-			<div class="col-sm-2">
-				<div class="form-group">
-					<button tabindex="-1" type="button" class="btn btn-link btn-modal"data-href="{{action([\App\Http\Controllers\ProductController::class, 'quickAdd'])}}" 
-            	data-container=".quick_add_product_modal"><i class="fa fa-plus"></i> @lang( 'product.add_new_product' ) </button>
-				</div>
-			</div>
-		</div>
 		@php
 			$hide_tax = '';
 			if( session()->get('business.enable_inline_tax') == 0){
@@ -319,6 +296,29 @@
 				</div>
 
 				<input type="hidden" id="row_count" value="0">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12 missing-product-warning">
+			</div>
+			<div class="col-sm-2 text-center">
+				<button type="button" class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-sm" data-toggle="modal" data-target="#import_purchase_products_modal">@lang('product.import_products')</button>
+			</div>
+			<div class="col-sm-8">
+				<div class="form-group">
+					<div class="input-group">
+						<span class="input-group-addon">
+							<i class="fa fa-search"></i>
+						</span>
+						{!! Form::text('search_product', null, ['class' => 'form-control mousetrap', 'id' => 'search_product', 'placeholder' => __('lang_v1.search_product_placeholder'), 'disabled' => $search_disable]); !!}
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-2">
+				<div class="form-group">
+					<button tabindex="-1" type="button" class="btn btn-link btn-modal"data-href="{{action([\App\Http\Controllers\ProductController::class, 'quickAdd'])}}" 
+				data-container=".quick_add_product_modal"><i class="fa fa-plus"></i> @lang( 'product.add_new_product' ) </button>
+				</div>
 			</div>
 		</div>
 	@endcomponent
