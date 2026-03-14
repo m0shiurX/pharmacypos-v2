@@ -236,7 +236,7 @@
         @endforeach
 		<div class="input-group input-number" style="width:100%">
 			<span class="input-group-btn"><button type="button" class="btn btn-default btn-flat quantity-down btn-xs"><i class="fa fa-minus text-danger"></i></button></span>
-		<input type="text" data-min="1" style="min-width:0"
+		<input type="text" data-min="1" style="min-width:0;height: 32px;"
 			class="form-control pos_quantity input_number mousetrap input_quantity input-sm" 
 			value="{{@format_quantity($product->quantity_ordered)}}" name="products[{{$row_count}}][quantity]" data-allow-overselling="@if(empty($pos_settings['allow_overselling'])){{'false'}}@else{{'true'}}@endif" 
 			@if($allow_decimal) 
@@ -343,16 +343,16 @@
 		<td class="@if(!auth()->user()->can('edit_product_price_from_sale_screen')) hide @endif">
 			<input type="text" name="products[{{$row_count}}][unit_price]" class="form-control pos_unit_price input_number mousetrap" value="{{@num_format($pos_unit_price)}}" @if(!empty($pos_settings['enable_msp'])) data-rule-min-value="{{$pos_unit_price}}" data-msg-min-value="{{__('lang_v1.minimum_selling_price_error_msg', ['price' => @num_format($pos_unit_price)])}}" @endif> 
 
-			@if(!empty($last_sell_line))
+			{{-- @if(!empty($last_sell_line))
 
 				<small class="text-muted tw-mt-2">@lang('lang_v1.prev_unit_price'): @format_currency($last_sell_line->unit_price_before_discount)</small>
-			@endif
+			@endif --}}
 		</td>
 		<td @if(!$edit_discount) class="hide" @endif>
 			{!! Form::text("products[$row_count][line_discount_amount]", @num_format($discount_amount), ['class' => 'form-control input_number row_discount_amount']); !!}
-			{!! Form::select("products[$row_count][line_discount_type]", ['fixed' => __('lang_v1.fixed'), 'percentage' => __('lang_v1.percentage')], $discount_type , ['class' => 'form-control tw-mt-2 row_discount_type']); !!}
+			{!! Form::hidden("products[$row_count][line_discount_type]", 'percentage', ['class' => 'row_discount_type']); !!}
 
-			@if(!empty($last_sell_line))
+			{{-- @if(!empty($last_sell_line))
 				<small class="text-muted tw-mt-2">
 					@lang('lang_v1.prev_discount'): 
 					@if($last_sell_line->line_discount_type == 'percentage')
@@ -361,7 +361,7 @@
 						@format_currency($last_sell_line->line_discount_amount)
 					@endif
 				</small>
-			@endif
+			@endif --}}
 		</td>
 		<td class="text-center {{$hide_tax}}">
 			{!! Form::hidden("products[$row_count][item_tax]", @num_format($item_tax), ['class' => 'item_tax']); !!}
@@ -382,7 +382,7 @@
 		<td style="">
 			@if($edit_discount)
 			{!! Form::text("products[$row_count][line_discount_amount]", @num_format($discount_amount), ['class' => 'form-control input_number row_discount_amount input-sm', 'style' => 'width:100%', 'placeholder' => '0']); !!}
-			{!! Form::select("products[$row_count][line_discount_type]", ['percentage' => '%', 'fixed' => __('lang_v1.fixed')], $discount_type , ['class' => 'form-control row_discount_type input-sm', 'style' => 'width:100%;margin-top:2px']); !!}
+			{!! Form::hidden("products[$row_count][line_discount_type]", 'percentage', ['class' => 'row_discount_type']); !!}
 			@else
 			{!! Form::hidden("products[$row_count][line_discount_amount]", @num_format($discount_amount), ['class' => 'row_discount_amount']); !!}
 			{!! Form::hidden("products[$row_count][line_discount_type]", $discount_type, ['class' => 'row_discount_type']); !!}

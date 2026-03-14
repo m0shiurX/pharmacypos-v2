@@ -157,36 +157,14 @@
 					<div id="billing_address_div">
 						{!! $walk_in_customer['contact_address'] ?? '' !!}
 					</div>
-					<br>
-					<strong>
-						@lang('lang_v1.shipping_address'):
-					</strong>
-					<div id="shipping_address_div">
-						{{$walk_in_customer['supplier_business_name'] ?? ''}},<br>
-						{{$walk_in_customer['name'] ?? ''}},<br>
-						{{$walk_in_customer['shipping_address'] ?? ''}}
-					</div>					
+					<div id="shipping_address_div" style="display:none;">
+					</div>
 					</small>
 				</div>
 
-				<div class="col-md-3">
-		          <div class="form-group">
-		            <div class="multi-input">
-		            @php
-						$is_pay_term_required = !empty($pos_settings['is_pay_term_required']);
-					@endphp
-		              {!! Form::label('pay_term_number', __('contact.pay_term') . ':') !!} @show_tooltip(__('tooltip.pay_term'))
-		              <br/>
-		              {!! Form::number('pay_term_number', $walk_in_customer['pay_term_number'], ['class' => 'form-control width-40 pull-left', 'placeholder' => __('contact.pay_term'), 'required' => $is_pay_term_required]); !!}
-
-		              {!! Form::select('pay_term_type', 
-		              	['months' => __('lang_v1.months'), 
-		              		'days' => __('lang_v1.days')], 
-		              		$walk_in_customer['pay_term_type'], 
-		              	['class' => 'form-control width-60 pull-left','placeholder' => __('messages.please_select'), 'required' => $is_pay_term_required]); !!}
-		            </div>
-		          </div>
-		        </div>
+				{{-- Pay term hidden - always use customer default --}}
+				{!! Form::hidden('pay_term_number', $walk_in_customer['pay_term_number']) !!}
+				{!! Form::hidden('pay_term_type', $walk_in_customer['pay_term_type']) !!}
 
 				@if(!empty($commission_agent))
 				@php
@@ -225,23 +203,11 @@
 						</div>
 					</div>
 				@endif
+				{{-- Invoice scheme: always use default --}}
 				@if($sale_type != 'sales_order')
-					<div class="col-sm-3">
-						<div class="form-group">
-							{!! Form::label('invoice_scheme_id', __('invoice.invoice_scheme') . ':') !!}
-							{!! Form::select('invoice_scheme_id', $invoice_schemes, $default_invoice_schemes->id, ['class' => 'form-control select2', 'placeholder' => __('messages.please_select')]); !!}
-						</div>
-					</div>
+					{!! Form::hidden('invoice_scheme_id', $default_invoice_schemes->id) !!}
 				@endif
-					@can('edit_invoice_number')
-					<div class="col-sm-3">
-						<div class="form-group">
-							{!! Form::label('invoice_no', $sale_type == 'sales_order' ? __('restaurant.order_no') : __('sale.invoice_no') . ':') !!}
-							{!! Form::text('invoice_no', null, ['class' => 'form-control', 'placeholder' => $sale_type == 'sales_order' ? __('restaurant.order_no') : __('sale.invoice_no')]); !!}
-							<p class="help-block">@lang('lang_v1.keep_blank_to_autogenerate')</p>
-						</div>
-					</div>
-					@endcan
+				{{-- Invoice no: always auto-generate --}}
 				
 				@php
 			        $custom_field_1_label = !empty($custom_labels['sell']['custom_field_1']) ? $custom_labels['sell']['custom_field_1'] : '';
@@ -320,16 +286,7 @@
 				        </div>
 				    </div>
 		        @endif
-		        <div class="col-sm-3">
-	                <div class="form-group">
-	                    {!! Form::label('upload_document', __('purchase.attach_document') . ':') !!}
-	                    {!! Form::file('sell_document', ['id' => 'upload_document', 'accept' => implode(',', array_keys(config('constants.document_upload_mimes_types')))]); !!}
-	                    <p class="help-block">
-	                    	@lang('purchase.max_file_size', ['size' => (config('constants.document_size_limit') / 1000000)])
-	                    	@includeIf('components.document_help_text')
-	                    </p>
-	                </div>
-	            </div>
+		        {{-- Attach document hidden --}}
 		        <div class="clearfix"></div>
 
 		        @if((!empty($pos_settings['enable_sales_order']) && $sale_type != 'sales_order') || $is_order_request_enabled)
@@ -532,6 +489,7 @@
 				<input type="hidden" name="is_serial_no" value="1">
 			@endcomponent
 			@component('components.widget', ['class' => 'box-solid'])
+			<div style="display:none;">
 			<div class="col-md-4">
 				<div class="form-group">
 		            {!! Form::label('shipping_details', __('sale.shipping_details')) !!}
@@ -682,6 +640,7 @@
                 </div>
             </div>
 	        <div class="clearfix"></div>
+	        </div>{{-- end shipping hidden wrapper --}}
 	        <div class="col-md-12 text-center">
 				<button type="button" class="tw-dw-btn tw-dw-btn-primary tw-dw-btn-sm tw-text-white" id="toggle_additional_expense"> <i class="fas fa-plus"></i> @lang('lang_v1.add_additional_expenses') <i class="fas fa-chevron-down"></i></button>
 			</div>
@@ -879,9 +838,11 @@
 	
 	<div class="row">
 		{!! Form::hidden('is_save_and_print', 0, ['id' => 'is_save_and_print']); !!}
+		<input type="hidden" name="is_credit_sale" value="0" id="is_credit_sale">
 		<div class="col-sm-12 text-center tw-mt-4">
 			<button type="button" id="submit-sell" class="tw-dw-btn tw-dw-btn-primary tw-dw-btn-lg tw-text-white">@lang('messages.save')</button>
 			<button type="button" id="save-and-print" class="tw-dw-btn tw-dw-btn-success tw-dw-btn-lg tw-text-white">@lang('lang_v1.save_and_print')</button>
+			<button type="button" id="credit-sale" class="tw-dw-btn tw-dw-btn-warning tw-dw-btn-lg tw-text-white">@lang('lang_v1.credit_sale')</button>
 		</div>
 	</div>
 	

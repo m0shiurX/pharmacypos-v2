@@ -278,11 +278,6 @@ $(document).ready(function () {
                         '<br> Price: ' +
                         __currency_trans_from_en(selling_price, false, false, __currency_precision, true);
 
-                    // Add previous purchase rate for business owners (even for out of stock items)
-                    if (item.previous_purchase_rate && item.previous_purchase_rate !== null) {
-                        string += ' | Last Purchase: ' + __currency_trans_from_en(item.previous_purchase_rate, false, false, __currency_precision, true);
-                    }
-
                     string += ' (Out of stock) </li>';
                     return $(string).appendTo(ul);
                 } else {
@@ -297,11 +292,6 @@ $(document).ready(function () {
                     }
 
                     string += ' (' + item.sub_sku + ')' + '<br> Price: ' + __currency_trans_from_en(selling_price, false, false, __currency_precision, true);
-
-                    // Add previous purchase rate for business owners
-                    if (item.previous_purchase_rate && item.previous_purchase_rate !== null) {
-                        string += ' | Last Purchase: ' + __currency_trans_from_en(item.previous_purchase_rate, false, false, __currency_precision, true);
-                    }
 
                     if (item.enable_stock == 1) {
                         var qty_available = __currency_trans_from_en(item.qty_available, false, false, __currency_precision, true);
@@ -1127,7 +1117,7 @@ $(document).ready(function () {
         },
     });
 
-    $('button#submit-sell, button#save-and-print').click(function (e) {
+    $('button#submit-sell, button#save-and-print, button#credit-sale').click(function (e) {
         //Check if product is present or not.
         if ($('table#pos_table tbody').find('.product_row').length <= 0) {
             toastr.warning(LANG.no_products_added);
@@ -1157,6 +1147,14 @@ $(document).ready(function () {
             $('#is_save_and_print').val(1);
         } else {
             $('#is_save_and_print').val(0);
+        }
+
+        if ($(this).attr('id') == 'credit-sale') {
+            $('#is_credit_sale').val(1);
+        } else {
+            if ($('#is_credit_sale').length) {
+                $('#is_credit_sale').val(0);
+            }
         }
 
         if ($('#reward_point_enabled').length) {
@@ -3269,10 +3267,12 @@ function saveFormDataToLocalStorage() {
 
     // console.log("All data afer clear:", storedArrayData);
 
-    let form = $('form#add_pos_sell_form'); // Select the form by ID
+    let form = $('form#add_pos_sell_form');
+    if (form.length === 0) {
+        form = $('form#add_sell_form');
+    }
     // Check if the form exists in the DOM
     if (form.length === 0) {
-        console.error("Error: Form #add_pos_sell_form not found.");
         return;
     }
     // Serialize form data into an array of objects: [{name: 'input_name', value: 'input_value'}, ...]

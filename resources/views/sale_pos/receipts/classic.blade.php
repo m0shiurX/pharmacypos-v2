@@ -508,12 +508,13 @@
                     </tr>
                 @endif
 
-                @if (!empty($receipt_details->total_line_discount))
+                {{-- Line discount total hidden - already reflected in product line totals --}}
+                {{-- @if (!empty($receipt_details->total_line_discount))
                     <tr>
                         <th>{!! $receipt_details->line_discount_label !!}</th>
                         <td class="text-right">(-) {{ $receipt_details->total_line_discount }}</td>
                     </tr>
-                @endif
+                @endif --}}
 
                 @if (!empty($receipt_details->additional_expenses))
                     @foreach ($receipt_details->additional_expenses as $key => $val)
