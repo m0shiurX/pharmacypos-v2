@@ -26,7 +26,7 @@ class AdminSidebarMenu
             $common_settings = ! empty(session('business.common_settings')) ? session('business.common_settings') : [];
             $pos_settings = ! empty(session('business.pos_settings')) ? json_decode(session('business.pos_settings'), true) : [];
 
-            $is_admin = auth()->user()->hasRole('Admin#'.session('business.id')) ? true : false;
+            $is_admin = auth()->user()->hasRole('Admin#' . session('business.id')) ? true : false;
 
             $menu->url(action([\App\Http\Controllers\HomeController::class, 'index']), __('home.home'), ['icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="tw-size-5 tw-shrink-0" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -97,7 +97,7 @@ class AdminSidebarMenu
                         }
                         if (auth()->user()->can('category.view') || auth()->user()->can('category.create')) {
                             $sub->url(
-                                action([\App\Http\Controllers\TaxonomyController::class, 'index']).'?type=product',
+                                action([\App\Http\Controllers\TaxonomyController::class, 'index']) . '?type=product',
                                 __('category.categories'),
                                 ['icon' => '', 'active' => request()->segment(1) == 'taxonomies' && request()->get('type') == 'product']
                             );
@@ -411,7 +411,7 @@ class AdminSidebarMenu
                     <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
-                  </svg>', ]
+                  </svg>',]
                 )->order(80);
             }
 
@@ -432,6 +432,11 @@ class AdminSidebarMenu
                                 action([\App\Http\Controllers\BusinessController::class, 'getBusinessSettings']),
                                 __('business.business_settings'),
                                 ['icon' => '', 'active' => request()->segment(1) == 'business', 'id' => 'tour_step2']
+                            );
+                            $sub->url(
+                                action([\App\Http\Controllers\BusinessLocationController::class, 'index']),
+                                __('business.business_locations'),
+                                ['icon' => '', 'active' => request()->segment(1) == 'business-location']
                             );
                         }
                         if (auth()->user()->can('invoice_settings.access')) {

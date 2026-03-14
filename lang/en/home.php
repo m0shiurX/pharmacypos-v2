@@ -6,11 +6,10 @@ return [
     |--------------------------------------------------------------------------
     | Home Language Lines
     |--------------------------------------------------------------------------
-    |
     | The following language lines are used in home page.
     |
     */
-    'home' => 'Dashboard',
+    'home' => 'Home',
     'welcome_message' => 'Welcome :name',
     'total_sell' => 'Total Sales',
     'total_purchase' => 'Total purchase',
