@@ -828,8 +828,36 @@ tr.details td.details-control {
 }
 
 @media print {
+
+  /* Override Tailwind layout constraints that lock the page to viewport height */
+  html,
+  body {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .thetop {
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  main {
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  #scrollable-container {
+    height: auto !important;
+    overflow: visible !important;
+    flex: none !important;
+  }
+
   .print_section {
     display: block !important;
+    overflow: visible !important;
+    height: auto !important;
   }
 
   .modal-xl {
