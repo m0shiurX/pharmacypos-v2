@@ -2,7 +2,7 @@
 <style>
     @page {
         size: auto;
-        margin-bottom: 5mm;
+        margin: 5mm 5mm 10mm 5mm;
     }
 
     .table-slim > thead > tr > th,
@@ -15,11 +15,23 @@
     .table-slim {
         margin-bottom: 0 !important;
     }
+
+    .table-slim > thead > tr > th {
+        background-color: #fff !important;
+    }
+
+    .table-slim > tbody > tr {
+        page-break-inside: avoid;
+    }
+
+    .classic-receipt-footer {
+        page-break-inside: avoid;
+    }
 </style>
 @if (isset($receipt_details->total_due) && $receipt_details->total_due === 0)
     <!-- PAID Watermark -->
     <div
-        style="position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) rotate(-45deg) !important; font-size: 120px !important; font-weight: bold !important; color: rgba(0, 150, 0, 0.3) !important; z-index: 999 !important; pointer-events: none !important; user-select: none !important;">
+        style="position: absolute !important; top: 40% !important; left: 50% !important; transform: translate(-50%, -50%) rotate(-45deg) !important; font-size: 120px !important; font-weight: bold !important; color: rgba(0, 150, 0, 0.3) !important; z-index: 999 !important; pointer-events: none !important; user-select: none !important;">
         PAID
     </div>
 @endif
@@ -641,9 +653,9 @@
 
 </div>
 
-<!-- Fixed Invoice Footer -->
-<div
-    style="position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; background-color: white !important; padding: 15px !important;">
+<!-- Invoice Footer -->
+<div class="classic-receipt-footer"
+    style="background-color: white !important; padding: 15px 0 !important; margin-top: 10px !important; border-top: 1px solid #ddd !important;">
     <div class="row" style="color: #000000 !important;">
         @if (!empty($receipt_details->footer_text))
             <div class="@if ($receipt_details->show_barcode || $receipt_details->show_qr_code) col-xs-8 @else col-xs-12 @endif">
