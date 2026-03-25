@@ -120,7 +120,7 @@
 				{{--<th width="10%" class="text-center">@lang('sale.total')</th>--}}
 				<th width="10%" class="text-center">@lang('account.debit')</th>
 				<th width="10%" class="text-center">@lang('account.credit')</th>
-				{{-- <th width="10%" class="text-center summary_hidden">@lang('lang_v1.balance')</th> --}}
+				<th width="10%" class="text-center">@lang('lang_v1.balance')</th>
 				<th width="5%" class="text-center">@lang('lang_v1.payment_method')</th>
 				<th width="15%" class="text-center">@lang('report.others')</th>
 			</tr>
@@ -141,7 +141,7 @@
 					{{--<td class="ws-nowrap align-right">@if($data['total'] !== '') @format_currency($data['total']) @endif</td>--}}
 					<td class="ws-nowrap align-right">@if($data['debit'] != '') @format_currency($data['debit']) @endif</td>
 					<td class="ws-nowrap align-right">@if($data['credit'] != '') @format_currency($data['credit']) @endif</td>
-					{{--<td class="ws-nowrap align-right summary_hidden">{{$data['balance']}}</td>--}}
+					<td class="ws-nowrap align-right">{{$data['balance']}}</td>
 					<td>{{$data['payment_method']}}</td>
 					<td>
 						{!! $data['others'] !!}
