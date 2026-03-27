@@ -307,6 +307,31 @@
 			
 			@component('components.widget', ['class' => 'box-solid'])
 				
+				<div class="tw-mb-5 tw-rounded-2xl tw-border tw-border-slate-200 tw-bg-gradient-to-r tw-from-slate-50 tw-to-white tw-p-4 md:tw-p-5">
+					<div class="tw-grid tw-grid-cols-1 tw-gap-4 lg:tw-grid-cols-[minmax(0,1fr)_auto] lg:tw-items-end">
+						<div>
+							<label for="search_product" class="tw-mb-2 tw-block tw-text-xs tw-font-semibold tw-uppercase tw-tracking-[0.2em] tw-text-slate-500">
+								@lang('sale.product')
+							</label>
+							<div class="input-group">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-default bg-white btn-flat tw-h-12 tw-border-slate-200 tw-text-slate-600" data-toggle="modal" data-target="#configure_search_modal" title="{{__('lang_v1.configure_product_search')}}"><i class="fas fa-search-plus"></i></button>
+								</div>
+								{!! Form::text('search_product', null, ['class' => 'form-control mousetrap tw-h-12 tw-border-slate-200 tw-bg-white tw-text-base tw-shadow-sm focus:tw-border-slate-300 focus:tw-ring-0', 'id' => 'search_product', 'placeholder' => __('lang_v1.search_product_placeholder'),
+								'autofocus' => true,
+								]); !!}
+							</div>
+						</div>
+						<div class="lg:tw-shrink-0">
+							<div class="tw-mb-2 tw-hidden lg:tw-block tw-text-xs tw-font-semibold tw-uppercase tw-tracking-[0.2em] tw-text-transparent tw-select-none">
+								Actions
+							</div>
+							<div class="tw-flex tw-flex-col tw-gap-3 sm:tw-flex-row sm:tw-items-stretch">
+								<button type="button" class="tw-dw-btn tw-bg-white tw-text-slate-700 tw-border tw-border-slate-300 tw-rounded-xl tw-h-12 tw-px-5 tw-inline-flex tw-items-center tw-justify-center tw-gap-2 pos_add_quick_product" data-href="{{action([\App\Http\Controllers\ProductController::class, 'quickAdd'])}}" data-container=".quick_add_product_modal"><i class="fa fa-plus-circle text-primary"></i> @lang( 'product.add_new_product' )</button>
+							</div>
+						</div>
+					</div>
+				</div>
 
 				<div class="row col-sm-12" style="min-height: 0">
 
@@ -379,21 +404,6 @@
 							</td>
 						</tr>
 					</table>
-					</div>
-				</div>
-				<div class="col-sm-10 col-sm-offset-1">
-					<div class="form-group">
-						<div class="input-group">
-							<div class="input-group-btn">
-								<button type="button" class="btn btn-default bg-white btn-flat" data-toggle="modal" data-target="#configure_search_modal" title="{{__('lang_v1.configure_product_search')}}"><i class="fas fa-search-plus"></i></button>
-							</div>
-							{!! Form::text('search_product', null, ['class' => 'form-control mousetrap', 'id' => 'search_product', 'placeholder' => __('lang_v1.search_product_placeholder'),
-							'autofocus' => true,
-							]); !!}
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-default bg-white btn-flat pos_add_quick_product" data-href="{{action([\App\Http\Controllers\ProductController::class, 'quickAdd'])}}" data-container=".quick_add_product_modal"><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
-							</span>
-						</div>
 					</div>
 				</div>
 			@endcomponent

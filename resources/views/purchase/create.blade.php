@@ -229,6 +229,31 @@
 				$hide_tax = 'hide';
 			}
 		@endphp
+		<div class="tw-mb-5 tw-rounded-2xl tw-border tw-border-slate-200 tw-bg-gradient-to-r tw-from-slate-50 tw-to-white tw-p-4 md:tw-p-5">
+			<div class="tw-grid tw-grid-cols-1 tw-gap-4 lg:tw-grid-cols-[minmax(0,1fr)_auto] lg:tw-items-end">
+				<div class="tw-flex-1">
+					<label for="search_product" class="tw-mb-2 tw-block tw-text-xs tw-font-semibold tw-uppercase tw-tracking-[0.2em] tw-text-slate-500">
+						@lang('product.product_name')
+					</label>
+					<div class="input-group">
+						<span class="input-group-addon tw-border-slate-200 tw-bg-white tw-text-slate-500">
+							<i class="fa fa-search"></i>
+						</span>
+						{!! Form::text('search_product', null, ['class' => 'form-control mousetrap tw-h-12 tw-rounded-r-xl tw-border-slate-200 tw-bg-white tw-text-base tw-shadow-sm focus:tw-border-slate-300 focus:tw-ring-0', 'id' => 'search_product', 'placeholder' => __('lang_v1.search_product_placeholder'), 'disabled' => $search_disable]); !!}
+					</div>
+				</div>
+				<div class="lg:tw-shrink-0">
+					<div class="tw-mb-2 tw-hidden lg:tw-block tw-text-xs tw-font-semibold tw-uppercase tw-tracking-[0.2em] tw-text-transparent tw-select-none">
+						Actions
+					</div>
+					<div class="tw-flex tw-flex-col tw-gap-3 sm:tw-flex-row sm:tw-items-stretch">
+						<button type="button" class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-sm tw-h-12 tw-rounded-xl tw-px-5" data-toggle="modal" data-target="#import_purchase_products_modal">@lang('product.import_products')</button>
+						<button tabindex="-1" type="button" class="tw-dw-btn tw-bg-white tw-text-slate-700 tw-border tw-border-slate-300 tw-rounded-xl tw-h-12 tw-px-5 tw-inline-flex tw-items-center tw-justify-center tw-gap-2 btn-modal" data-href="{{action([\App\Http\Controllers\ProductController::class, 'quickAdd'])}}" data-container=".quick_add_product_modal"><i class="fa fa-plus"></i> @lang( 'product.add_new_product' )</button>
+					</div>
+				</div>
+			</div>
+			<div class="missing-product-warning tw-mt-4"></div>
+		</div>
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="table-responsive">
@@ -296,29 +321,6 @@
 				</div>
 
 				<input type="hidden" id="row_count" value="0">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12 missing-product-warning">
-			</div>
-			<div class="col-sm-2 text-center">
-				<button type="button" class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-sm" data-toggle="modal" data-target="#import_purchase_products_modal">@lang('product.import_products')</button>
-			</div>
-			<div class="col-sm-8">
-				<div class="form-group">
-					<div class="input-group">
-						<span class="input-group-addon">
-							<i class="fa fa-search"></i>
-						</span>
-						{!! Form::text('search_product', null, ['class' => 'form-control mousetrap', 'id' => 'search_product', 'placeholder' => __('lang_v1.search_product_placeholder'), 'disabled' => $search_disable]); !!}
-					</div>
-				</div>
-			</div>
-			<div class="col-sm-2">
-				<div class="form-group">
-					<button tabindex="-1" type="button" class="btn btn-link btn-modal"data-href="{{action([\App\Http\Controllers\ProductController::class, 'quickAdd'])}}" 
-				data-container=".quick_add_product_modal"><i class="fa fa-plus"></i> @lang( 'product.add_new_product' ) </button>
-				</div>
 			</div>
 		</div>
 	@endcomponent
