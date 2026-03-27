@@ -120,32 +120,32 @@ class PurchaseController extends Controller
                 ->addColumn('action', function ($row) {
                     $html = '<div class="btn-group">
                             <button type="button" class="btn-modal tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info tw-w-max dropdown-toggle" 
-                                data-toggle="dropdown" aria-expanded="false">' .
-                        __('messages.actions') .
+                                data-toggle="dropdown" aria-expanded="false">'.
+                        __('messages.actions').
                         '<span class="caret"></span><span class="sr-only">Toggle Dropdown
                                 </span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-left" role="menu">';
                     if (auth()->user()->can('purchase.view')) {
-                        $html .= '<li><a href="#" data-href="' . action([PurchaseController::class, 'show'], [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i>' . __('messages.view') . '</a></li>';
+                        $html .= '<li><a href="#" data-href="'.action([PurchaseController::class, 'show'], [$row->id]).'" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i>'.__('messages.view').'</a></li>';
                     }
                     if (auth()->user()->can('purchase.view')) {
-                        $html .= '<li><a href="#" class="print-invoice" data-href="' . action([PurchaseController::class, 'printInvoice'], [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i>' . __('messages.print') . '</a></li>';
+                        $html .= '<li><a href="#" class="print-invoice" data-href="'.action([PurchaseController::class, 'printInvoice'], [$row->id]).'"><i class="fas fa-print" aria-hidden="true"></i>'.__('messages.print').'</a></li>';
                     }
                     if (auth()->user()->can('purchase.update')) {
-                        $html .= '<li><a href="' . action([PurchaseController::class, 'edit'], [$row->id]) . '"><i class="fas fa-edit"></i>' . __('messages.edit') . '</a></li>';
+                        $html .= '<li><a href="'.action([PurchaseController::class, 'edit'], [$row->id]).'"><i class="fas fa-edit"></i>'.__('messages.edit').'</a></li>';
                     }
                     if (auth()->user()->can('purchase.delete')) {
-                        $html .= '<li><a href="' . action([PurchaseController::class, 'destroy'], [$row->id]) . '" class="delete-purchase"><i class="fas fa-trash"></i>' . __('messages.delete') . '</a></li>';
+                        $html .= '<li><a href="'.action([PurchaseController::class, 'destroy'], [$row->id]).'" class="delete-purchase"><i class="fas fa-trash"></i>'.__('messages.delete').'</a></li>';
                     }
 
-                    $html .= '<li><a href="' . action([LabelsController::class, 'show']) . '?purchase_id=' . $row->id . '" data-toggle="tooltip" title="' . __('lang_v1.label_help') . '"><i class="fas fa-barcode"></i>' . __('barcode.labels') . '</a></li>';
+                    $html .= '<li><a href="'.action([LabelsController::class, 'show']).'?purchase_id='.$row->id.'" data-toggle="tooltip" title="'.__('lang_v1.label_help').'"><i class="fas fa-barcode"></i>'.__('barcode.labels').'</a></li>';
 
                     if (auth()->user()->can('purchase.view') && ! empty($row->document)) {
                         $document_name = ! empty(explode('_', $row->document, 2)[1]) ? explode('_', $row->document, 2)[1] : $row->document;
-                        $html .= '<li><a href="' . url('uploads/documents/' . $row->document) . '" download="' . $document_name . '"><i class="fas fa-download" aria-hidden="true"></i>' . __('purchase.download_document') . '</a></li>';
+                        $html .= '<li><a href="'.url('uploads/documents/'.$row->document).'" download="'.$document_name.'"><i class="fas fa-download" aria-hidden="true"></i>'.__('purchase.download_document').'</a></li>';
                         if (isFileImage($document_name)) {
-                            $html .= '<li><a href="#" data-href="' . url('uploads/documents/' . $row->document) . '" class="view_uploaded_document"><i class="fas fa-image" aria-hidden="true"></i>' . __('lang_v1.view_document') . '</a></li>';
+                            $html .= '<li><a href="#" data-href="'.url('uploads/documents/'.$row->document).'" class="view_uploaded_document"><i class="fas fa-image" aria-hidden="true"></i>'.__('lang_v1.view_document').'</a></li>';
                         }
                     }
 
@@ -156,29 +156,29 @@ class PurchaseController extends Controller
                     ) {
                         $html .= '<li class="divider"></li>';
                         if ($row->payment_status != 'paid') {
-                            $html .= '<li><a href="' . action([TransactionPaymentController::class, 'addPayment'], [$row->id]) . '" class="add_payment_modal"><i class="fas fa-money-bill-alt" aria-hidden="true"></i>' . __('purchase.add_payment') . '</a></li>';
+                            $html .= '<li><a href="'.action([TransactionPaymentController::class, 'addPayment'], [$row->id]).'" class="add_payment_modal"><i class="fas fa-money-bill-alt" aria-hidden="true"></i>'.__('purchase.add_payment').'</a></li>';
                         }
 
-                        $html .= '<li><a href="' . action([TransactionPaymentController::class, 'show'], [$row->id]) .
-                            '" class="view_payment_modal"><i class="fas fa-money-bill-alt" aria-hidden="true" ></i>' . __('purchase.view_payments') . '</a></li>';
+                        $html .= '<li><a href="'.action([TransactionPaymentController::class, 'show'], [$row->id]).
+                            '" class="view_payment_modal"><i class="fas fa-money-bill-alt" aria-hidden="true" ></i>'.__('purchase.view_payments').'</a></li>';
                     }
 
                     if (auth()->user()->can('purchase.update')) {
-                        $html .= '<li><a href="' . action([PurchaseReturnController::class, 'add'], [$row->id]) .
-                            '"><i class="fas fa-undo" aria-hidden="true" ></i>' . __('lang_v1.purchase_return') . '</a></li>';
+                        $html .= '<li><a href="'.action([PurchaseReturnController::class, 'add'], [$row->id]).
+                            '"><i class="fas fa-undo" aria-hidden="true" ></i>'.__('lang_v1.purchase_return').'</a></li>';
                     }
 
                     if (auth()->user()->can('purchase.update') || auth()->user()->can('purchase.update_status')) {
-                        $html .= '<li><a href="#" data-purchase_id="' . $row->id .
-                            '" data-status="' . $row->status . '" class="update_status"><i class="fas fa-edit" aria-hidden="true" ></i>' . __('lang_v1.update_status') . '</a></li>';
+                        $html .= '<li><a href="#" data-purchase_id="'.$row->id.
+                            '" data-status="'.$row->status.'" class="update_status"><i class="fas fa-edit" aria-hidden="true" ></i>'.__('lang_v1.update_status').'</a></li>';
                     }
 
                     if ($row->status == 'ordered') {
-                        $html .= '<li><a href="#" data-href="' . action([NotificationController::class, 'getTemplate'], ['transaction_id' => $row->id, 'template_for' => 'new_order']) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-envelope" aria-hidden="true"></i> ' . __('lang_v1.new_order_notification') . '</a></li>';
+                        $html .= '<li><a href="#" data-href="'.action([NotificationController::class, 'getTemplate'], ['transaction_id' => $row->id, 'template_for' => 'new_order']).'" class="btn-modal" data-container=".view_modal"><i class="fas fa-envelope" aria-hidden="true"></i> '.__('lang_v1.new_order_notification').'</a></li>';
                     } elseif ($row->status == 'received') {
-                        $html .= '<li><a href="#" data-href="' . action([NotificationController::class, 'getTemplate'], ['transaction_id' => $row->id, 'template_for' => 'items_received']) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-envelope" aria-hidden="true"></i> ' . __('lang_v1.item_received_notification') . '</a></li>';
+                        $html .= '<li><a href="#" data-href="'.action([NotificationController::class, 'getTemplate'], ['transaction_id' => $row->id, 'template_for' => 'items_received']).'" class="btn-modal" data-container=".view_modal"><i class="fas fa-envelope" aria-hidden="true"></i> '.__('lang_v1.item_received_notification').'</a></li>';
                     } elseif ($row->status == 'pending') {
-                        $html .= '<li><a href="#" data-href="' . action([NotificationController::class, 'getTemplate'], ['transaction_id' => $row->id, 'template_for' => 'items_pending']) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-envelope" aria-hidden="true"></i> ' . __('lang_v1.item_pending_notification') . '</a></li>';
+                        $html .= '<li><a href="#" data-href="'.action([NotificationController::class, 'getTemplate'], ['transaction_id' => $row->id, 'template_for' => 'items_pending']).'" class="btn-modal" data-container=".view_modal"><i class="fas fa-envelope" aria-hidden="true"></i> '.__('lang_v1.item_pending_notification').'</a></li>';
                     }
 
                     $html .= '</ul></div>';
@@ -186,7 +186,7 @@ class PurchaseController extends Controller
                     return $html;
                 })
                 ->editColumn('ref_no', function ($row) {
-                    return ! empty($row->return_exists) ? e($row->ref_no) . ' <small class="label bg-red label-round no-print" title="' . __('lang_v1.some_qty_returned') . '"><i class="fas fa-undo"></i></small>' : e($row->ref_no);
+                    return ! empty($row->return_exists) ? e($row->ref_no).' <small class="label bg-red label-round no-print" title="'.__('lang_v1.some_qty_returned').'"><i class="fas fa-undo"></i></small>' : e($row->ref_no);
                 })
                 ->editColumn(
                     'final_total',
@@ -209,11 +209,11 @@ class PurchaseController extends Controller
                 )
                 ->addColumn('payment_due', function ($row) {
                     $due = $row->final_total - $row->amount_paid;
-                    $due_html = '<strong>' . __('lang_v1.purchase') . ':</strong> <span class="payment_due" data-orig-value="' . $due . '">' . $this->transactionUtil->num_f($due, true) . '</span>';
+                    $due_html = '<strong>'.__('lang_v1.purchase').':</strong> <span class="payment_due" data-orig-value="'.$due.'">'.$this->transactionUtil->num_f($due, true).'</span>';
 
                     if (! empty($row->return_exists)) {
                         $return_due = $row->amount_return - $row->return_paid;
-                        $due_html .= '<br><strong>' . __('lang_v1.purchase_return') . ':</strong> <a href="' . action([TransactionPaymentController::class, 'show'], [$row->return_transaction_id]) . '" class="view_purchase_return_payment_modal"><span class="purchase_return" data-orig-value="' . $return_due . '">' . $this->transactionUtil->num_f($return_due, true) . '</span></a>';
+                        $due_html .= '<br><strong>'.__('lang_v1.purchase_return').':</strong> <a href="'.action([TransactionPaymentController::class, 'show'], [$row->return_transaction_id]).'" class="view_purchase_return_payment_modal"><span class="purchase_return" data-orig-value="'.$return_due.'">'.$this->transactionUtil->num_f($return_due, true).'</span></a>';
                     }
 
                     return $due_html;
@@ -334,7 +334,7 @@ class PurchaseController extends Controller
                 'total_before_tax' => 'required',
                 'location_id' => 'required',
                 'final_total' => 'required',
-                'document' => 'file|max:' . (config('constants.document_size_limit') / 1000),
+                'document' => 'file|max:'.(config('constants.document_size_limit') / 1000),
             ]);
 
             $user_id = $request->session()->get('user.id');
@@ -442,7 +442,7 @@ class PurchaseController extends Controller
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,
@@ -671,7 +671,7 @@ class PurchaseController extends Controller
 
             // Validate document size
             $request->validate([
-                'document' => 'file|max:' . (config('constants.document_size_limit') / 1000),
+                'document' => 'file|max:'.(config('constants.document_size_limit') / 1000),
             ]);
 
             $transaction = Transaction::findOrFail($id);
@@ -793,7 +793,7 @@ class PurchaseController extends Controller
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,
@@ -896,7 +896,7 @@ class PurchaseController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => false,
@@ -927,9 +927,9 @@ class PurchaseController extends Controller
                 ->active();
 
             $suppliers = $query->where(function ($query) use ($term) {
-                $query->where('name', 'like', '%' . $term . '%')
-                    ->orWhere('supplier_business_name', 'like', '%' . $term . '%')
-                    ->orWhere('contacts.contact_id', 'like', '%' . $term . '%');
+                $query->where('name', 'like', '%'.$term.'%')
+                    ->orWhere('supplier_business_name', 'like', '%'.$term.'%')
+                    ->orWhere('contacts.contact_id', 'like', '%'.$term.'%');
             })
                 ->select(
                     'contacts.id',
@@ -986,9 +986,9 @@ class PurchaseController extends Controller
                 'variations.product_id'
             )
                 ->where(function ($query) use ($term) {
-                    $query->where('products.name', 'like', '%' . $term . '%');
-                    $query->orWhere('sku', 'like', '%' . $term . '%');
-                    $query->orWhere('sub_sku', 'like', '%' . $term . '%');
+                    $query->where('products.name', 'like', '%'.$term.'%');
+                    $query->orWhere('sku', 'like', '%'.$term.'%');
+                    $query->orWhere('sub_sku', 'like', '%'.$term.'%');
                 })
                 ->active()
                 ->where('business_id', $business_id)
@@ -1033,7 +1033,7 @@ class PurchaseController extends Controller
                     if ($no_of_records > 1 && $value['type'] != 'single' && ! $only_variations) {
                         $result[] = [
                             'id' => $i,
-                            'text' => $value['name'] . ' - ' . $value['sku'],
+                            'text' => $value['name'].' - '.$value['sku'],
                             'variation_id' => 0,
                             'product_id' => $key,
                         ];
@@ -1042,12 +1042,12 @@ class PurchaseController extends Controller
                     foreach ($value['variations'] as $variation) {
                         $text = $name;
                         if ($value['type'] == 'variable') {
-                            $text = $text . ' (' . $variation['variation_name'] . ')';
+                            $text = $text.' ('.$variation['variation_name'].')';
                         }
                         $i++;
                         $result[] = [
                             'id' => $i,
-                            'text' => $text . ' - ' . $variation['sub_sku'],
+                            'text' => $text.' - '.$variation['sub_sku'],
                             'product_id' => $key,
                             'variation_id' => $variation['variation_id'],
                         ];
@@ -1408,7 +1408,7 @@ class PurchaseController extends Controller
             $output = ['success' => 1, 'receipt' => [], 'print_title' => $purchase->ref_no];
             $output['receipt']['html_content'] = view('purchase.partials.show_details', compact('taxes', 'purchase', 'payment_methods', 'purchase_order_nos', 'purchase_order_dates', 'purchase_taxes'))->render();
         } catch (\Exception $e) {
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,
@@ -1474,7 +1474,7 @@ class PurchaseController extends Controller
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,

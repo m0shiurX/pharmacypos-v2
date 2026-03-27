@@ -775,7 +775,7 @@ class TransactionUtil extends Util
                     ];
 
                     for ($i = 1; $i < 8; $i++) {
-                        if ($payment['method'] == 'custom_pay_' . $i) {
+                        if ($payment['method'] == 'custom_pay_'.$i) {
                             $payment_data['transaction_no'] = $payment["transaction_no_{$i}"];
                         }
                     }
@@ -845,7 +845,7 @@ class TransactionUtil extends Util
         unset($payment['payment_id']);
 
         for ($i = 1; $i < 8; $i++) {
-            if ($payment['method'] == 'custom_pay_' . $i) {
+            if ($payment['method'] == 'custom_pay_'.$i) {
                 $payment['transaction_no'] = $payment["transaction_no_{$i}"];
             }
             unset($payment["transaction_no_{$i}"]);
@@ -1009,12 +1009,12 @@ class TransactionUtil extends Util
 
         if ($il->show_letter_head == 1) {
             $output['letter_head'] = ! empty($il->letter_head) &&
-                file_exists(public_path('uploads/invoice_logos/' . $il->letter_head)) ?
-                asset('uploads/invoice_logos/' . $il->letter_head) : null;
+                file_exists(public_path('uploads/invoice_logos/'.$il->letter_head)) ?
+                asset('uploads/invoice_logos/'.$il->letter_head) : null;
         }
 
         // Logo
-        $output['logo'] = $il->show_logo != 0 && ! empty($il->logo) && file_exists(public_path('uploads/invoice_logos/' . $il->logo)) ? asset('uploads/invoice_logos/' . $il->logo) : false;
+        $output['logo'] = $il->show_logo != 0 && ! empty($il->logo) && file_exists(public_path('uploads/invoice_logos/'.$il->logo)) ? asset('uploads/invoice_logos/'.$il->logo) : false;
 
         // Address
         $output['address'] = '';
@@ -1060,7 +1060,7 @@ class TransactionUtil extends Util
 
         // Tax Info
         if ($il->show_tax_1 == 1 && ! empty($business_details->tax_number_1)) {
-            $output['tax_label1'] = ! empty($business_details->tax_label_1) ? $business_details->tax_label_1 . ': ' : '';
+            $output['tax_label1'] = ! empty($business_details->tax_label_1) ? $business_details->tax_label_1.': ' : '';
 
             $output['tax_info1'] = $business_details->tax_number_1;
         }
@@ -1069,7 +1069,7 @@ class TransactionUtil extends Util
                 $output['tax_info1'] .= ', ';
             }
 
-            $output['tax_label2'] = ! empty($business_details->tax_label_2) ? $business_details->tax_label_2 . ': ' : '';
+            $output['tax_label2'] = ! empty($business_details->tax_label_2) ? $business_details->tax_label_2.': ' : '';
 
             $output['tax_info2'] = $business_details->tax_number_2;
         }
@@ -1077,20 +1077,20 @@ class TransactionUtil extends Util
         // Shop Contact Info
         $output['contact'] = '';
         if ($il->show_mobile_number == 1 && ! empty($location_details->mobile)) {
-            $output['contact'] .= '<b>' . __('contact.mobile') . ':</b> ' . $location_details->mobile;
+            $output['contact'] .= '<b>'.__('contact.mobile').':</b> '.$location_details->mobile;
         }
         if ($il->show_alternate_number == 1 && ! empty($location_details->alternate_number)) {
             if (empty($output['contact'])) {
-                $output['contact'] .= __('contact.mobile') . ': ' . $location_details->alternate_number;
+                $output['contact'] .= __('contact.mobile').': '.$location_details->alternate_number;
             } else {
-                $output['contact'] .= ', ' . $location_details->alternate_number;
+                $output['contact'] .= ', '.$location_details->alternate_number;
             }
         }
         if ($il->show_email == 1 && ! empty($location_details->email)) {
             if (! empty($output['contact'])) {
                 $output['contact'] .= "\n";
             }
-            $output['contact'] .= '<br>' . __('business.email') . ': ' . $location_details->email;
+            $output['contact'] .= '<br>'.__('business.email').': '.$location_details->email;
         }
 
         // Customer show_customer
@@ -1112,9 +1112,9 @@ class TransactionUtil extends Util
                 if (! empty($customer->contact_address)) {
                     $output['customer_info'] .= '<br>';
                 }
-                $output['customer_info'] .= '<b>' . __('contact.mobile') . '</b>: ' . $customer->mobile;
+                $output['customer_info'] .= '<b>'.__('contact.mobile').'</b>: '.$customer->mobile;
                 if (! empty($customer->landline)) {
-                    $output['customer_info'] .= ', ' . $customer->landline;
+                    $output['customer_info'] .= ', '.$customer->landline;
                 }
             }
 
@@ -1126,28 +1126,28 @@ class TransactionUtil extends Util
             $contact_custom_labels = $this->getCustomLabels($business_details, 'contact');
             if (! empty($customer->custom_field1) && in_array('custom_field1', $customer_custom_fields_settings)) {
                 if (! empty($contact_custom_labels['custom_field_1'])) {
-                    $temp[] = $contact_custom_labels['custom_field_1'] . ': ' . $customer->custom_field1;
+                    $temp[] = $contact_custom_labels['custom_field_1'].': '.$customer->custom_field1;
                 } else {
                     $temp[] = $customer->custom_field1;
                 }
             }
             if (! empty($customer->custom_field2) && in_array('custom_field2', $customer_custom_fields_settings)) {
                 if (! empty($contact_custom_labels['custom_field_2'])) {
-                    $temp[] = $contact_custom_labels['custom_field_2'] . ': ' . $customer->custom_field2;
+                    $temp[] = $contact_custom_labels['custom_field_2'].': '.$customer->custom_field2;
                 } else {
                     $temp[] = $customer->custom_field2;
                 }
             }
             if (! empty($customer->custom_field3) && in_array('custom_field3', $customer_custom_fields_settings)) {
                 if (! empty($contact_custom_labels['custom_field_3'])) {
-                    $temp[] = $contact_custom_labels['custom_field_3'] . ': ' . $customer->custom_field3;
+                    $temp[] = $contact_custom_labels['custom_field_3'].': '.$customer->custom_field3;
                 } else {
                     $temp[] = $customer->custom_field3;
                 }
             }
             if (! empty($customer->custom_field4) && in_array('custom_field4', $customer_custom_fields_settings)) {
                 if (! empty($contact_custom_labels['custom_field_4'])) {
-                    $temp[] = $contact_custom_labels['custom_field_4'] . ': ' . $customer->custom_field4;
+                    $temp[] = $contact_custom_labels['custom_field_4'].': '.$customer->custom_field4;
                 } else {
                     $temp[] = $customer->custom_field1;
                 }
@@ -1162,13 +1162,13 @@ class TransactionUtil extends Util
                 $customer_address[] = $customer->supplier_business_name;
             }
             if (! empty($customer->address_line_1)) {
-                $customer_address[] = '<br>' . $customer->address_line_1;
+                $customer_address[] = '<br>'.$customer->address_line_1;
             }
             if (! empty($customer->address_line_2)) {
-                $customer_address[] = '<br>' . $customer->address_line_2;
+                $customer_address[] = '<br>'.$customer->address_line_2;
             }
             if (! empty($customer->city)) {
-                $customer_address[] = '<br>' . $customer->city;
+                $customer_address[] = '<br>'.$customer->city;
             }
             if (! empty($customer->state)) {
                 $customer_address[] = $customer->state;
@@ -1177,13 +1177,13 @@ class TransactionUtil extends Util
                 $customer_address[] = $customer->country;
             }
             if (! empty($customer->zip_code)) {
-                $customer_address[] = '<br>' . $customer->zip_code;
+                $customer_address[] = '<br>'.$customer->zip_code;
             }
             if (! empty(trim($customer->name))) {
-                $customer_address[] = '<br>' . $customer->name;
+                $customer_address[] = '<br>'.$customer->name;
             }
             if (! empty($customer->mobile)) {
-                $customer_address[] = '<br>' . $customer->mobile;
+                $customer_address[] = '<br>'.$customer->mobile;
             }
             if (! empty($customer->landline)) {
                 $customer_address[] = $customer->landline;
@@ -1251,9 +1251,9 @@ class TransactionUtil extends Util
         } else {
             $output['invoice_heading'] = $il->invoice_heading;
             if ($transaction->payment_status == 'paid' && ! empty($il->invoice_heading_paid)) {
-                $output['invoice_heading'] .= ' ' . $il->invoice_heading_paid;
+                $output['invoice_heading'] .= ' '.$il->invoice_heading_paid;
             } elseif (in_array($transaction->payment_status, ['due', 'partial']) && ! empty($il->invoice_heading_not_paid)) {
-                $output['invoice_heading'] .= ' ' . $il->invoice_heading_not_paid;
+                $output['invoice_heading'] .= ' '.$il->invoice_heading_not_paid;
             }
         }
 
@@ -1401,12 +1401,12 @@ class TransactionUtil extends Util
         $output['cat_code_label'] = $il->cat_code_label;
 
         // Subtotal
-        $output['subtotal_label'] = $il->sub_total_label . ':';
+        $output['subtotal_label'] = $il->sub_total_label.':';
         $output['subtotal'] = ($transaction->total_before_tax != 0) ? $this->num_f($transaction->total_before_tax, $show_currency, $business_details) : 0;
         $output['subtotal_unformatted'] = ($transaction->total_before_tax != 0) ? $transaction->total_before_tax : 0;
 
         // round off
-        $output['round_off_label'] = ! empty($il->round_off_label) ? $il->round_off_label . ':' : __('lang_v1.round_off') . ':';
+        $output['round_off_label'] = ! empty($il->round_off_label) ? $il->round_off_label.':' : __('lang_v1.round_off').':';
         $output['round_off'] = $this->num_f($transaction->round_off_amount, $show_currency, $business_details);
         $output['round_off_amount'] = $transaction->round_off_amount;
         $output['total_exempt'] = $this->num_f($total_exempt, $show_currency, $business_details);
@@ -1419,7 +1419,7 @@ class TransactionUtil extends Util
         $discount_amount = $this->num_f($transaction->discount_amount, $show_currency, $business_details);
         $output['line_discount_label'] = $invoice_layout->discount_label;
         $output['discount_label'] = $invoice_layout->discount_label;
-        $output['discount_label'] .= ($transaction->discount_type == 'percentage') ? ' <small>(' . $this->num_f($transaction->discount_amount, false, $business_details) . '%)</small> :' : '';
+        $output['discount_label'] .= ($transaction->discount_type == 'percentage') ? ' <small>('.$this->num_f($transaction->discount_amount, false, $business_details).'%)</small> :' : '';
 
         if ($transaction->discount_type == 'percentage') {
             $discount = ($transaction->discount_amount / 100) * $transaction->total_before_tax;
@@ -1453,7 +1453,7 @@ class TransactionUtil extends Util
         $output['tax_label'] = $invoice_layout->tax_label;
         $output['line_tax_label'] = $invoice_layout->tax_label;
         if (! empty($tax) && ! empty($tax->name)) {
-            $output['tax_label'] .= ' (' . $tax->name . ')';
+            $output['tax_label'] .= ' ('.$tax->name.')';
         }
         $output['tax_label'] .= ':';
         $output['tax'] = ($transaction->tax_amount != 0) ? $this->num_f($transaction->tax_amount, $show_currency, $business_details) : 0;
@@ -1479,10 +1479,10 @@ class TransactionUtil extends Util
 
         // Total
         if ($transaction_type == 'sell_return') {
-            $output['total_label'] = $invoice_layout->cn_amount_label . ':';
+            $output['total_label'] = $invoice_layout->cn_amount_label.':';
             $output['total'] = $this->num_f($transaction->final_total, $show_currency, $business_details);
         } else {
-            $output['total_label'] = $invoice_layout->total_label . ':';
+            $output['total_label'] = $invoice_layout->total_label.':';
             $output['total'] = $this->num_f($transaction->final_total, $show_currency, $business_details);
         }
         if (! empty($il->common_settings['show_total_in_words'])) {
@@ -1521,7 +1521,7 @@ class TransactionUtil extends Util
                         if ($value['method'] == 'cash') {
                             $output['payments'][] =
                                 [
-                                    'method' => $method . ($value['is_return'] == 1 ? ' (' . $il->change_return_label . ')(-)' : ''),
+                                    'method' => $method.($value['is_return'] == 1 ? ' ('.$il->change_return_label.')(-)' : ''),
                                     'amount' => $this->num_f($value['amount'], $show_currency, $business_details),
                                     'date' => $this->format_date($value['paid_on'], false, $business_details),
                                 ];
@@ -1530,21 +1530,21 @@ class TransactionUtil extends Util
                         } elseif ($value['method'] == 'card') {
                             $output['payments'][] =
                                 [
-                                    'method' => $method . (! empty($value['card_transaction_number']) ? (', Transaction Number:' . $value['card_transaction_number']) : ''),
+                                    'method' => $method.(! empty($value['card_transaction_number']) ? (', Transaction Number:'.$value['card_transaction_number']) : ''),
                                     'amount' => $this->num_f($value['amount'], $show_currency, $business_details),
                                     'date' => $this->format_date($value['paid_on'], false, $business_details),
                                 ];
                         } elseif ($value['method'] == 'cheque') {
                             $output['payments'][] =
                                 [
-                                    'method' => $method . (! empty($value['cheque_number']) ? (', Cheque Number:' . $value['cheque_number']) : ''),
+                                    'method' => $method.(! empty($value['cheque_number']) ? (', Cheque Number:'.$value['cheque_number']) : ''),
                                     'amount' => $this->num_f($value['amount'], $show_currency, $business_details),
                                     'date' => $this->format_date($value['paid_on'], false, $business_details),
                                 ];
                         } elseif ($value['method'] == 'bank_transfer') {
                             $output['payments'][] =
                                 [
-                                    'method' => $method . (! empty($value['bank_account_number']) ? (', Account Number:' . $value['bank_account_number']) : ''),
+                                    'method' => $method.(! empty($value['bank_account_number']) ? (', Account Number:'.$value['bank_account_number']) : ''),
                                     'amount' => $this->num_f($value['amount'], $show_currency, $business_details),
                                     'date' => $this->format_date($value['paid_on'], false, $business_details),
                                 ];
@@ -1568,7 +1568,7 @@ class TransactionUtil extends Util
                             if ($value['method'] == "custom_pay_{$i}") {
                                 $output['payments'][] =
                                     [
-                                        'method' => $method . (! empty($value['transaction_no']) ? (', ' . trans('lang_v1.transaction_no') . ':' . $value['transaction_no']) : ''),
+                                        'method' => $method.(! empty($value['transaction_no']) ? (', '.trans('lang_v1.transaction_no').':'.$value['transaction_no']) : ''),
                                         'amount' => $this->num_f($value['amount'], $show_currency, $business_details),
                                         'date' => $this->format_date($value['paid_on'], false, $business_details),
                                     ];
@@ -1622,37 +1622,37 @@ class TransactionUtil extends Util
                 $qr_code_fields = ! empty($il->qr_code_fields) ? $il->qr_code_fields : [];
 
                 if (in_array('business_name', $qr_code_fields)) {
-                    $qr_code_details[] = $is_label_enabled ? __('business.business') . ': ' . $business_details->name : $business_details->name;
+                    $qr_code_details[] = $is_label_enabled ? __('business.business').': '.$business_details->name : $business_details->name;
                 }
                 if (in_array('address', $qr_code_fields)) {
-                    $qr_code_details[] = $is_label_enabled ? __('business.address') . ': ' . $location_details->name . ', ' . $output['address'] : $location_details->name . ' ' . str_replace(',', '', $output['address']);
+                    $qr_code_details[] = $is_label_enabled ? __('business.address').': '.$location_details->name.', '.$output['address'] : $location_details->name.' '.str_replace(',', '', $output['address']);
                 }
                 if (in_array('tax_1', $qr_code_fields)) {
-                    $qr_code_details[] = $is_label_enabled ? $business_details->tax_label_1 . ': ' . $business_details->tax_number_1 : $business_details->tax_number_1;
+                    $qr_code_details[] = $is_label_enabled ? $business_details->tax_label_1.': '.$business_details->tax_number_1 : $business_details->tax_number_1;
                 }
                 if (in_array('tax_2', $qr_code_fields)) {
-                    $qr_code_details[] = $is_label_enabled ? $business_details->tax_label_2 . ' ' . $business_details->tax_number_2 : $business_details->tax_number_2;
+                    $qr_code_details[] = $is_label_enabled ? $business_details->tax_label_2.' '.$business_details->tax_number_2 : $business_details->tax_number_2;
                 }
                 if (in_array('invoice_no', $qr_code_fields)) {
-                    $qr_code_details[] = $is_label_enabled ? $il->invoice_no_prefix . ': ' . $transaction->invoice_no : $transaction->invoice_no;
+                    $qr_code_details[] = $is_label_enabled ? $il->invoice_no_prefix.': '.$transaction->invoice_no : $transaction->invoice_no;
                 }
                 if (in_array('invoice_datetime', $qr_code_fields)) {
-                    $qr_code_details[] = $is_label_enabled ? $output['date_label'] . ': ' . $output['invoice_date'] : $output['invoice_date'];
+                    $qr_code_details[] = $is_label_enabled ? $output['date_label'].': '.$output['invoice_date'] : $output['invoice_date'];
                 }
                 if (in_array('subtotal', $qr_code_fields)) {
-                    $qr_code_details[] = $is_label_enabled ? $output['subtotal_label'] . ' ' . $output['subtotal'] : $output['subtotal'];
+                    $qr_code_details[] = $is_label_enabled ? $output['subtotal_label'].' '.$output['subtotal'] : $output['subtotal'];
                 }
                 if (in_array('total_amount', $qr_code_fields)) {
-                    $qr_code_details[] = $is_label_enabled ? $output['total_label'] . ' ' . $output['total'] : $output['total'];
+                    $qr_code_details[] = $is_label_enabled ? $output['total_label'].' '.$output['total'] : $output['total'];
                 }
                 if (in_array('total_tax', $qr_code_fields)) {
                     $total_order_tax = $transaction->tax_amount + $total_line_taxes;
                     $total_order_tax_formatted = $this->num_f($total_order_tax, $show_currency, $business_details);
-                    $qr_code_details[] = $is_label_enabled ? __('sale.tax') . ': ' . $total_order_tax_formatted : $total_order_tax_formatted;
+                    $qr_code_details[] = $is_label_enabled ? __('sale.tax').': '.$total_order_tax_formatted : $total_order_tax_formatted;
                 }
                 if (in_array('customer_name', $qr_code_fields)) {
                     $cust_label = $il->customer_label ?? __('contact.customer');
-                    $qr_code_details[] = $is_label_enabled ? $cust_label . ': ' . $customer->full_name : $customer->full_name;
+                    $qr_code_details[] = $is_label_enabled ? $cust_label.': '.$customer->full_name : $customer->full_name;
                 }
                 if (in_array('invoice_url', $qr_code_fields)) {
                     $qr_code_details[] = $this->getInvoiceUrl($transaction->id, $business_details->id);
@@ -1985,11 +1985,11 @@ class TransactionUtil extends Util
         // $invoice_date = \Carbon::parse($invoice_date)->toIso8601ZuluString();
         $invoice_date = \Carbon::parse($invoice_date)->toIso8601String();
 
-        $string .= $this->toHex(1) . $this->toHex(strlen($seller)) . ($seller);
-        $string .= $this->toHex(2) . $this->toHex(strlen($tax_number)) . ($tax_number);
-        $string .= $this->toHex(3) . $this->toHex(strlen($invoice_date)) . ($invoice_date);
-        $string .= $this->toHex(4) . $this->toHex(strlen($invoice_total_amount)) . ($invoice_total_amount);
-        $string .= $this->toHex(5) . $this->toHex(strlen($invoice_tax_amount)) . ($invoice_tax_amount);
+        $string .= $this->toHex(1).$this->toHex(strlen($seller)).($seller);
+        $string .= $this->toHex(2).$this->toHex(strlen($tax_number)).($tax_number);
+        $string .= $this->toHex(3).$this->toHex(strlen($invoice_date)).($invoice_date);
+        $string .= $this->toHex(4).$this->toHex(strlen($invoice_total_amount)).($invoice_total_amount);
+        $string .= $this->toHex(5).$this->toHex(strlen($invoice_tax_amount)).($invoice_tax_amount);
 
         return base64_encode($string);
     }
@@ -2124,7 +2124,7 @@ class TransactionUtil extends Util
             $line_array['line_discount_uf'] = method_exists($line, 'get_discount_amount') ? $line->get_discount_amount() : 0;
 
             if ($line->line_discount_type == 'percentage') {
-                $line_array['line_discount'] .= ' (' . $this->num_f($line->line_discount_amount, false, $business_details) . '%)';
+                $line_array['line_discount'] .= ' ('.$this->num_f($line->line_discount_amount, false, $business_details).'%)';
 
                 $line_array['line_discount_percent'] = $this->num_f($line->line_discount_amount, false, $business_details);
             }
@@ -2370,7 +2370,7 @@ class TransactionUtil extends Util
             if ($scheme->scheme_type == 'blank') {
                 $prefix = $scheme->prefix;
             } else {
-                $prefix = $scheme->prefix . date('Y') . config('constants.invoice_scheme_separator');
+                $prefix = $scheme->prefix.date('Y').config('constants.invoice_scheme_separator');
             }
 
             // Count
@@ -2383,7 +2383,7 @@ class TransactionUtil extends Util
             $count = str_pad($count, $scheme->total_digits, '0', STR_PAD_LEFT);
 
             // Prefix + count
-            $invoice_no = $prefix . $count;
+            $invoice_no = $prefix.$count;
 
             // Increment the invoice count
             $scheme->invoice_count = $scheme->invoice_count + 1;
@@ -3417,10 +3417,10 @@ class TransactionUtil extends Util
                     $variation = Variation::find($line->variation_id);
                     $mismatch_name = $product->name;
                     if (! empty($variation->sub_sku)) {
-                        $mismatch_name .= ' ' . 'SKU: ' . $variation->sub_sku;
+                        $mismatch_name .= ' '.'SKU: '.$variation->sub_sku;
                     }
                     if (! empty($qty_selling)) {
-                        $mismatch_name .= ' ' . 'Quantity: ' . abs($qty_selling);
+                        $mismatch_name .= ' '.'Quantity: '.abs($qty_selling);
                     }
 
                     if ($mapping_type == 'purchase') {
@@ -3446,7 +3446,7 @@ class TransactionUtil extends Util
 
                     $business_name = optional(Business::find($business['id']))->name;
                     $location_name = optional(BusinessLocation::find($business['location_id']))->name;
-                    \Log::emergency($mismatch_error . ' Business: ' . $business_name . ' Location: ' . $location_name);
+                    \Log::emergency($mismatch_error.' Business: '.$business_name.' Location: '.$location_name);
                     throw new PurchaseSellMismatch($mismatch_error);
                 } else {
                     // Mapping with no purchase line
@@ -5314,7 +5314,7 @@ class TransactionUtil extends Util
                 'ref_no' => in_array($transaction->type, ['sell', 'sell_return']) ? $transaction->invoice_no : $transaction->ref_no,
                 'type' => $transaction_types[$transaction->type],
                 'location' => $transaction->location->name ?? '',
-                'payment_status' => ! in_array($transaction->type, ['ledger_discount']) ? __('lang_v1.' . $transaction->payment_status) : '',
+                'payment_status' => ! in_array($transaction->type, ['ledger_discount']) ? __('lang_v1.'.$transaction->payment_status) : '',
                 'total' => '',
                 'payment_method' => '',
                 'debit' => in_array($transaction->type, ['sell', 'purchase_return']) || ($transaction->sub_type == 'purchase_discount') ? $transaction->final_total : '',
@@ -5392,15 +5392,15 @@ class TransactionUtil extends Util
             $ref_no = in_array($payment->transaction_type, ['sell', 'sell_return']) ? $payment->invoice_no : $payment->ref_no;
             $note = $payment->note;
             if (! empty($ref_no)) {
-                $note .= '<small>' . __('account.payment_for') . ': ' . $ref_no . '</small>';
+                $note .= '<small>'.__('account.payment_for').': '.$ref_no.'</small>';
             }
 
             if ($payment->is_advance == 1) {
-                $note .= '<small>' . __('lang_v1.advance_payment') . '</small>';
+                $note .= '<small>'.__('lang_v1.advance_payment').'</small>';
             }
 
             if ($payment->is_return == 1) {
-                $note .= '<small>(' . __('lang_v1.change_return') . ')</small>';
+                $note .= '<small>('.__('lang_v1.change_return').')</small>';
             }
 
             $ledger[] = [
@@ -5501,9 +5501,9 @@ class TransactionUtil extends Util
             $balance = $this->num_f(abs($bal));
 
             if ($bal < 0) {
-                $balance .= ' ' . __('lang_v1.dr');
+                $balance .= ' '.__('lang_v1.dr');
             } elseif ($bal > 0) {
-                $balance .= ' ' . __('lang_v1.cr');
+                $balance .= ' '.__('lang_v1.cr');
             }
 
             $ledger[$key]['balance'] = $balance;
@@ -6115,7 +6115,7 @@ class TransactionUtil extends Util
         }
 
         for ($i = 1; $i < 8; $i++) {
-            if ($inputs['method'] == 'custom_pay_' . $i) {
+            if ($inputs['method'] == 'custom_pay_'.$i) {
                 $inputs['transaction_no'] = $request->input("transaction_no_{$i}");
             }
         }
@@ -6383,7 +6383,7 @@ class TransactionUtil extends Util
         }
 
         // Generate pdf
-        $body = view('sale_pos.receipts.' . $blade_file)
+        $body = view('sale_pos.receipts.'.$blade_file)
             ->with(compact('receipt_details', 'location_details', 'is_email_attachment'))
             ->render();
 
@@ -6402,7 +6402,7 @@ class TransactionUtil extends Util
         $mpdf->useSubstitutions = true;
         $mpdf->SetWatermarkText($receipt_details->business_name, 0.1);
         $mpdf->showWatermarkText = true;
-        $mpdf->SetTitle('INVOICE-' . $receipt_details->invoice_no . '.pdf');
+        $mpdf->SetTitle('INVOICE-'.$receipt_details->invoice_no.'.pdf');
         $mpdf->WriteHTML($body);
 
         return $mpdf;
@@ -6490,7 +6490,7 @@ class TransactionUtil extends Util
         $invoice_layout = $businessUtil->invoiceLayout($business_id, $location_details->invoice_layout_id);
 
         // Logo
-        $logo = $invoice_layout->show_logo != 0 && ! empty($invoice_layout->logo) && file_exists(public_path('uploads/invoice_logos/' . $invoice_layout->logo)) ? asset('uploads/invoice_logos/' . $invoice_layout->logo) : false;
+        $logo = $invoice_layout->show_logo != 0 && ! empty($invoice_layout->logo) && file_exists(public_path('uploads/invoice_logos/'.$invoice_layout->logo)) ? asset('uploads/invoice_logos/'.$invoice_layout->logo) : false;
 
         $word_format = $invoice_layout->common_settings['num_to_word_format'] ? $invoice_layout->common_settings['num_to_word_format'] : 'international';
         $total_in_words = $this->numToWord($purchase->final_total, null, $word_format);
@@ -6517,7 +6517,7 @@ class TransactionUtil extends Util
         $mpdf->useSubstitutions = true;
         $mpdf->SetWatermarkText($purchase->business->name, 0.1);
         $mpdf->showWatermarkText = true;
-        $mpdf->SetTitle('PO-' . $purchase->ref_no . '.pdf');
+        $mpdf->SetTitle('PO-'.$purchase->ref_no.'.pdf');
         $mpdf->WriteHTML($body);
 
         return $mpdf;

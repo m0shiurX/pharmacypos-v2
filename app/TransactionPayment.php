@@ -4,6 +4,7 @@ namespace App;
 
 use App\Events\TransactionPaymentDeleted;
 use App\Events\TransactionPaymentUpdated;
+use App\Utils\TransactionUtil;
 use Illuminate\Database\Eloquent\Model;
 
 class TransactionPayment extends Model
@@ -20,7 +21,7 @@ class TransactionPayment extends Model
      */
     public function payment_account()
     {
-        return $this->belongsTo(\App\Account::class, 'account_id');
+        return $this->belongsTo(Account::class, 'account_id');
     }
 
     /**
@@ -28,7 +29,7 @@ class TransactionPayment extends Model
      */
     public function transaction()
     {
-        return $this->belongsTo(\App\Transaction::class, 'transaction_id');
+        return $this->belongsTo(Transaction::class, 'transaction_id');
     }
 
     /**
@@ -36,7 +37,7 @@ class TransactionPayment extends Model
      */
     public function created_user()
     {
-        return $this->belongsTo(\App\User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     /**
@@ -44,7 +45,7 @@ class TransactionPayment extends Model
      */
     public function child_payments()
     {
-        return $this->hasMany(\App\TransactionPayment::class, 'parent_id');
+        return $this->hasMany(TransactionPayment::class, 'parent_id');
     }
 
     /**
@@ -86,7 +87,7 @@ class TransactionPayment extends Model
 
         $payment->delete();
 
-        $transactionUtil = new \App\Utils\TransactionUtil;
+        $transactionUtil = new TransactionUtil;
 
         if (! empty($payment->transaction_id)) {
             // update payment status
@@ -112,6 +113,6 @@ class TransactionPayment extends Model
 
     public function denominations()
     {
-        return $this->morphMany(\App\CashDenomination::class, 'model');
+        return $this->morphMany(CashDenomination::class, 'model');
     }
 }

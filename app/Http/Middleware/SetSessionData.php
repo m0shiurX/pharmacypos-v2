@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Business;
 use App\Utils\BusinessUtil;
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SetSessionData
@@ -12,7 +13,7 @@ class SetSessionData
     /**
      * Checks if session data is set or not for a user. If data is not set then set it.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return mixed
      */
     public function handle($request, Closure $next)

@@ -3,6 +3,7 @@
 namespace App;
 
 use DB;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -93,14 +94,14 @@ class Category extends Model
 
     public function sub_categories()
     {
-        return $this->hasMany(\App\Category::class, 'parent_id');
+        return $this->hasMany(Category::class, 'parent_id');
     }
 
     /**
      * Scope a query to only include main categories.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeOnlyParent($query)
     {

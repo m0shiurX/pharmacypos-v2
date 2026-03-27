@@ -7,9 +7,11 @@ use App\BusinessLocation;
 use App\InvoiceLayout;
 use App\InvoiceScheme;
 use App\SellingPriceGroup;
+use App\StoreFront;
 use App\Utils\ModuleUtil;
 use App\Utils\Util;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -33,7 +35,7 @@ class BusinessLocationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -77,7 +79,7 @@ class BusinessLocationController extends Controller
                 $locations->whereIn('business_locations.id', $permitted_locations);
             }
 
-            return Datatables::of($locations)
+            return DataTables::of($locations)
                 ->addColumn(
                     'action',
                     '<button type="button" data-href="{{action(\'App\Http\Controllers\BusinessLocationController@edit\', [$id])}}" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary btn-modal" data-container=".location_edit_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
@@ -98,7 +100,7 @@ class BusinessLocationController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -145,7 +147,7 @@ class BusinessLocationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -199,8 +201,8 @@ class BusinessLocationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\StoreFront  $storeFront
-     * @return \Illuminate\Http\Response
+     * @param  StoreFront  $storeFront
+     * @return Response
      */
     public function show($id)
     {
@@ -210,8 +212,8 @@ class BusinessLocationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\StoreFront  $storeFront
-     * @return \Illuminate\Http\Response
+     * @param  StoreFront  $storeFront
+     * @return Response
      */
     public function edit($id)
     {
@@ -255,8 +257,8 @@ class BusinessLocationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\StoreFront  $storeFront
-     * @return \Illuminate\Http\Response
+     * @param  StoreFront  $storeFront
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -296,8 +298,8 @@ class BusinessLocationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\StoreFront  $storeFront
-     * @return \Illuminate\Http\Response
+     * @param  StoreFront  $storeFront
+     * @return Response
      */
     public function destroy($id)
     {
@@ -307,7 +309,7 @@ class BusinessLocationController extends Controller
     /**
      * Checks if the given location id already exist for the current business.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function checkLocationId(Request $request)
     {

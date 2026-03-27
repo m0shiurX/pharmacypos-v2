@@ -1,15 +1,26 @@
 <?php
 
+use App\Http\Middleware\AdminSidebarMenu;
+use App\Http\Middleware\CheckUserLogin;
+use App\Http\Middleware\IsInstalled;
+use App\Http\Middleware\Language;
+use App\Http\Middleware\SetSessionData;
+use App\Http\Middleware\Superadmin;
+use App\Http\Middleware\Timezone;
+use App\Providers\AppServiceProvider;
+use App\Providers\AuthServiceProvider;
+use App\Providers\EventServiceProvider;
+use App\Providers\ModuleAssetServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
-        \App\Providers\AppServiceProvider::class,
-        \App\Providers\AuthServiceProvider::class,
-        \App\Providers\EventServiceProvider::class,
-        \App\Providers\ModuleAssetServiceProvider::class,
+        AppServiceProvider::class,
+        AuthServiceProvider::class,
+        EventServiceProvider::class,
+        ModuleAssetServiceProvider::class,
     ])
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -20,13 +31,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Register route-level middleware aliases (from old Kernel::$routeMiddleware)
         $middleware->alias([
-            'language' => \App\Http\Middleware\Language::class,
-            'timezone' => \App\Http\Middleware\Timezone::class,
-            'SetSessionData' => \App\Http\Middleware\SetSessionData::class,
-            'setData' => \App\Http\Middleware\IsInstalled::class,
-            'AdminSidebarMenu' => \App\Http\Middleware\AdminSidebarMenu::class,
-            'CheckUserLogin' => \App\Http\Middleware\CheckUserLogin::class,
-            'superadmin' => \App\Http\Middleware\Superadmin::class,
+            'language' => Language::class,
+            'timezone' => Timezone::class,
+            'SetSessionData' => SetSessionData::class,
+            'setData' => IsInstalled::class,
+            'AdminSidebarMenu' => AdminSidebarMenu::class,
+            'CheckUserLogin' => CheckUserLogin::class,
+            'superadmin' => Superadmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

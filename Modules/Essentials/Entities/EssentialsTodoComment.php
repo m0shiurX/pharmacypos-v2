@@ -2,6 +2,8 @@
 
 namespace Modules\Essentials\Entities;
 
+use App\Media;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class EssentialsTodoComment extends Model
@@ -15,16 +17,16 @@ class EssentialsTodoComment extends Model
 
     public function added_by()
     {
-        return $this->belongsTo(\App\User::class, 'comment_by');
+        return $this->belongsTo(User::class, 'comment_by');
     }
 
     public function media()
     {
-        return $this->morphMany(\App\Media::class, 'model');
+        return $this->morphMany(Media::class, 'model');
     }
 
     public function task()
     {
-        return $this->belongsTo(\Modules\Essentials\Entities\ToDo::class, 'task_id');
+        return $this->belongsTo(ToDo::class, 'task_id');
     }
 }

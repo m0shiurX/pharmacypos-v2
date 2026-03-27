@@ -4,7 +4,9 @@ namespace Modules\Essentials\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Modules\Essentials\Http\Controllers\EssentialsLeaveController;
 
 class NewLeaveNotification extends Notification
 {
@@ -42,7 +44,7 @@ class NewLeaveNotification extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable) {}
 
@@ -71,7 +73,7 @@ class NewLeaveNotification extends Notification
         return new BroadcastMessage([
             'title' => __('essentials::lang.leave_added_successfully'),
             'body' => strip_tags(__('essentials::lang.new_leave_notification', ['employee' => $this->leave->user->user_full_name, 'ref_no' => $this->leave->ref_no])),
-            'link' => action([\Modules\Essentials\Http\Controllers\EssentialsLeaveController::class, 'index']),
+            'link' => action([EssentialsLeaveController::class, 'index']),
         ]);
     }
 }

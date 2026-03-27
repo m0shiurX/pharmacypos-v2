@@ -108,7 +108,7 @@ class ToDoController extends Controller
                     ->whereDate('date', '<=', $end);
             }
 
-            return Datatables::of($todos)
+            return DataTables::of($todos)
                 ->addColumn(
                     'action',
                     function ($row) {
@@ -118,14 +118,14 @@ class ToDoController extends Controller
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">';
 
                         if (auth()->user()->can('essentials.edit_todos')) {
-                            $html .= '<li><a href="#" data-href="'.action([\Modules\Essentials\Http\Controllers\ToDoController::class, 'edit'], [$row->id]).'" class="btn-modal" data-container="#task_modal"><i class="glyphicon glyphicon-edit"></i> '.__('messages.edit').'</a></li>';
+                            $html .= '<li><a href="#" data-href="'.action([ToDoController::class, 'edit'], [$row->id]).'" class="btn-modal" data-container="#task_modal"><i class="glyphicon glyphicon-edit"></i> '.__('messages.edit').'</a></li>';
                         }
 
                         if (auth()->user()->can('essentials.delete_todos')) {
-                            $html .= '<li><a href="#" data-href="'.action([\Modules\Essentials\Http\Controllers\ToDoController::class, 'destroy'], [$row->id]).'" class="delete_task" ><i class="fa fa-trash"></i> '.__('messages.delete').'</a></li>';
+                            $html .= '<li><a href="#" data-href="'.action([ToDoController::class, 'destroy'], [$row->id]).'" class="delete_task" ><i class="fa fa-trash"></i> '.__('messages.delete').'</a></li>';
                         }
 
-                        $html .= '<li><a href="'.action([\Modules\Essentials\Http\Controllers\ToDoController::class, 'show'], [$row->id]).'" ><i class="fa fa-eye"></i> '.__('messages.view').'</a></li>';
+                        $html .= '<li><a href="'.action([ToDoController::class, 'show'], [$row->id]).'" ><i class="fa fa-eye"></i> '.__('messages.view').'</a></li>';
 
                         $html .= '<li><a href="#" class="change_status" data-status="'.$row->status.'" data-task_id="'.$row->id.'"><i class="fas fa-check-circle"></i> '.__('essentials::lang.change_status').'</a></li>';
 
@@ -135,8 +135,8 @@ class ToDoController extends Controller
                     }
                 )
                 ->editColumn('task', function ($row) use ($priorities) {
-                    $html = '<a href="'.action([\Modules\Essentials\Http\Controllers\ToDoController::class, 'show'], [$row->id]).'" >'.$row->task.'</a> <br>
-                        <a data-href="'.action([\Modules\Essentials\Http\Controllers\ToDoController::class, 'viewSharedDocs'], [$row->id]).'" class="btn btn-primary btn-xs view-shared-docs">'.__('essentials::lang.docs').'</a>';
+                    $html = '<a href="'.action([ToDoController::class, 'show'], [$row->id]).'" >'.$row->task.'</a> <br>
+                        <a data-href="'.action([ToDoController::class, 'viewSharedDocs'], [$row->id]).'" class="btn btn-primary btn-xs view-shared-docs">'.__('essentials::lang.docs').'</a>';
 
                     if (! empty($row->priority)) {
                         $bg_color = ! empty($this->priority_colors[$row->priority]) ? $this->priority_colors[$row->priority] : 'bg-gray';

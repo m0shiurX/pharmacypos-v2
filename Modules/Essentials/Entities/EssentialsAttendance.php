@@ -2,6 +2,7 @@
 
 namespace Modules\Essentials\Entities;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class EssentialsAttendance extends Model
@@ -15,11 +16,11 @@ class EssentialsAttendance extends Model
 
     public function employee()
     {
-        return $this->belongsTo(\App\User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function shift()
     {
-        return $this->belongsTo(\Modules\Essentials\Entities\Shift::class, 'essentials_shift_id');
+        return $this->belongsTo(Shift::class, 'essentials_shift_id');
     }
 }

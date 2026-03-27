@@ -46,7 +46,7 @@ class SalesTargetController extends Controller
                 ->select(['id',
                     DB::raw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) as full_name"), ]);
 
-            return Datatables::of($users)
+            return DataTables::of($users)
                 ->addColumn(
                     'action',
                     '<button type="button" data-href="{{action(\'\Modules\Essentials\Http\Controllers\SalesTargetController@setSalesTarget\', [$id])}}" class="btn btn-xs btn-primary btn-modal" data-container="#set_sales_target_modal"><i class="fas fa-bullseye"></i> @lang("essentials::lang.set_sales_target")</button>'

@@ -15,28 +15,28 @@ class TransactionSellLine extends Model
 
     public function transaction()
     {
-        return $this->belongsTo(\App\Transaction::class);
+        return $this->belongsTo(Transaction::class);
     }
 
     public function product()
     {
-        return $this->belongsTo(\App\Product::class, 'product_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     public function variations()
     {
-        return $this->belongsTo(\App\Variation::class, 'variation_id');
+        return $this->belongsTo(Variation::class, 'variation_id');
     }
 
     public function modifiers()
     {
-        return $this->hasMany(\App\TransactionSellLine::class, 'parent_sell_line_id')
+        return $this->hasMany(TransactionSellLine::class, 'parent_sell_line_id')
             ->where('children_type', 'modifier');
     }
 
     public function sell_line_purchase_lines()
     {
-        return $this->hasMany(\App\TransactionSellLinesPurchaseLines::class, 'sell_line_id');
+        return $this->hasMany(TransactionSellLinesPurchaseLines::class, 'sell_line_id');
     }
 
     /**
@@ -52,7 +52,7 @@ class TransactionSellLine extends Model
 
     public function lot_details()
     {
-        return $this->belongsTo(\App\PurchaseLine::class, 'lot_no_line_id');
+        return $this->belongsTo(PurchaseLine::class, 'lot_no_line_id');
     }
 
     public function get_discount_amount()
@@ -74,7 +74,7 @@ class TransactionSellLine extends Model
      */
     public function sub_unit()
     {
-        return $this->belongsTo(\App\Unit::class, 'sub_unit_id');
+        return $this->belongsTo(Unit::class, 'sub_unit_id');
     }
 
     public function order_statuses()
@@ -88,7 +88,7 @@ class TransactionSellLine extends Model
 
     public function service_staff()
     {
-        return $this->belongsTo(\App\User::class, 'res_service_staff_id');
+        return $this->belongsTo(User::class, 'res_service_staff_id');
     }
 
     /**
@@ -96,16 +96,16 @@ class TransactionSellLine extends Model
      */
     public function warranties()
     {
-        return $this->belongsToMany(\App\Warranty::class, 'sell_line_warranties', 'sell_line_id', 'warranty_id');
+        return $this->belongsToMany(Warranty::class, 'sell_line_warranties', 'sell_line_id', 'warranty_id');
     }
 
     public function line_tax()
     {
-        return $this->belongsTo(\App\TaxRate::class, 'tax_id');
+        return $this->belongsTo(TaxRate::class, 'tax_id');
     }
 
     public function so_line()
     {
-        return $this->belongsTo(\App\TransactionSellLine::class, 'so_line_id');
+        return $this->belongsTo(TransactionSellLine::class, 'so_line_id');
     }
 }

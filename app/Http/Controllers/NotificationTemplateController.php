@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\NotificationTemplate;
 use App\Utils\ModuleUtil;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class NotificationTemplateController extends Controller
 {
@@ -27,7 +28,7 @@ class NotificationTemplateController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -91,7 +92,7 @@ class NotificationTemplateController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {

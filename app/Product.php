@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
@@ -59,7 +60,7 @@ class Product extends Model
 
     public function product_variations()
     {
-        return $this->hasMany(\App\ProductVariation::class);
+        return $this->hasMany(ProductVariation::class);
     }
 
     /**
@@ -67,7 +68,7 @@ class Product extends Model
      */
     public function brand()
     {
-        return $this->belongsTo(\App\Brands::class);
+        return $this->belongsTo(Brands::class);
     }
 
     /**
@@ -75,7 +76,7 @@ class Product extends Model
      */
     public function unit()
     {
-        return $this->belongsTo(\App\Unit::class);
+        return $this->belongsTo(Unit::class);
     }
 
     /**
@@ -83,7 +84,7 @@ class Product extends Model
      */
     public function second_unit()
     {
-        return $this->belongsTo(\App\Unit::class, 'secondary_unit_id');
+        return $this->belongsTo(Unit::class, 'secondary_unit_id');
     }
 
     /**
@@ -91,7 +92,7 @@ class Product extends Model
      */
     public function category()
     {
-        return $this->belongsTo(\App\Category::class);
+        return $this->belongsTo(Category::class);
     }
 
     /**
@@ -99,7 +100,7 @@ class Product extends Model
      */
     public function sub_category()
     {
-        return $this->belongsTo(\App\Category::class, 'sub_category_id', 'id');
+        return $this->belongsTo(Category::class, 'sub_category_id', 'id');
     }
 
     /**
@@ -107,7 +108,7 @@ class Product extends Model
      */
     public function product_tax()
     {
-        return $this->belongsTo(\App\TaxRate::class, 'tax', 'id');
+        return $this->belongsTo(TaxRate::class, 'tax', 'id');
     }
 
     /**
@@ -115,7 +116,7 @@ class Product extends Model
      */
     public function variations()
     {
-        return $this->hasMany(\App\Variation::class);
+        return $this->hasMany(Variation::class);
     }
 
     /**
@@ -123,7 +124,7 @@ class Product extends Model
      */
     public function modifier_products()
     {
-        return $this->belongsToMany(\App\Product::class, 'res_product_modifier_sets', 'modifier_set_id', 'product_id');
+        return $this->belongsToMany(Product::class, 'res_product_modifier_sets', 'modifier_set_id', 'product_id');
     }
 
     /**
@@ -131,7 +132,7 @@ class Product extends Model
      */
     public function modifier_sets()
     {
-        return $this->belongsToMany(\App\Product::class, 'res_product_modifier_sets', 'product_id', 'modifier_set_id');
+        return $this->belongsToMany(Product::class, 'res_product_modifier_sets', 'product_id', 'modifier_set_id');
     }
 
     /**
@@ -139,14 +140,14 @@ class Product extends Model
      */
     public function purchase_lines()
     {
-        return $this->hasMany(\App\PurchaseLine::class);
+        return $this->hasMany(PurchaseLine::class);
     }
 
     /**
      * Scope a query to only include active products.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeActive($query)
     {
@@ -156,8 +157,8 @@ class Product extends Model
     /**
      * Scope a query to only include inactive products.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeInactive($query)
     {
@@ -167,8 +168,8 @@ class Product extends Model
     /**
      * Scope a query to only include products for sales.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeProductForSales($query)
     {
@@ -178,8 +179,8 @@ class Product extends Model
     /**
      * Scope a query to only include products not for sales.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeProductNotForSales($query)
     {
@@ -188,14 +189,14 @@ class Product extends Model
 
     public function product_locations()
     {
-        return $this->belongsToMany(\App\BusinessLocation::class, 'product_locations', 'product_id', 'location_id');
+        return $this->belongsToMany(BusinessLocation::class, 'product_locations', 'product_id', 'location_id');
     }
 
     /**
      * Scope a query to only include products available for a location.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeForLocation($query, $location_id)
     {
@@ -211,16 +212,16 @@ class Product extends Model
      */
     public function warranty()
     {
-        return $this->belongsTo(\App\Warranty::class);
+        return $this->belongsTo(Warranty::class);
     }
 
     public function media()
     {
-        return $this->morphMany(\App\Media::class, 'model');
+        return $this->morphMany(Media::class, 'model');
     }
 
     public function rack_details()
     {
-        return $this->hasMany(\App\ProductRack::class);
+        return $this->hasMany(ProductRack::class);
     }
 }

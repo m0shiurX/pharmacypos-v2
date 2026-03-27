@@ -3,6 +3,7 @@
 namespace App;
 
 use DB;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class BusinessLocation extends Model
@@ -95,14 +96,14 @@ class BusinessLocation extends Model
 
     public function price_group()
     {
-        return $this->belongsTo(\App\SellingPriceGroup::class, 'selling_price_group_id');
+        return $this->belongsTo(SellingPriceGroup::class, 'selling_price_group_id');
     }
 
     /**
      * Scope a query to only include active location.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeActive($query)
     {

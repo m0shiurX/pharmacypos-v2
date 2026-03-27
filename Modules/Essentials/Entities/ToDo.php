@@ -2,6 +2,8 @@
 
 namespace Modules\Essentials\Entities;
 
+use App\Media;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class ToDo extends Model
@@ -22,22 +24,22 @@ class ToDo extends Model
 
     public function users()
     {
-        return $this->belongsToMany(\App\User::class, 'essentials_todos_users', 'todo_id', 'user_id');
+        return $this->belongsToMany(User::class, 'essentials_todos_users', 'todo_id', 'user_id');
     }
 
     public function assigned_by()
     {
-        return $this->belongsTo(\App\User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function comments()
     {
-        return $this->hasMany(\Modules\Essentials\Entities\EssentialsTodoComment::class, 'task_id')->orderBy('id', 'desc');
+        return $this->hasMany(EssentialsTodoComment::class, 'task_id')->orderBy('id', 'desc');
     }
 
     public function media()
     {
-        return $this->morphMany(\App\Media::class, 'model');
+        return $this->morphMany(Media::class, 'model');
     }
 
     public static function getTaskStatus()

@@ -25,8 +25,10 @@ use App\VariationTemplate;
 use App\Warranty;
 use Excel;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Modules\Manufacturing\Entities\MfgRecipeIngredient;
 use Yajra\DataTables\Facades\DataTables;
 
 class ProductController extends Controller
@@ -58,7 +60,7 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -204,7 +206,7 @@ class ProductController extends Controller
                 $products->where('products.repair_model_id', request()->get('repair_model_id'));
             }
 
-            return Datatables::of($products)
+            return DataTables::of($products)
                 ->addColumn(
                     'product_locations',
                     function ($row) {
@@ -216,48 +218,48 @@ class ProductController extends Controller
                     'action',
                     function ($row) use ($selling_price_group_count) {
                         $html =
-                            '<div class="btn-group"><button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info tw-w-max dropdown-toggle" data-toggle="dropdown" aria-expanded="false">'.__('messages.actions').'<span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-left" role="menu"><li><a href="'.action([\App\Http\Controllers\LabelsController::class, 'show']).'?product_id='.$row->id.'" data-toggle="tooltip" title="'.__('lang_v1.label_help').'"><i class="fa fa-barcode"></i> '.__('barcode.labels').'</a></li>';
+                            '<div class="btn-group"><button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info tw-w-max dropdown-toggle" data-toggle="dropdown" aria-expanded="false">'.__('messages.actions').'<span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-left" role="menu"><li><a href="'.action([LabelsController::class, 'show']).'?product_id='.$row->id.'" data-toggle="tooltip" title="'.__('lang_v1.label_help').'"><i class="fa fa-barcode"></i> '.__('barcode.labels').'</a></li>';
 
                         if (auth()->user()->can('product.view')) {
                             $html .=
-                                '<li><a href="'.action([\App\Http\Controllers\ProductController::class, 'view'], [$row->id]).'" class="view-product"><i class="fa fa-eye"></i> '.__('messages.view').'</a></li>';
+                                '<li><a href="'.action([ProductController::class, 'view'], [$row->id]).'" class="view-product"><i class="fa fa-eye"></i> '.__('messages.view').'</a></li>';
                         }
 
                         if (auth()->user()->can('product.update')) {
                             $html .=
-                                '<li><a href="'.action([\App\Http\Controllers\ProductController::class, 'edit'], [$row->id]).'"><i class="glyphicon glyphicon-edit"></i> '.__('messages.edit').'</a></li>';
+                                '<li><a href="'.action([ProductController::class, 'edit'], [$row->id]).'"><i class="glyphicon glyphicon-edit"></i> '.__('messages.edit').'</a></li>';
                         }
 
                         if (auth()->user()->can('product.delete')) {
                             $html .=
-                                '<li><a href="'.action([\App\Http\Controllers\ProductController::class, 'destroy'], [$row->id]).'" class="delete-product"><i class="fa fa-trash"></i> '.__('messages.delete').'</a></li>';
+                                '<li><a href="'.action([ProductController::class, 'destroy'], [$row->id]).'" class="delete-product"><i class="fa fa-trash"></i> '.__('messages.delete').'</a></li>';
                         }
 
                         if ($row->is_inactive == 1) {
                             $html .=
-                                '<li><a href="'.action([\App\Http\Controllers\ProductController::class, 'activate'], [$row->id]).'" class="activate-product"><i class="fas fa-check-circle"></i> '.__('lang_v1.reactivate').'</a></li>';
+                                '<li><a href="'.action([ProductController::class, 'activate'], [$row->id]).'" class="activate-product"><i class="fas fa-check-circle"></i> '.__('lang_v1.reactivate').'</a></li>';
                         }
 
                         $html .= '<li class="divider"></li>';
 
                         if ($row->enable_stock == 1 && auth()->user()->can('product.opening_stock')) {
                             $html .=
-                                '<li><a href="#" data-href="'.action([\App\Http\Controllers\OpeningStockController::class, 'add'], ['product_id' => $row->id]).'" class="add-opening-stock"><i class="fa fa-database"></i> '.__('lang_v1.add_edit_opening_stock').'</a></li>';
+                                '<li><a href="#" data-href="'.action([OpeningStockController::class, 'add'], ['product_id' => $row->id]).'" class="add-opening-stock"><i class="fa fa-database"></i> '.__('lang_v1.add_edit_opening_stock').'</a></li>';
                         }
 
                         if (auth()->user()->can('product.view')) {
                             $html .=
-                                '<li><a href="'.action([\App\Http\Controllers\ProductController::class, 'productStockHistory'], [$row->id]).'"><i class="fas fa-history"></i> '.__('lang_v1.product_stock_history').'</a></li>';
+                                '<li><a href="'.action([ProductController::class, 'productStockHistory'], [$row->id]).'"><i class="fas fa-history"></i> '.__('lang_v1.product_stock_history').'</a></li>';
                         }
 
                         if (auth()->user()->can('product.create')) {
                             if ($selling_price_group_count > 0) {
                                 $html .=
-                                    '<li><a href="'.action([\App\Http\Controllers\ProductController::class, 'addSellingPrices'], [$row->id]).'"><i class="fas fa-money-bill-alt"></i> '.__('lang_v1.add_selling_price_group_prices').'</a></li>';
+                                    '<li><a href="'.action([ProductController::class, 'addSellingPrices'], [$row->id]).'"><i class="fas fa-money-bill-alt"></i> '.__('lang_v1.add_selling_price_group_prices').'</a></li>';
                             }
 
                             $html .=
-                                '<li><a href="'.action([\App\Http\Controllers\ProductController::class, 'create'], ['d' => $row->id]).'"><i class="fa fa-copy"></i> '.__('lang_v1.duplicate_product').'</a></li>';
+                                '<li><a href="'.action([ProductController::class, 'create'], ['d' => $row->id]).'"><i class="fa fa-copy"></i> '.__('lang_v1.duplicate_product').'</a></li>';
                         }
 
                         if (! empty($row->media->first())) {
@@ -315,7 +317,7 @@ class ProductController extends Controller
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can('product.view')) {
-                            return action([\App\Http\Controllers\ProductController::class, 'view'], [$row->id]);
+                            return action([ProductController::class, 'view'], [$row->id]);
                         } else {
                             return '';
                         }
@@ -368,7 +370,7 @@ class ProductController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -382,7 +384,7 @@ class ProductController extends Controller
         if (! $this->moduleUtil->isSubscribed($business_id)) {
             return $this->moduleUtil->expiredResponse();
         } elseif (! $this->moduleUtil->isQuotaAvailable('products', $business_id)) {
-            return $this->moduleUtil->quotaExpiredResponse('products', $business_id, action([\App\Http\Controllers\ProductController::class, 'index']));
+            return $this->moduleUtil->quotaExpiredResponse('products', $business_id, action([ProductController::class, 'index']));
         }
 
         $categories = Category::forDropdown($business_id, 'product');
@@ -452,7 +454,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -594,17 +596,17 @@ class ProductController extends Controller
 
         if ($request->input('submit_type') == 'submit_n_add_opening_stock') {
             return redirect()->action(
-                [\App\Http\Controllers\OpeningStockController::class, 'add'],
+                [OpeningStockController::class, 'add'],
                 ['product_id' => $product->id]
             );
         } elseif ($request->input('submit_type') == 'submit_n_add_selling_prices') {
             return redirect()->action(
-                [\App\Http\Controllers\ProductController::class, 'addSellingPrices'],
+                [ProductController::class, 'addSellingPrices'],
                 [$product->id]
             );
         } elseif ($request->input('submit_type') == 'save_n_add_another') {
             return redirect()->action(
-                [\App\Http\Controllers\ProductController::class, 'create']
+                [ProductController::class, 'create']
             )->with('status', $output);
         }
 
@@ -614,8 +616,8 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
+     * @param  Product  $product
+     * @return Response
      */
     public function show($id)
     {
@@ -633,7 +635,7 @@ class ProductController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -695,7 +697,7 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -923,17 +925,17 @@ class ProductController extends Controller
 
         if ($request->input('submit_type') == 'update_n_edit_opening_stock') {
             return redirect()->action(
-                [\App\Http\Controllers\OpeningStockController::class, 'add'],
+                [OpeningStockController::class, 'add'],
                 ['product_id' => $product->id]
             );
         } elseif ($request->input('submit_type') == 'submit_n_add_selling_prices') {
             return redirect()->action(
-                [\App\Http\Controllers\ProductController::class, 'addSellingPrices'],
+                [ProductController::class, 'addSellingPrices'],
                 [$product->id]
             );
         } elseif ($request->input('submit_type') == 'save_n_add_another') {
             return redirect()->action(
-                [\App\Http\Controllers\ProductController::class, 'create']
+                [ProductController::class, 'create']
             )->with('status', $output);
         }
 
@@ -943,8 +945,8 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
+     * @param  Product  $product
+     * @return Response
      */
     public function destroy($id)
     {
@@ -1035,7 +1037,7 @@ class ProductController extends Controller
                 if ($this->moduleUtil->isModuleInstalled('Manufacturing')) {
                     $variation_ids = $product->variations->pluck('id');
 
-                    $exists_as_ingredient = \Modules\Manufacturing\Entities\MfgRecipeIngredient::whereIn('variation_id', $variation_ids)
+                    $exists_as_ingredient = MfgRecipeIngredient::whereIn('variation_id', $variation_ids)
                         ->exists();
                     if ($exists_as_ingredient) {
                         $can_be_deleted = false;
@@ -1081,7 +1083,7 @@ class ProductController extends Controller
     /**
      * Get subcategories list for a category.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getSubCategories(Request $request)
     {
@@ -1106,7 +1108,7 @@ class ProductController extends Controller
     /**
      * Get product form parts.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getProductVariationFormPart(Request $request)
     {
@@ -1164,7 +1166,7 @@ class ProductController extends Controller
     /**
      * Get product form parts.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getVariationValueRow(Request $request)
     {
@@ -1184,7 +1186,7 @@ class ProductController extends Controller
     /**
      * Get product form parts.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getProductVariationRow(Request $request)
     {
@@ -1206,7 +1208,7 @@ class ProductController extends Controller
     /**
      * Get product form parts.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getVariationTemplate(Request $request)
     {
@@ -1237,7 +1239,7 @@ class ProductController extends Controller
     /**
      * Return the view for combo product row
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getComboProductEntryRow(Request $request)
     {
@@ -1360,7 +1362,7 @@ class ProductController extends Controller
     /**
      * Checks if product sku already exists.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function checkProductSku(Request $request)
     {
@@ -1403,7 +1405,7 @@ class ProductController extends Controller
     /**
      * Checks if product name already exists.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function checkProductName(Request $request)
     {
@@ -1473,7 +1475,7 @@ class ProductController extends Controller
     /**
      * Loads quick add product modal.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function quickAdd()
     {
@@ -1518,7 +1520,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function saveQuickProduct(Request $request)
     {
@@ -1677,8 +1679,8 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
+     * @param  Product  $product
+     * @return Response
      */
     public function view($id)
     {
@@ -1732,7 +1734,7 @@ class ProductController extends Controller
     /**
      * Mass deletes products.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function massDestroy(Request $request)
     {
@@ -1763,7 +1765,7 @@ class ProductController extends Controller
                     if ($is_mfg_installed) {
                         $variation_ids = $product->variations->pluck('id');
 
-                        $exists_as_ingredient = \Modules\Manufacturing\Entities\MfgRecipeIngredient::whereIn('variation_id', $variation_ids)
+                        $exists_as_ingredient = MfgRecipeIngredient::whereIn('variation_id', $variation_ids)
                             ->exists();
                         $can_be_deleted = ! $exists_as_ingredient;
                     }
@@ -1811,7 +1813,7 @@ class ProductController extends Controller
      * Shows form to add selling price group prices for a product.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function addSellingPrices($id)
     {
@@ -1840,7 +1842,7 @@ class ProductController extends Controller
     /**
      * Saves selling price group prices for a product.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function saveSellingPrices(Request $request)
     {
@@ -1899,12 +1901,12 @@ class ProductController extends Controller
 
         if ($request->input('submit_type') == 'submit_n_add_opening_stock') {
             return redirect()->action(
-                [\App\Http\Controllers\OpeningStockController::class, 'add'],
+                [OpeningStockController::class, 'add'],
                 ['product_id' => $product->id]
             );
         } elseif ($request->input('submit_type') == 'save_n_add_another') {
             return redirect()->action(
-                [\App\Http\Controllers\ProductController::class, 'create']
+                [ProductController::class, 'create']
             )->with('status', $output);
         }
 
@@ -1947,7 +1949,7 @@ class ProductController extends Controller
     /**
      * Mass deactivates products.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function massDeactivate(Request $request)
     {
@@ -1989,8 +1991,8 @@ class ProductController extends Controller
     /**
      * Activates the specified resource from storage.
      *
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
+     * @param  Product  $product
+     * @return Response
      */
     public function activate($id)
     {
@@ -2163,7 +2165,7 @@ class ProductController extends Controller
     /**
      * Shows form to edit multiple products at once.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function bulkEdit(Request $request)
     {
@@ -2220,7 +2222,7 @@ class ProductController extends Controller
     /**
      * Updates multiple products at once.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function bulkUpdate(Request $request)
     {
@@ -2299,7 +2301,7 @@ class ProductController extends Controller
      * Adds product row to edit in bulk edit product form
      *
      * @param  int  $product_id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getProductToEdit($product_id)
     {
@@ -2350,7 +2352,7 @@ class ProductController extends Controller
      * Gets the sub units for the given unit.
      *
      * @param  int  $unit_id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getSubUnits(Request $request)
     {
@@ -2467,7 +2469,7 @@ class ProductController extends Controller
     /**
      * Toggle WooComerce sync
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function toggleWooCommerceSync(Request $request)
     {

@@ -2,6 +2,10 @@
 
 namespace App\Restaurant;
 
+use App\Business;
+use App\BusinessLocation;
+use App\Contact;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
@@ -17,32 +21,32 @@ class Booking extends Model
 
     public function customer()
     {
-        return $this->belongsTo(\App\Contact::class, 'contact_id');
+        return $this->belongsTo(Contact::class, 'contact_id');
     }
 
     public function table()
     {
-        return $this->belongsTo(\App\Restaurant\ResTable::class, 'table_id');
+        return $this->belongsTo(ResTable::class, 'table_id');
     }
 
     public function correspondent()
     {
-        return $this->belongsTo(\App\User::class, 'correspondent_id');
+        return $this->belongsTo(User::class, 'correspondent_id');
     }
 
     public function waiter()
     {
-        return $this->belongsTo(\App\User::class, 'waiter_id');
+        return $this->belongsTo(User::class, 'waiter_id');
     }
 
     public function location()
     {
-        return $this->belongsTo(\App\BusinessLocation::class, 'location_id');
+        return $this->belongsTo(BusinessLocation::class, 'location_id');
     }
 
     public function business()
     {
-        return $this->belongsTo(\App\Business::class, 'business_id');
+        return $this->belongsTo(Business::class, 'business_id');
     }
 
     public static function createBooking($input)

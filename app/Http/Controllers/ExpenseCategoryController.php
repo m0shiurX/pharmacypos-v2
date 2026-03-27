@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ExpenseCategory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Yajra\DataTables\Facades\DataTables;
 
 class ExpenseCategoryController extends Controller
@@ -11,7 +12,7 @@ class ExpenseCategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -25,7 +26,7 @@ class ExpenseCategoryController extends Controller
             $expense_category = ExpenseCategory::where('business_id', $business_id)
                 ->select(['name', 'code', 'id', 'parent_id']);
 
-            return Datatables::of($expense_category)
+            return DataTables::of($expense_category)
                 ->addColumn(
                     'action',
                     '<button data-href="{{action(\'App\Http\Controllers\ExpenseCategoryController@edit\', [$id])}}" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary btn-modal" data-container=".expense_category_modal"><i class="glyphicon glyphicon-edit"></i>  @lang("messages.edit")</button>
@@ -51,7 +52,7 @@ class ExpenseCategoryController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -70,7 +71,7 @@ class ExpenseCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -104,7 +105,7 @@ class ExpenseCategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(ExpenseCategory $expenseCategory)
     {
@@ -115,7 +116,7 @@ class ExpenseCategoryController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -140,7 +141,7 @@ class ExpenseCategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -184,7 +185,7 @@ class ExpenseCategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

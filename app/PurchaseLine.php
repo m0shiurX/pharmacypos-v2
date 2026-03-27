@@ -15,17 +15,17 @@ class PurchaseLine extends Model
 
     public function transaction()
     {
-        return $this->belongsTo(\App\Transaction::class);
+        return $this->belongsTo(Transaction::class);
     }
 
     public function product()
     {
-        return $this->belongsTo(\App\Product::class, 'product_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     public function variations()
     {
-        return $this->belongsTo(\App\Variation::class, 'variation_id');
+        return $this->belongsTo(Variation::class, 'variation_id');
     }
 
     /**
@@ -44,7 +44,7 @@ class PurchaseLine extends Model
      */
     public function sub_unit()
     {
-        return $this->belongsTo(\App\Unit::class, 'sub_unit_id');
+        return $this->belongsTo(Unit::class, 'sub_unit_id');
     }
 
     /**
@@ -70,16 +70,16 @@ class PurchaseLine extends Model
 
     public function line_tax()
     {
-        return $this->belongsTo(\App\TaxRate::class, 'tax_id');
+        return $this->belongsTo(TaxRate::class, 'tax_id');
     }
 
     public function purchase_order_line()
     {
-        return $this->belongsTo(\App\PurchaseLine::class, 'purchase_order_line_id');
+        return $this->belongsTo(PurchaseLine::class, 'purchase_order_line_id');
     }
 
     public function purchase_requisition_line()
     {
-        return $this->belongsTo(\App\PurchaseLine::class, 'purchase_requisition_line_id');
+        return $this->belongsTo(PurchaseLine::class, 'purchase_requisition_line_id');
     }
 }

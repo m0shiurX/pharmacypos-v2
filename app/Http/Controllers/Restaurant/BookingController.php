@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Restaurant;
 use App\BusinessLocation;
 use App\Contact;
 use App\CustomerGroup;
+use App\Http\Controllers\NotificationController;
 use App\Restaurant\Booking;
 use App\User;
 use App\Utils\RestaurantUtil;
 use App\Utils\Util;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -31,7 +33,7 @@ class BookingController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -73,7 +75,7 @@ class BookingController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -83,7 +85,7 @@ class BookingController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -128,7 +130,7 @@ class BookingController extends Controller
                     // Send notification to customer
                     if (isset($input['send_notification']) && $input['send_notification'] == 1) {
                         $output['send_notification'] = 1;
-                        $output['notification_url'] = action([\App\Http\Controllers\NotificationController::class, 'getTemplate'], ['transaction_id' => $booking->id, 'template_for' => 'new_booking']);
+                        $output['notification_url'] = action([NotificationController::class, 'getTemplate'], ['transaction_id' => $booking->id, 'template_for' => 'new_booking']);
                     }
                 } else {
                     $time_range = $this->commonUtil->format_date($existing_booking->booking_start, true).' ~ '.
@@ -158,8 +160,8 @@ class BookingController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \int  $id
-     * @return \Illuminate\Http\Response
+     * @param  int  $id
+     * @return Response
      */
     public function show($id)
     {
@@ -189,7 +191,7 @@ class BookingController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Booking  $booking
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Booking $booking)
     {
@@ -200,7 +202,7 @@ class BookingController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Booking  $booking
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -233,7 +235,7 @@ class BookingController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Booking  $booking
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
@@ -262,7 +264,7 @@ class BookingController extends Controller
      * Retrieves todays bookings
      *
      * @param  \App\Booking  $booking
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getTodaysBookings()
     {
@@ -293,7 +295,7 @@ class BookingController extends Controller
                 // $query->where('created_by', $user_id);
             }
 
-            return Datatables::of($query)
+            return DataTables::of($query)
                 ->editColumn('table', function ($row) {
                     return ! empty($row->table->name) ? $row->table->name : '--';
                 })

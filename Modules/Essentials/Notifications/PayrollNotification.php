@@ -4,7 +4,9 @@ namespace Modules\Essentials\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Modules\Essentials\Http\Controllers\PayrollController;
 
 class PayrollNotification extends Notification
 {
@@ -42,7 +44,7 @@ class PayrollNotification extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable) {}
 
@@ -88,7 +90,7 @@ class PayrollNotification extends Notification
         return new BroadcastMessage([
             'title' => $title,
             'body' => $msg,
-            'link' => action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'index']),
+            'link' => action([PayrollController::class, 'index']),
         ]);
     }
 }

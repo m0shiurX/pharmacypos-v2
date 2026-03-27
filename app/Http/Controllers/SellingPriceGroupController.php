@@ -9,6 +9,7 @@ use App\VariationGroupPrice;
 use DB;
 use Excel;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -33,7 +34,7 @@ class SellingPriceGroupController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -47,7 +48,7 @@ class SellingPriceGroupController extends Controller
             $price_groups = SellingPriceGroup::where('business_id', $business_id)
                 ->select(['name', 'description', 'id', 'is_active']);
 
-            return Datatables::of($price_groups)
+            return DataTables::of($price_groups)
                 ->addColumn(
                     'action',
                     '<button data-href="{{action(\'App\Http\Controllers\SellingPriceGroupController@edit\', [$id])}}" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary btn-modal" data-container=".view_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
@@ -68,7 +69,7 @@ class SellingPriceGroupController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -82,7 +83,7 @@ class SellingPriceGroupController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -118,7 +119,7 @@ class SellingPriceGroupController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(SellingPriceGroup $sellingPriceGroup)
     {
@@ -128,8 +129,8 @@ class SellingPriceGroupController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\SellingPriceGroup  $sellingPriceGroup
-     * @return \Illuminate\Http\Response
+     * @param  SellingPriceGroup  $sellingPriceGroup
+     * @return Response
      */
     public function edit($id)
     {
@@ -149,8 +150,8 @@ class SellingPriceGroupController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\SellingPriceGroup  $sellingPriceGroup
-     * @return \Illuminate\Http\Response
+     * @param  SellingPriceGroup  $sellingPriceGroup
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -186,8 +187,8 @@ class SellingPriceGroupController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\SellingPriceGroup  $sellingPriceGroup
-     * @return \Illuminate\Http\Response
+     * @param  SellingPriceGroup  $sellingPriceGroup
+     * @return Response
      */
     public function destroy($id)
     {
@@ -220,7 +221,7 @@ class SellingPriceGroupController extends Controller
     /**
      * Show interface to download product price excel file.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function updateProductPrice()
     {
@@ -234,7 +235,7 @@ class SellingPriceGroupController extends Controller
     /**
      * Exports selling price group prices for all the products in xls format
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function export()
     {
@@ -281,7 +282,7 @@ class SellingPriceGroupController extends Controller
     /**
      * Imports the uploaded file to database.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function import(Request $request)
     {

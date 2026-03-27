@@ -18,6 +18,6 @@ class VariationTemplate extends Model
      */
     public function values()
     {
-        return $this->hasMany(\App\VariationValueTemplate::class);
+        return $this->hasMany(VariationValueTemplate::class);
     }
 }

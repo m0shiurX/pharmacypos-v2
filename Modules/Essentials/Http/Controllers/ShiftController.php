@@ -54,7 +54,7 @@ class ShiftController extends Controller
                     'holidays',
                 ]);
 
-            return Datatables::of($shifts)
+            return DataTables::of($shifts)
                 ->editColumn('start_time', function ($row) {
                     $start_time_formated = $this->moduleUtil->format_time($row->start_time);
 
@@ -78,7 +78,7 @@ class ShiftController extends Controller
                     }
                 })
                 ->addColumn('action', function ($row) {
-                    $html = '<a href="#" data-href="'.action([\Modules\Essentials\Http\Controllers\ShiftController::class, 'edit'], [$row->id]).'" data-container="#edit_shift_modal" class="btn-modal btn btn-xs btn-primary"><i class="fas fa-edit" aria-hidden="true"></i> '.__('messages.edit').'</a> &nbsp;<a href="#" data-href="'.action([\Modules\Essentials\Http\Controllers\ShiftController::class, 'getAssignUsers'], [$row->id]).'" data-container="#user_shift_modal" class="btn-modal btn btn-xs btn-success"><i class="fas fa-users" aria-hidden="true"></i> '.__('essentials::lang.assign_users').'</a>';
+                    $html = '<a href="#" data-href="'.action([ShiftController::class, 'edit'], [$row->id]).'" data-container="#edit_shift_modal" class="btn-modal btn btn-xs btn-primary"><i class="fas fa-edit" aria-hidden="true"></i> '.__('messages.edit').'</a> &nbsp;<a href="#" data-href="'.action([ShiftController::class, 'getAssignUsers'], [$row->id]).'" data-container="#user_shift_modal" class="btn-modal btn btn-xs btn-success"><i class="fas fa-users" aria-hidden="true"></i> '.__('essentials::lang.assign_users').'</a>';
 
                     return $html;
                 })

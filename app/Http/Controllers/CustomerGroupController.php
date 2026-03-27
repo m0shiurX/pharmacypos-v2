@@ -6,6 +6,7 @@ use App\CustomerGroup;
 use App\SellingPriceGroup;
 use App\Utils\Util;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Yajra\DataTables\Facades\DataTables;
 
 class CustomerGroupController extends Controller
@@ -23,7 +24,7 @@ class CustomerGroupController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -38,7 +39,7 @@ class CustomerGroupController extends Controller
                 ->leftjoin('selling_price_groups as spg', 'spg.id', '=', 'customer_groups.selling_price_group_id')
                 ->select(['customer_groups.name', 'customer_groups.amount', 'spg.name as selling_price_group', 'customer_groups.id', 'price_calculation_type']);
 
-            return Datatables::of($customer_group)
+            return DataTables::of($customer_group)
                 ->addColumn(
                     'action',
                     '@can("customer.update")
@@ -64,7 +65,7 @@ class CustomerGroupController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -81,7 +82,7 @@ class CustomerGroupController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -114,8 +115,8 @@ class CustomerGroupController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CustomerGroup  $customerGroup
-     * @return \Illuminate\Http\Response
+     * @param  CustomerGroup  $customerGroup
+     * @return Response
      */
     public function edit($id)
     {
@@ -139,7 +140,7 @@ class CustomerGroupController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -177,7 +178,7 @@ class CustomerGroupController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

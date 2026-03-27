@@ -7,6 +7,7 @@ use App\Transaction;
 use App\User;
 use App\Utils\Util;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 
 class DataController extends Controller
@@ -24,7 +25,7 @@ class DataController extends Controller
     /**
      * Show the restaurant module related details in pos screen.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getPosDetails(Request $request)
     {

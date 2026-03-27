@@ -2,13 +2,21 @@
 
 namespace App\Providers;
 
+use App\Http\AdminlteCustomPresenter;
+use App\Support\Facades\Form;
+use App\Support\Facades\Menu;
+use App\Support\FormBuilder;
+use App\Support\Menu\MenuManager;
 use App\System;
 use App\Utils\ModuleUtil;
+use Carbon\Carbon;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Yajra\DataTables\Facades\DataTables;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -213,23 +221,23 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('form', function () {
-            return new \App\Support\FormBuilder;
+            return new FormBuilder;
         });
 
         $this->app->singleton('menu', function () {
-            $manager = new \App\Support\Menu\MenuManager;
-            $manager->setPresenter('adminltecustom', \App\Http\AdminlteCustomPresenter::class);
+            $manager = new MenuManager;
+            $manager->setPresenter('adminltecustom', AdminlteCustomPresenter::class);
 
             return $manager;
         });
 
         // Register facade aliases (drop-in replacements for removed packages)
         $this->app->booting(function () {
-            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-            $loader->alias('Form', \App\Support\Facades\Form::class);
-            $loader->alias('Menu', \App\Support\Facades\Menu::class);
-            $loader->alias('Carbon', \Carbon\Carbon::class);
-            $loader->alias('Datatables', \Yajra\DataTables\Facades\DataTables::class);
+            $loader = AliasLoader::getInstance();
+            $loader->alias('Form', Form::class);
+            $loader->alias('Menu', Menu::class);
+            $loader->alias('Carbon', Carbon::class);
+            $loader->alias('Datatables', DataTables::class);
         });
     }
 }

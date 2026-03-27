@@ -73,15 +73,15 @@ class EssentialsHolidayController extends Controller
                     ->whereDate('essentials_holidays.start_date', '<=', $end);
             }
 
-            return Datatables::of($holidays)
+            return DataTables::of($holidays)
                 ->addColumn(
                     'action',
                     function ($row) use ($is_admin) {
                         $html = '';
                         if ($is_admin) {
-                            $html .= '<button class="btn btn-xs btn-primary btn-modal" data-container="#add_holiday_modal" data-href="'.action([\Modules\Essentials\Http\Controllers\EssentialsHolidayController::class, 'edit'], [$row->id]).'"><i class="fa fa-edit"></i> '.__('messages.edit').'</button>
+                            $html .= '<button class="btn btn-xs btn-primary btn-modal" data-container="#add_holiday_modal" data-href="'.action([EssentialsHolidayController::class, 'edit'], [$row->id]).'"><i class="fa fa-edit"></i> '.__('messages.edit').'</button>
                             &nbsp;
-                            <button class="btn btn-xs btn-danger delete-holiday" data-href="'.action([\Modules\Essentials\Http\Controllers\EssentialsHolidayController::class, 'destroy'], [$row->id]).'"><i class="fa fa-trash"></i> '.__('messages.delete').'</button>
+                            <button class="btn btn-xs btn-danger delete-holiday" data-href="'.action([EssentialsHolidayController::class, 'destroy'], [$row->id]).'"><i class="fa fa-trash"></i> '.__('messages.delete').'</button>
                             ';
                         }
 

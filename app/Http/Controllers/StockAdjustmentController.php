@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\BusinessLocation;
 use App\Events\StockAdjustmentCreatedOrModified;
+use App\Exceptions\PurchaseSellMismatch;
 use App\PurchaseLine;
 use App\Transaction;
 use App\Utils\ModuleUtil;
@@ -12,6 +13,7 @@ use App\Utils\TransactionUtil;
 use Datatables;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Spatie\Activitylog\Models\Activity;
 
 class StockAdjustmentController extends Controller
@@ -41,7 +43,7 @@ class StockAdjustmentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -133,7 +135,7 @@ class StockAdjustmentController extends Controller
                 })
                 ->setRowAttr([
                     'data-href' => function ($row) {
-                        return action([\App\Http\Controllers\StockAdjustmentController::class, 'show'], [$row->id]);
+                        return action([StockAdjustmentController::class, 'show'], [$row->id]);
                     }, ])
                 ->rawColumns(['final_total', 'action', 'total_amount_recovered'])
                 ->make(true);
@@ -145,7 +147,7 @@ class StockAdjustmentController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -157,7 +159,7 @@ class StockAdjustmentController extends Controller
 
         // Check if subscribed or not
         if (! $this->moduleUtil->isSubscribed($business_id)) {
-            return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\StockAdjustmentController::class, 'index']));
+            return $this->moduleUtil->expiredResponse(action([StockAdjustmentController::class, 'index']));
         }
 
         $business_locations = BusinessLocation::forDropdown($business_id);
@@ -169,7 +171,7 @@ class StockAdjustmentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -185,7 +187,7 @@ class StockAdjustmentController extends Controller
 
             // Check if subscribed or not
             if (! $this->moduleUtil->isSubscribed($business_id)) {
-                return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\StockAdjustmentController::class, 'index']));
+                return $this->moduleUtil->expiredResponse(action([StockAdjustmentController::class, 'index']));
             }
 
             $user_id = $request->session()->get('user.id');
@@ -256,7 +258,7 @@ class StockAdjustmentController extends Controller
             \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
             $msg = trans('messages.something_went_wrong');
 
-            if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
+            if (get_class($e) == PurchaseSellMismatch::class) {
                 $msg = $e->getMessage();
             }
 
@@ -272,7 +274,7 @@ class StockAdjustmentController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -303,7 +305,7 @@ class StockAdjustmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Transaction $stockAdjustment)
     {
@@ -313,7 +315,7 @@ class StockAdjustmentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, Transaction $stockAdjustment)
     {
@@ -324,7 +326,7 @@ class StockAdjustmentController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
@@ -383,7 +385,7 @@ class StockAdjustmentController extends Controller
     /**
      * Return product rows
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getProductRow(Request $request)
     {
@@ -500,7 +502,7 @@ class StockAdjustmentController extends Controller
             \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
             $msg = trans('messages.something_went_wrong');
 
-            if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
+            if (get_class($e) == PurchaseSellMismatch::class) {
                 $msg = $e->getMessage();
             }
 

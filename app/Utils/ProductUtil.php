@@ -1725,7 +1725,7 @@ class ProductUtil extends Util
         // Only include previous purchase rate for business owners
         $business_id = request()->session()->get('user.business_id');
         $current_user_id = auth()->id();
-        $business = \App\Business::find($business_id);
+        $business = Business::find($business_id);
 
         if ($business && $business->owner_id == $current_user_id) {
             $query->addSelect(DB::raw('(SELECT pl.purchase_price_inc_tax FROM purchase_lines pl 

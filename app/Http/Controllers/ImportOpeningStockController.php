@@ -11,6 +11,7 @@ use App\Variation;
 use DB;
 use Excel;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ImportOpeningStockController extends Controller
 {
@@ -33,7 +34,7 @@ class ImportOpeningStockController extends Controller
     /**
      * Display import product screen.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -64,7 +65,7 @@ class ImportOpeningStockController extends Controller
     /**
      * Imports the uploaded file to database.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {

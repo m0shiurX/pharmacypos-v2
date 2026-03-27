@@ -10,7 +10,9 @@ use App\Restaurant\Booking;
 use App\Transaction;
 use App\Utils\NotificationUtil;
 use App\Utils\TransactionUtil;
+use App\Utils\Util;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Notification;
 
 class NotificationController extends Controller
@@ -34,7 +36,7 @@ class NotificationController extends Controller
     /**
      * Display a notification view.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getTemplate($id, $template_for)
     {
@@ -91,7 +93,7 @@ class NotificationController extends Controller
     /**
      * Sends notifications to customer and supplier
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function send(Request $request)
     {
@@ -247,7 +249,7 @@ class NotificationController extends Controller
             ];
 
             // Check if customer has any due amount before sending SMS
-            $util = new \App\Utils\Util;
+            $util = new Util;
             $due_amount = $util->getContactDue($contact->id, $business_id);
 
             if ($due_amount <= 0) {

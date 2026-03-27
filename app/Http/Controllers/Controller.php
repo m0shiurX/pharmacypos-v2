@@ -5,7 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
+use Mpdf\Config\ConfigVariables;
+use Mpdf\Config\FontVariables;
+use Mpdf\HTMLParserMode;
+use Mpdf\Mpdf;
 
 class Controller extends BaseController
 {
@@ -36,7 +41,7 @@ class Controller extends BaseController
      * Returns a Unauthorized response.
      *
      * @param  string  $message
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function respondUnauthorized($message = 'Unauthorized action.')
     {
@@ -48,7 +53,7 @@ class Controller extends BaseController
      * Returns a went wrong response.
      *
      * @param  object  $exception  = null
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function respondWentWrong($exception = null)
     {
@@ -64,7 +69,7 @@ class Controller extends BaseController
      * Returns a 200 response.
      *
      * @param  object  $message  = null
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function respondSuccess($message = null, $additional_data = [])
     {
@@ -82,7 +87,7 @@ class Controller extends BaseController
      * Returns a 200 response.
      *
      * @param  array  $data
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function respond($data)
     {
@@ -93,19 +98,19 @@ class Controller extends BaseController
      * Returns new mpdf instance
      *
      * @param  string  $orientation  'P' for portrait (default), 'L' for landscape
-     * @return \Mpdf\Mpdf
+     * @return Mpdf
      */
     public function getMpdf($orientation = 'P')
     {
         // Load default font directories and font data
-        $defaultConfig = (new \Mpdf\Config\ConfigVariables)->getDefaults();
+        $defaultConfig = (new ConfigVariables)->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
 
-        $defaultFontConfig = (new \Mpdf\Config\FontVariables)->getDefaults();
+        $defaultFontConfig = (new FontVariables)->getDefaults();
         $fontData = $defaultFontConfig['fontdata'] ?? []; // ensure array
 
         // Create mPDF instance
-        $mpdf = new \Mpdf\Mpdf([
+        $mpdf = new Mpdf([
             'tempDir' => public_path('uploads/temp'),
             'mode' => 'utf-8',
             'autoScriptToLang' => true,
@@ -140,7 +145,7 @@ class Controller extends BaseController
                              -0.3px 0 0 currentColor; /* fake bolding */
             }
         </style>
-    ', \Mpdf\HTMLParserMode::HEADER_CSS);
+    ', HTMLParserMode::HEADER_CSS);
 
         return $mpdf;
     }

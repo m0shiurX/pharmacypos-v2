@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
+use Modules\Crm\Entities\CrmContact;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -48,7 +49,7 @@ class User extends Authenticatable
      */
     public function business()
     {
-        return $this->belongsTo(\App\Business::class);
+        return $this->belongsTo(Business::class);
     }
 
     public function scopeUser($query)
@@ -63,7 +64,7 @@ class User extends Authenticatable
      */
     public function contactAccess()
     {
-        return $this->belongsToMany(\App\Contact::class, 'user_contact_access');
+        return $this->belongsToMany(Contact::class, 'user_contact_access');
     }
 
     /**
@@ -71,7 +72,7 @@ class User extends Authenticatable
      */
     public function documentsAndnote()
     {
-        return $this->morphMany(\App\DocumentAndNote::class, 'notable');
+        return $this->morphMany(DocumentAndNote::class, 'notable');
     }
 
     /**
@@ -286,14 +287,14 @@ class User extends Authenticatable
 
     public function media()
     {
-        return $this->morphOne(\App\Media::class, 'model');
+        return $this->morphOne(Media::class, 'model');
     }
 
     /**
      * Find the user instance for the given username.
      *
      * @param  string  $username
-     * @return \App\User
+     * @return User
      */
     public function findForPassport($username)
     {
@@ -305,7 +306,7 @@ class User extends Authenticatable
      */
     public function contact()
     {
-        return $this->belongsTo(\Modules\Crm\Entities\CrmContact::class, 'crm_contact_id');
+        return $this->belongsTo(CrmContact::class, 'crm_contact_id');
     }
 
     /**

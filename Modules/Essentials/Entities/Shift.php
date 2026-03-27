@@ -31,7 +31,7 @@ class Shift extends Model
 
     public function user_shifts($value = '')
     {
-        return $this->hasMany(\Modules\Essentials\Entities\EssentialsUserShift::class, 'essentials_shift_id');
+        return $this->hasMany(EssentialsUserShift::class, 'essentials_shift_id');
     }
 
     public static function getGivenShiftInfo($business_id, $shift_id)

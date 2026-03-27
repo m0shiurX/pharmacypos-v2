@@ -120,7 +120,7 @@ class KnowledgeBaseController extends Controller
             ];
         }
 
-        return redirect()->action([\Modules\Essentials\Http\Controllers\KnowledgeBaseController::class, 'index'])->with('status', $output);
+        return redirect()->action([KnowledgeBaseController::class, 'index'])->with('status', $output);
     }
 
     /**
@@ -236,7 +236,7 @@ class KnowledgeBaseController extends Controller
             ];
         }
 
-        return redirect()->action([\Modules\Essentials\Http\Controllers\KnowledgeBaseController::class, 'index'])->with('status', $output);
+        return redirect()->action([KnowledgeBaseController::class, 'index'])->with('status', $output);
     }
 
     /**

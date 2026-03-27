@@ -107,16 +107,16 @@ class EssentialsLeaveController extends Controller
                     ->whereDate('essentials_leaves.start_date', '<=', $end);
             }
 
-            return Datatables::of($leaves)
+            return DataTables::of($leaves)
                 ->addColumn(
                     'action',
                     function ($row) {
                         $html = '';
                         if (auth()->user()->can('essentials.crud_all_leave')) {
-                            $html .= '<button class="btn btn-xs btn-danger delete-leave" data-href="'.action([\Modules\Essentials\Http\Controllers\EssentialsLeaveController::class, 'destroy'], [$row->id]).'"><i class="fa fa-trash"></i> '.__('messages.delete').'</button>';
+                            $html .= '<button class="btn btn-xs btn-danger delete-leave" data-href="'.action([EssentialsLeaveController::class, 'destroy'], [$row->id]).'"><i class="fa fa-trash"></i> '.__('messages.delete').'</button>';
                         }
 
-                        $html .= '&nbsp;<button class="btn btn-xs btn-info btn-modal" data-container=".view_modal"  data-href="'.action([\Modules\Essentials\Http\Controllers\EssentialsLeaveController::class, 'activity'], [$row->id]).'"><i class="fa fa-edit"></i> '.__('essentials::lang.activity').'</button>';
+                        $html .= '&nbsp;<button class="btn btn-xs btn-info btn-modal" data-container=".view_modal"  data-href="'.action([EssentialsLeaveController::class, 'activity'], [$row->id]).'"><i class="fa fa-edit"></i> '.__('essentials::lang.activity').'</button>';
 
                         return $html;
                     }

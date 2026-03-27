@@ -15,11 +15,11 @@ class StockAdjustmentLine extends Model
 
     public function variation()
     {
-        return $this->belongsTo(\App\Variation::class, 'variation_id');
+        return $this->belongsTo(Variation::class, 'variation_id');
     }
 
     public function lot_details()
     {
-        return $this->belongsTo(\App\PurchaseLine::class, 'lot_no_line_id');
+        return $this->belongsTo(PurchaseLine::class, 'lot_no_line_id');
     }
 }

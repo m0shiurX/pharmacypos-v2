@@ -9,6 +9,7 @@ use App\Discount;
 use App\SellingPriceGroup;
 use App\Utils\Util;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -33,7 +34,7 @@ class DiscountController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -52,7 +53,7 @@ class DiscountController extends Controller
                     'priority', 'b.name as brand', 'c.name as category', 'l.name as location', 'discounts.is_active', 'discounts.discount_amount', 'discount_type', ])
                 ->with(['variations', 'variations.product', 'variations.product_variation']);
 
-            return Datatables::of($discounts)
+            return DataTables::of($discounts)
                 ->addColumn(
                     'action',
                     '<button data-href="{{action(\'App\Http\Controllers\DiscountController@edit\', [$id])}}" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary btn-modal" data-container=".discount_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
@@ -102,7 +103,7 @@ class DiscountController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -129,7 +130,7 @@ class DiscountController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -182,8 +183,8 @@ class DiscountController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Discount  $discount
-     * @return \Illuminate\Http\Response
+     * @param  Discount  $discount
+     * @return Response
      */
     public function edit($id)
     {
@@ -225,8 +226,8 @@ class DiscountController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Discount  $discount
-     * @return \Illuminate\Http\Response
+     * @param  Discount  $discount
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -281,8 +282,8 @@ class DiscountController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Discount  $discount
-     * @return \Illuminate\Http\Response
+     * @param  Discount  $discount
+     * @return Response
      */
     public function destroy($id)
     {
@@ -315,7 +316,7 @@ class DiscountController extends Controller
     /**
      * Mass deactivates discounts.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function massDeactivate(Request $request)
     {
@@ -356,7 +357,7 @@ class DiscountController extends Controller
      * Activates the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function activate($id)
     {

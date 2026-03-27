@@ -10,6 +10,7 @@ use App\Transaction;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\Facades\DataTables;
@@ -37,7 +38,7 @@ class PurchaseReturnController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -105,7 +106,7 @@ class PurchaseReturnController extends Controller
                     ->whereDate('transactions.transaction_date', '<=', $end);
             }
 
-            return Datatables::of($purchases_returns)
+            return DataTables::of($purchases_returns)
                 ->addColumn('action', function ($row) {
                     $html = '<div class="btn-group">
                                     <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info tw-w-max dropdown-toggle" 
@@ -116,22 +117,22 @@ class PurchaseReturnController extends Controller
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right" role="menu">';
                     if (! empty($row->return_parent_id)) {
-                        $html .= '<li><a href="'.action([\App\Http\Controllers\PurchaseReturnController::class, 'add'], $row->return_parent_id).'" ><i class="glyphicon glyphicon-edit"></i>'.
+                        $html .= '<li><a href="'.action([PurchaseReturnController::class, 'add'], $row->return_parent_id).'" ><i class="glyphicon glyphicon-edit"></i>'.
                             __('messages.edit').
                             '</a></li>';
                     } else {
-                        $html .= '<li><a href="'.action([\App\Http\Controllers\CombinedPurchaseReturnController::class, 'edit'], $row->id).'" ><i class="glyphicon glyphicon-edit"></i>'.
+                        $html .= '<li><a href="'.action([CombinedPurchaseReturnController::class, 'edit'], $row->id).'" ><i class="glyphicon glyphicon-edit"></i>'.
                             __('messages.edit').
                             '</a></li>';
                     }
 
                     if ($row->payment_status != 'paid') {
-                        $html .= '<li><a href="'.action([\App\Http\Controllers\TransactionPaymentController::class, 'addPayment'], [$row->id]).'" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i>'.__('purchase.add_payment').'</a></li>';
+                        $html .= '<li><a href="'.action([TransactionPaymentController::class, 'addPayment'], [$row->id]).'" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i>'.__('purchase.add_payment').'</a></li>';
                     }
 
-                    $html .= '<li><a href="'.action([\App\Http\Controllers\TransactionPaymentController::class, 'show'], [$row->id]).'" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i>'.__('purchase.view_payments').'</a></li>';
+                    $html .= '<li><a href="'.action([TransactionPaymentController::class, 'show'], [$row->id]).'" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i>'.__('purchase.view_payments').'</a></li>';
 
-                    $html .= '<li><a href="'.action([\App\Http\Controllers\PurchaseReturnController::class, 'destroy'], $row->id).'" class="delete_purchase_return" ><i class="fa fa-trash"></i>'.
+                    $html .= '<li><a href="'.action([PurchaseReturnController::class, 'destroy'], $row->id).'" class="delete_purchase_return" ><i class="fa fa-trash"></i>'.
                         __('messages.delete').
                         '</a></li>';
                     $html .= '</ul></div>';
@@ -158,7 +159,7 @@ class PurchaseReturnController extends Controller
                 ->editColumn('parent_purchase', function ($row) {
                     $html = '';
                     if (! empty($row->parent_purchase)) {
-                        $html = '<a href="#" data-href="'.action([\App\Http\Controllers\PurchaseController::class, 'show'], [$row->return_parent_id]).'" class="btn-modal" data-container=".view_modal">'.$row->parent_purchase.'</a>';
+                        $html = '<a href="#" data-href="'.action([PurchaseController::class, 'show'], [$row->return_parent_id]).'" class="btn-modal" data-container=".view_modal">'.$row->parent_purchase.'</a>';
                     }
 
                     return $html;
@@ -173,7 +174,7 @@ class PurchaseReturnController extends Controller
                         if (auth()->user()->can('purchase.view')) {
                             $return_id = ! empty($row->return_parent_id) ? $row->return_parent_id : $row->id;
 
-                            return action([\App\Http\Controllers\PurchaseReturnController::class, 'show'], [$return_id]);
+                            return action([PurchaseReturnController::class, 'show'], [$return_id]);
                         } else {
                             return '';
                         }
@@ -191,7 +192,7 @@ class PurchaseReturnController extends Controller
     /**
      * Show the form for purchase return.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function add($id)
     {
@@ -225,7 +226,7 @@ class PurchaseReturnController extends Controller
     /**
      * Saves Purchase returns in the database.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -344,7 +345,7 @@ class PurchaseReturnController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -396,7 +397,7 @@ class PurchaseReturnController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

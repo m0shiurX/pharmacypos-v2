@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Contact;
 use App\DocumentAndNote;
 use App\Media;
+use App\User;
 use App\Utils\ModuleUtil;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -29,7 +32,7 @@ class DocumentAndNoteController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -57,7 +60,7 @@ class DocumentAndNoteController extends Controller
             $permissions = $this->__getPermission($business_id, $notable_id, $notable_type);
 
             if (! empty($permissions) && in_array('view', $permissions)) {
-                return Datatables::of($document_note)
+                return DataTables::of($document_note)
                     ->addColumn('action', function ($row) use ($notable_type, $permissions) {
                         $html = '<div class="btn-group">
                                     <button class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-info tw-w-max dropdown-toggle" type="button"  data-toggle="dropdown" aria-expanded="false">
@@ -72,7 +75,7 @@ class DocumentAndNoteController extends Controller
 
                         if (in_array('view', $permissions)) {
                             $html .= '<li>
-                                        <a data-href="'.action([\App\Http\Controllers\DocumentAndNoteController::class, 'show'], [$row->id, 'notable_id' => $row->notable_id, 'notable_type' => $notable_type]).'" class="cursor-pointer view_a_docs_note">
+                                        <a data-href="'.action([DocumentAndNoteController::class, 'show'], [$row->id, 'notable_id' => $row->notable_id, 'notable_type' => $notable_type]).'" class="cursor-pointer view_a_docs_note">
                                             <i class="fa fa-eye"></i>
                                             '.__('messages.view').'
                                         </a>
@@ -80,7 +83,7 @@ class DocumentAndNoteController extends Controller
                         }
                         if (in_array('create', $permissions)) {
                             $html .= '<li>
-                                    <a data-href="'.action([\App\Http\Controllers\DocumentAndNoteController::class, 'edit'], [$row->id, 'notable_id' => $row->notable_id, 'notable_type' => $notable_type]).'"  class="cursor-pointer docs_and_notes_btn">
+                                    <a data-href="'.action([DocumentAndNoteController::class, 'edit'], [$row->id, 'notable_id' => $row->notable_id, 'notable_type' => $notable_type]).'"  class="cursor-pointer docs_and_notes_btn">
                                         <i class="fa fa-edit"></i>
                                         '.__('messages.edit').'
                                     </a>
@@ -88,7 +91,7 @@ class DocumentAndNoteController extends Controller
                         }
                         if (in_array('delete', $permissions)) {
                             $html .= '<li>
-                                    <a data-href="'.action([\App\Http\Controllers\DocumentAndNoteController::class, 'destroy'], [$row->id, 'notable_id' => $row->notable_id, 'notable_type' => $notable_type]).'"  id="delete_docus_note" class="cursor-pointer">
+                                    <a data-href="'.action([DocumentAndNoteController::class, 'destroy'], [$row->id, 'notable_id' => $row->notable_id, 'notable_type' => $notable_type]).'"  id="delete_docus_note" class="cursor-pointer">
                                         <i class="fas fa-trash"></i>
                                         '.__('messages.delete').'
                                     </a>
@@ -125,7 +128,7 @@ class DocumentAndNoteController extends Controller
                                 $icon = '<i class="fas fa-file-image text-primary" data-toggle="tooltip" title="'.$media_tooltip.'"></i>';
                             }
 
-                            $html = '<a data-href="'.action([\App\Http\Controllers\DocumentAndNoteController::class, 'show'], [$row->id, 'notable_id' => $row->notable_id, 'notable_type' => $notable_type]).'" class="cursor-pointer view_a_docs_note text-black">
+                            $html = '<a data-href="'.action([DocumentAndNoteController::class, 'show'], [$row->id, 'notable_id' => $row->notable_id, 'notable_type' => $notable_type]).'" class="cursor-pointer view_a_docs_note text-black">
                                 '.
                                     $row->heading.
                                     '&nbsp;'.
@@ -156,10 +159,10 @@ class DocumentAndNoteController extends Controller
 
         // Define all notable for main app.
         $app_notable = [
-            \App\User::class => [
+            User::class => [
                 'permissions' => ['view', 'create', 'delete'],
             ],
-            \App\Contact::class => [
+            Contact::class => [
                 'permissions' => ['view', 'create', 'delete'],
             ],
         ];
@@ -186,7 +189,7 @@ class DocumentAndNoteController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -202,7 +205,7 @@ class DocumentAndNoteController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -259,7 +262,7 @@ class DocumentAndNoteController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -283,7 +286,7 @@ class DocumentAndNoteController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -306,7 +309,7 @@ class DocumentAndNoteController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -368,7 +371,7 @@ class DocumentAndNoteController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
@@ -412,7 +415,7 @@ class DocumentAndNoteController extends Controller
     /**
      * upload documents in app
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function postMedia(Request $request)
     {
@@ -442,7 +445,7 @@ class DocumentAndNoteController extends Controller
      * get docus & note index page
      * through ajax
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getDocAndNoteIndexPage(Request $request)
     {

@@ -98,7 +98,7 @@ class AttendanceController extends Controller
                 $attendance->where('essentials_attendances.user_id', auth()->user()->id);
             }
 
-            return Datatables::of($attendance)
+            return DataTables::of($attendance)
                 ->addColumn(
                     'action',
                     '@can("essentials.crud_all_attendance") <button data-href="{{action(\'\Modules\Essentials\Http\Controllers\AttendanceController@edit\', [$id])}}" class="btn btn-xs btn-primary btn-modal" data-container="#edit_attendance_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>

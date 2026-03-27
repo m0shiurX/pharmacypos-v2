@@ -9,7 +9,11 @@ use App\System;
 use App\Transaction;
 use App\User;
 use Composer\Semver\Comparator;
+use Illuminate\Http\Response;
 use Module;
+use Modules\Ecommerce\Entities\EcomApiSetting;
+use Modules\Superadmin\Entities\Subscription;
+use Modules\Superadmin\Http\Controllers\SubscriptionController;
 
 class ModuleUtil extends Util
 {
@@ -124,8 +128,8 @@ class ModuleUtil extends Util
      */
     public function isSubscribed($business_id)
     {
-        if ($this->isSuperadminInstalled() && class_exists(\Modules\Superadmin\Entities\Subscription::class)) {
-            $package = \Modules\Superadmin\Entities\Subscription::active_subscription($business_id);
+        if ($this->isSuperadminInstalled() && class_exists(Subscription::class)) {
+            $package = Subscription::active_subscription($business_id);
 
             if (empty($package)) {
                 return false;
@@ -145,12 +149,12 @@ class ModuleUtil extends Util
      */
     public function hasThePermissionInSubscription($business_id, $permission, $callback_function = null)
     {
-        if ($this->isSuperadminInstalled() && class_exists(\Modules\Superadmin\Entities\Subscription::class)) {
+        if ($this->isSuperadminInstalled() && class_exists(Subscription::class)) {
             if (auth()->user()->can('superadmin')) {
                 return true;
             }
 
-            $package = \Modules\Superadmin\Entities\Subscription::active_subscription($business_id);
+            $package = Subscription::active_subscription($business_id);
 
             if (empty($package)) {
                 return false;
@@ -191,7 +195,7 @@ class ModuleUtil extends Util
     {
         $subscribe_url = '#';
         if (class_exists('\Modules\Superadmin\Http\Controllers\SubscriptionController')) {
-            $subscribe_url = action([\Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'index']);
+            $subscribe_url = action([SubscriptionController::class, 'index']);
         }
 
         $response_array = [
@@ -300,10 +304,10 @@ class ModuleUtil extends Util
      */
     public function isQuotaAvailable($type, $business_id, $total_rows = 0)
     {
-        $is_available = $this->isSuperadminInstalled() && class_exists(\Modules\Superadmin\Entities\Subscription::class);
+        $is_available = $this->isSuperadminInstalled() && class_exists(Subscription::class);
 
         if ($is_available) {
-            $package = \Modules\Superadmin\Entities\Subscription::active_subscription($business_id);
+            $package = Subscription::active_subscription($business_id);
 
             if (empty($package)) {
                 return false;
@@ -370,7 +374,7 @@ class ModuleUtil extends Util
      * @param  string  $type
      * @param  int  $business_id
      * @param  string  $redirect_url  = null
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function quotaExpiredResponse($type, $business_id, $redirect_url = null)
     {
@@ -454,11 +458,11 @@ class ModuleUtil extends Util
 
     public function getApiSettings($api_token)
     {
-        if (! class_exists(\Modules\Ecommerce\Entities\EcomApiSetting::class)) {
+        if (! class_exists(EcomApiSetting::class)) {
             return null;
         }
 
-        $settings = \Modules\Ecommerce\Entities\EcomApiSetting::where('api_token', $api_token)
+        $settings = EcomApiSetting::where('api_token', $api_token)
             ->first();
 
         return $settings;

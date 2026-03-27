@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Business;
 use App\Currency;
 use App\Notifications\TestEmailNotification;
+use App\Rules\ReCaptcha;
 use App\System;
 use App\TaxRate;
 use App\Unit;
@@ -15,9 +16,11 @@ use App\Utils\RestaurantUtil;
 use Carbon\Carbon;
 use DateTimeZone;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Modules\Superadmin\Entities\Package;
 use Spatie\Permission\Models\Permission;
 
 class BusinessController extends Controller
@@ -83,7 +86,7 @@ class BusinessController extends Controller
     /**
      * Shows registration form
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getRegister()
     {
@@ -118,7 +121,7 @@ class BusinessController extends Controller
     /**
      * Handles the registration of a new business and it's owner
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function postRegister(Request $request)
     {
@@ -168,7 +171,7 @@ class BusinessController extends Controller
 
             if (config('constants.enable_recaptcha')) {
                 $recaptcha_validator = Validator::make($request->all(), [
-                    'g-recaptcha-response' => ['required', new \App\Rules\ReCaptcha],
+                    'g-recaptcha-response' => ['required', new ReCaptcha],
                 ]);
                 if ($recaptcha_validator->fails()) {
                     return back()->withErrors($recaptcha_validator)->withInput();
@@ -248,9 +251,9 @@ class BusinessController extends Controller
             $package_id = $request->get('package_id', null);
             if (
                 $is_installed_superadmin && ! empty($package_id) && (config('app.env') != 'demo')
-                && class_exists(\Modules\Superadmin\Entities\Package::class)
+                && class_exists(Package::class)
             ) {
-                $package = \Modules\Superadmin\Entities\Package::find($package_id);
+                $package = Package::find($package_id);
                 if (! empty($package)) {
                     Auth::login($user);
 
@@ -280,7 +283,7 @@ class BusinessController extends Controller
     /**
      * Handles the validation username
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function postCheckUsername(Request $request)
     {
@@ -304,7 +307,7 @@ class BusinessController extends Controller
     /**
      * Shows business settings form
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getBusinessSettings()
     {
@@ -375,7 +378,7 @@ class BusinessController extends Controller
     /**
      * Updates business settings
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function postBusinessSettings(Request $request)
     {
@@ -590,7 +593,7 @@ class BusinessController extends Controller
     /**
      * Handles the validation email
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function postCheckEmail(Request $request)
     {
@@ -641,7 +644,7 @@ class BusinessController extends Controller
     /**
      * Handles the testing of email configuration
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function testEmailConfiguration(Request $request)
     {
@@ -670,7 +673,7 @@ class BusinessController extends Controller
     /**
      * Handles the testing of sms configuration
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function testSmsConfiguration(Request $request)
     {

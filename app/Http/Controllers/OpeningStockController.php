@@ -9,6 +9,7 @@ use App\Transaction;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class OpeningStockController extends Controller
@@ -36,7 +37,7 @@ class OpeningStockController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function add($product_id)
     {
@@ -135,7 +136,7 @@ class OpeningStockController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function save(Request $request)
     {

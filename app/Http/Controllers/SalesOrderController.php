@@ -9,6 +9,7 @@ use App\Utils\BusinessUtil;
 use App\Utils\TransactionUtil;
 use App\Utils\Util;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class SalesOrderController extends Controller
 {
@@ -48,7 +49,7 @@ class SalesOrderController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -93,7 +94,7 @@ class SalesOrderController extends Controller
      *
      * to edit sales order status
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getEditSalesOrderStatus(Request $request, $id)
     {
@@ -118,7 +119,7 @@ class SalesOrderController extends Controller
     /**
      * updare sales order status
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function postEditSalesOrderStatus(Request $request, $id)
     {

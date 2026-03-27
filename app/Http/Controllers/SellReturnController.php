@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\BusinessLocation;
 use App\Contact;
 use App\Events\TransactionPaymentDeleted;
+use App\Exceptions\PurchaseSellMismatch;
 use App\Transaction;
 use App\TransactionSellLine;
 use App\User;
@@ -14,7 +15,10 @@ use App\Utils\ModuleUtil;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Modules\ZatcaIntegrationKsa\Entities\ZatcaDocument;
+use Modules\ZatcaIntegrationKsa\Http\Controllers\ZatcaInvoiceController;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -51,7 +55,7 @@ class SellReturnController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -155,7 +159,7 @@ class SellReturnController extends Controller
                 }
             }
 
-            return Datatables::of($sells, $is_zatca)
+            return DataTables::of($sells, $is_zatca)
                 ->addColumn(
                     'action',
                     function ($row) use ($is_zatca) {
@@ -169,18 +173,18 @@ class SellReturnController extends Controller
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-left" role="menu">
                                     <li>
-                                        <a class="download-xml" href="'.action([\Modules\ZatcaIntegrationKsa\Http\Controllers\ZatcaInvoiceController::class, 'downloadXml'], [$row->id]).'">
+                                        <a class="download-xml" href="'.action([ZatcaInvoiceController::class, 'downloadXml'], [$row->id]).'">
                                             <i class="fas fa-file-download"></i> '.__('zatcaintegrationksa::lang.download_xml').'
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="download-a3-pdf" target="_blank"  href="'.action([\Modules\ZatcaIntegrationKsa\Http\Controllers\ZatcaInvoiceController::class, 'return_print_pdf'], [$row->id]).'">
+                                        <a class="download-a3-pdf" target="_blank"  href="'.action([ZatcaInvoiceController::class, 'return_print_pdf'], [$row->id]).'">
                                             <i class="fas fa-file-download"></i> '.__('zatcaintegrationksa::lang.download_a3_pdf').'
                                         </a>
                                     </li>
                                 </ul></div>';
                             } else {
-                                return '<a href="'.action([\Modules\ZatcaIntegrationKsa\Http\Controllers\ZatcaInvoiceController::class, 'sync_sale_return'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-info tw-w-max return_sale_sycs">'.__('zatcaintegrationksa::lang.sync').'</a>';
+                                return '<a href="'.action([ZatcaInvoiceController::class, 'sync_sale_return'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-info tw-w-max return_sale_sycs">'.__('zatcaintegrationksa::lang.sync').'</a>';
                             }
                         }
                         $returnString = '<div class="btn-group">
@@ -238,7 +242,7 @@ class SellReturnController extends Controller
                     '<span class="display_currency final_total" data-currency_symbol="true" data-orig-value="{{$final_total}}">{{$final_total}}</span>'
                 )
                 ->editColumn('parent_sale', function ($row) {
-                    return '<button type="button" class="btn btn-link btn-modal" data-container=".view_modal" data-href="'.action([\App\Http\Controllers\SellController::class, 'show'], [$row->parent_sale_id]).'">'.$row->parent_sale.'</button>';
+                    return '<button type="button" class="btn btn-link btn-modal" data-container=".view_modal" data-href="'.action([SellController::class, 'show'], [$row->parent_sale_id]).'">'.$row->parent_sale.'</button>';
                 })
                 ->editColumn('name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif {{$name}}')
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
@@ -259,7 +263,7 @@ class SellReturnController extends Controller
                         } elseif ($row->zatca_status == 'success') {
                             $status = '<small class="label bg-light-green tw-dw-btn-xs no-print">'.ucfirst($row->zatca_status).'</small>';
                         } elseif ($row->zatca_status == 'failed') {
-                            $lastDoc = \Modules\ZatcaIntegrationKsa\Entities\ZatcaDocument::where('transaction_id', $row->id)
+                            $lastDoc = ZatcaDocument::where('transaction_id', $row->id)
                                 ->where('sent_to_zatca_status', 'failed')
                                 ->orderBy('created_at', 'desc')
                                 ->latest()
@@ -270,7 +274,7 @@ class SellReturnController extends Controller
                                 $status = '<small class="label bg-red tw-dw-btn-xs no-print mb-1">'.ucfirst($row->zatca_status).'</small><br><span class="text-danger">'.$safeMsg.'</span>';
                             } elseif ($lastDoc) {
                                 $label = '<small class="label bg-red tw-dw-btn-xs no-print mb-1">'.ucfirst($row->zatca_status).'</small>';
-                                $button = '<a href="'.action([\Modules\ZatcaIntegrationKsa\Http\Controllers\ZatcaInvoiceController::class, 'showInvoiceError'], ['id' => $row->id]).'" class="btn btn-xs btn-danger no-print mt-2 status_fail" style="margin-top: 10px;">'.e(__('zatcaintegrationksa::lang.view_error')).'</a>';
+                                $button = '<a href="'.action([ZatcaInvoiceController::class, 'showInvoiceError'], ['id' => $row->id]).'" class="btn btn-xs btn-danger no-print mt-2 status_fail" style="margin-top: 10px;">'.e(__('zatcaintegrationksa::lang.view_error')).'</a>';
                                 $status = $label.'<br>'.$button;
                             }
                         }
@@ -281,7 +285,7 @@ class SellReturnController extends Controller
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can('sell.view')) {
-                            return action([\App\Http\Controllers\SellReturnController::class, 'show'], [$row->parent_sale_id]);
+                            return action([SellReturnController::class, 'show'], [$row->parent_sale_id]);
                         } else {
                             return '';
                         }
@@ -300,7 +304,7 @@ class SellReturnController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     // public function create()
     // {
@@ -325,7 +329,7 @@ class SellReturnController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function add($id)
     {
@@ -359,7 +363,7 @@ class SellReturnController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -375,7 +379,7 @@ class SellReturnController extends Controller
 
                 // Check if subscribed or not
                 if (! $this->moduleUtil->isSubscribed($business_id)) {
-                    return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\SellReturnController::class, 'index']));
+                    return $this->moduleUtil->expiredResponse(action([SellReturnController::class, 'index']));
                 }
 
                 $user_id = $request->session()->get('user.id');
@@ -399,7 +403,7 @@ class SellReturnController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
+            if (get_class($e) == PurchaseSellMismatch::class) {
                 $msg = $e->getMessage();
             } else {
                 \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
@@ -418,7 +422,7 @@ class SellReturnController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -490,7 +494,7 @@ class SellReturnController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
@@ -550,7 +554,7 @@ class SellReturnController extends Controller
             } catch (\Exception $e) {
                 DB::rollBack();
 
-                if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
+                if (get_class($e) == PurchaseSellMismatch::class) {
                     $msg = $e->getMessage();
                 } else {
                     \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
@@ -620,7 +624,7 @@ class SellReturnController extends Controller
     /**
      * Prints invoice for sell
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function printInvoice(Request $request, $transaction_id)
     {
@@ -688,7 +692,7 @@ class SellReturnController extends Controller
         }
 
         return ['success' => 1,
-            'redirect_url' => action([\App\Http\Controllers\SellReturnController::class, 'add'], [$sell->id]),
+            'redirect_url' => action([SellReturnController::class, 'add'], [$sell->id]),
         ];
     }
 }

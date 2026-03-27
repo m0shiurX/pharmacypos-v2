@@ -2,6 +2,7 @@
 
 namespace Modules\Essentials\Http\Controllers;
 
+use App\Http\Controllers\Install\ModulesController;
 use App\System;
 use Composer\Semver\Comparator;
 use Illuminate\Http\Response;
@@ -47,7 +48,7 @@ class InstallController extends Controller
         ];
 
         return redirect()
-            ->action([\App\Http\Controllers\Install\ModulesController::class, 'index'])
+            ->action([ModulesController::class, 'index'])
             ->with('status', $output);
     }
 
@@ -99,7 +100,7 @@ class InstallController extends Controller
             ];
 
             return redirect()
-                ->action([\App\Http\Controllers\Install\ModulesController::class, 'index'])
+                ->action([ModulesController::class, 'index'])
                 ->with('status', $output);
         } catch (Exception $e) {
             DB::rollBack();

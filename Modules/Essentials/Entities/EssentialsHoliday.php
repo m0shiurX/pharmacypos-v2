@@ -2,6 +2,7 @@
 
 namespace Modules\Essentials\Entities;
 
+use App\BusinessLocation;
 use Illuminate\Database\Eloquent\Model;
 
 class EssentialsHoliday extends Model
@@ -15,6 +16,6 @@ class EssentialsHoliday extends Model
 
     public function location()
     {
-        return $this->belongsTo(\App\BusinessLocation::class, 'location_id');
+        return $this->belongsTo(BusinessLocation::class, 'location_id');
     }
 }

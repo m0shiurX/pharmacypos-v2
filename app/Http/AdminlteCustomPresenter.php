@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Support\Menu\MenuItem;
 use App\Support\Menu\Presenter;
 
 class AdminlteCustomPresenter extends Presenter
@@ -98,7 +99,7 @@ class AdminlteCustomPresenter extends Presenter
      * Note: This example doesn't directly implement a multi-level dropdown, as it wasn't specified, but you could extend
      * the functionality similarly to `getMenuWithDropDownWrapper`, adjusting for deeper nesting.
      *
-     * @param  \App\Support\Menu\MenuItem  $item
+     * @param  MenuItem  $item
      * @return string
      */
     public function getMultiLevelDropdownWrapper($item)
@@ -110,7 +111,7 @@ class AdminlteCustomPresenter extends Presenter
     /**
      * Get child menu items.
      *
-     * @param  \App\Support\Menu\MenuItem  $item
+     * @param  MenuItem  $item
      * @return string
      */
     public function getChildMenuItems($item)

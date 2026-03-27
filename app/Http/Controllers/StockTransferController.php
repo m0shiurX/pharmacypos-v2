@@ -13,6 +13,7 @@ use App\Utils\TransactionUtil;
 use Datatables;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Spatie\Activitylog\Models\Activity;
 
 class StockTransferController extends Controller
@@ -47,7 +48,7 @@ class StockTransferController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -96,9 +97,9 @@ class StockTransferController extends Controller
 
             return Datatables::of($stock_transfers)
                 ->addColumn('action', function ($row) use ($edit_days) {
-                    $html = '<button type="button" title="'.__('stock_adjustment.view_details').'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-accent btn-modal" data-container=".view_modal" data-href="'.action([\App\Http\Controllers\StockTransferController::class, 'show'], [$row->id]).'"><i class="fa fa-eye" aria-hidden="true"></i> '.__('messages.view').'</button>';
+                    $html = '<button type="button" title="'.__('stock_adjustment.view_details').'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-accent btn-modal" data-container=".view_modal" data-href="'.action([StockTransferController::class, 'show'], [$row->id]).'"><i class="fa fa-eye" aria-hidden="true"></i> '.__('messages.view').'</button>';
 
-                    $html .= ' <a href="#" class="print-invoice tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info" data-href="'.action([\App\Http\Controllers\StockTransferController::class, 'printInvoice'], [$row->id]).'"><i class="fa fa-print" aria-hidden="true"></i> '.__('messages.print').'</a>';
+                    $html .= ' <a href="#" class="print-invoice tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info" data-href="'.action([StockTransferController::class, 'printInvoice'], [$row->id]).'"><i class="fa fa-print" aria-hidden="true"></i> '.__('messages.print').'</a>';
 
                     $date = \Carbon::parse($row->transaction_date)
                         ->addDays($edit_days);
@@ -106,12 +107,12 @@ class StockTransferController extends Controller
 
                     if ($date->gte($today) && auth()->user()->can('purchase.delete')) {
                         $html .= '&nbsp;
-                        <button type="button" data-href="'.action([\App\Http\Controllers\StockTransferController::class, 'destroy'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-error delete_stock_transfer"><i class="fa fa-trash" aria-hidden="true"></i> '.__('messages.delete').'</button>';
+                        <button type="button" data-href="'.action([StockTransferController::class, 'destroy'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-error delete_stock_transfer"><i class="fa fa-trash" aria-hidden="true"></i> '.__('messages.delete').'</button>';
                     }
 
                     if ($row->status != 'final' && auth()->user()->can('purchase.update')) {
                         $html .= '&nbsp;
-                        <a href="'.action([\App\Http\Controllers\StockTransferController::class, 'edit'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-primary"><i class="fa fa-edit" aria-hidden="true"></i> '.__('messages.edit').'</a>';
+                        <a href="'.action([StockTransferController::class, 'edit'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-primary"><i class="fa fa-edit" aria-hidden="true"></i> '.__('messages.edit').'</a>';
                     }
 
                     return $html;
@@ -134,7 +135,7 @@ class StockTransferController extends Controller
                     $row->status = $row->status == 'final' ? 'completed' : $row->status;
                     $status = $statuses[$row->status];
                     $status_color = ! empty($this->status_colors[$row->status]) ? $this->status_colors[$row->status] : 'bg-gray';
-                    $status = $row->status != 'completed' ? '<a href="#" class="stock_transfer_status" data-status="'.$row->status.'" data-href="'.action([\App\Http\Controllers\StockTransferController::class, 'updateStatus'], [$row->id]).'"><span class="label '.$status_color.'">'.$statuses[$row->status].'</span></a>' : '<span class="label '.$status_color.'">'.$statuses[$row->status].'</span>';
+                    $status = $row->status != 'completed' ? '<a href="#" class="stock_transfer_status" data-status="'.$row->status.'" data-href="'.action([StockTransferController::class, 'updateStatus'], [$row->id]).'"><span class="label '.$status_color.'">'.$statuses[$row->status].'</span></a>' : '<span class="label '.$status_color.'">'.$statuses[$row->status].'</span>';
 
                     return $status;
                 })
@@ -142,7 +143,7 @@ class StockTransferController extends Controller
                 ->rawColumns(['final_total', 'action', 'shipping_charges', 'status'])
                 ->setRowAttr([
                     'data-href' => function ($row) {
-                        return action([\App\Http\Controllers\StockTransferController::class, 'show'], [$row->id]);
+                        return action([StockTransferController::class, 'show'], [$row->id]);
                     }, ])
                 ->make(true);
         }
@@ -153,7 +154,7 @@ class StockTransferController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -165,7 +166,7 @@ class StockTransferController extends Controller
 
         // Check if subscribed or not
         if (! $this->moduleUtil->isSubscribed($business_id)) {
-            return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\StockTransferController::class, 'index']));
+            return $this->moduleUtil->expiredResponse(action([StockTransferController::class, 'index']));
         }
 
         $business_locations = BusinessLocation::forDropdown($business_id);
@@ -188,7 +189,7 @@ class StockTransferController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -201,7 +202,7 @@ class StockTransferController extends Controller
 
             // Check if subscribed or not
             if (! $this->moduleUtil->isSubscribed($business_id)) {
-                return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\StockTransferController::class, 'index']));
+                return $this->moduleUtil->expiredResponse(action([StockTransferController::class, 'index']));
             }
 
             DB::beginTransaction();
@@ -373,7 +374,7 @@ class StockTransferController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -436,7 +437,7 @@ class StockTransferController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
@@ -553,8 +554,8 @@ class StockTransferController extends Controller
     /**
      * Checks if ref_number and supplier combination already exists.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function printInvoice($id)
     {
@@ -605,7 +606,7 @@ class StockTransferController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -661,7 +662,7 @@ class StockTransferController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -674,7 +675,7 @@ class StockTransferController extends Controller
 
             // Check if subscribed or not
             if (! $this->moduleUtil->isSubscribed($business_id)) {
-                return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\StockTransferController::class, 'index']));
+                return $this->moduleUtil->expiredResponse(action([StockTransferController::class, 'index']));
             }
 
             $business_id = request()->session()->get('user.business_id');
@@ -873,7 +874,7 @@ class StockTransferController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function updateStatus(Request $request, $id)
     {

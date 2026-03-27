@@ -59,7 +59,7 @@ class Business extends Model
      */
     public function owner()
     {
-        return $this->hasOne(\App\User::class, 'id', 'owner_id');
+        return $this->hasOne(User::class, 'id', 'owner_id');
     }
 
     /**
@@ -67,7 +67,7 @@ class Business extends Model
      */
     public function currency()
     {
-        return $this->belongsTo(\App\Currency::class);
+        return $this->belongsTo(Currency::class);
     }
 
     /**
@@ -75,7 +75,7 @@ class Business extends Model
      */
     public function locations()
     {
-        return $this->hasMany(\App\BusinessLocation::class);
+        return $this->hasMany(BusinessLocation::class);
     }
 
     /**
@@ -83,7 +83,7 @@ class Business extends Model
      */
     public function printers()
     {
-        return $this->hasMany(\App\Printer::class);
+        return $this->hasMany(Printer::class);
     }
 
     /**
@@ -95,7 +95,7 @@ class Business extends Model
             return $this->hasMany('\Modules\Superadmin\Entities\Subscription');
         }
 
-        return $this->hasMany(\App\Transaction::class)->whereRaw('1 = 0');
+        return $this->hasMany(Transaction::class)->whereRaw('1 = 0');
     }
 
     /**

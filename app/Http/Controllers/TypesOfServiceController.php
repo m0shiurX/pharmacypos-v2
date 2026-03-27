@@ -7,6 +7,7 @@ use App\SellingPriceGroup;
 use App\TypesOfService;
 use App\Utils\Util;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Yajra\DataTables\Facades\DataTables;
 
 class TypesOfServiceController extends Controller
@@ -30,7 +31,7 @@ class TypesOfServiceController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -44,7 +45,7 @@ class TypesOfServiceController extends Controller
             $tax_rates = TypesOfService::where('business_id', $business_id)
                 ->select('*');
 
-            return Datatables::of($tax_rates)
+            return DataTables::of($tax_rates)
                 ->addColumn(
                     'action',
                     '<button data-href="{{action(\'App\Http\Controllers\TypesOfServiceController@edit\', [$id])}}" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary btn-modal" data-container=".type_of_service_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
@@ -71,7 +72,7 @@ class TypesOfServiceController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -90,7 +91,7 @@ class TypesOfServiceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -126,7 +127,7 @@ class TypesOfServiceController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(TypesOfService $typesOfService)
     {
@@ -136,8 +137,8 @@ class TypesOfServiceController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\TypesOfService  $typesOfService
-     * @return \Illuminate\Http\Response
+     * @param  TypesOfService  $typesOfService
+     * @return Response
      */
     public function edit($id)
     {
@@ -159,8 +160,8 @@ class TypesOfServiceController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\TypesOfService  $typesOfService
-     * @return \Illuminate\Http\Response
+     * @param  TypesOfService  $typesOfService
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -199,8 +200,8 @@ class TypesOfServiceController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\TypesOfService  $typesOfService
-     * @return \Illuminate\Http\Response
+     * @param  TypesOfService  $typesOfService
+     * @return Response
      */
     public function destroy($id)
     {

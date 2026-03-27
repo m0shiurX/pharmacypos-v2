@@ -2,6 +2,7 @@
 
 namespace Modules\Essentials\Entities;
 
+use App\User;
 use App\Utils\Util;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,7 +24,7 @@ class EssentialsAllowanceAndDeduction extends Model
 
     public function employees()
     {
-        return $this->belongsToMany(\App\User::class, 'essentials_user_allowance_and_deductions', 'allowance_deduction_id', 'user_id');
+        return $this->belongsToMany(User::class, 'essentials_user_allowance_and_deductions', 'allowance_deduction_id', 'user_id');
     }
 
     public static function forDropdown($business_id)

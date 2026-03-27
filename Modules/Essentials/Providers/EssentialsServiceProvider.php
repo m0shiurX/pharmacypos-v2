@@ -3,9 +3,11 @@
 namespace Modules\Essentials\Providers;
 
 use App\Utils\ModuleUtil;
+use App\Utils\Util;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Modules\Essentials\Console\AutoClockOutUser;
 use Modules\Essentials\Entities\EssentialsAttendance;
 
 class EssentialsServiceProvider extends ServiceProvider
@@ -22,7 +24,7 @@ class EssentialsServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
 
-        view::composer([
+        View::composer([
             'essentials::layouts.partials.header_part',
             'report.profit_loss',
         ], function ($view) {
@@ -38,7 +40,7 @@ class EssentialsServiceProvider extends ServiceProvider
             $view->with(compact('__is_essentials_enabled'));
         });
 
-        view::composer(['essentials::layouts.partials.header_part'], function ($view) {
+        View::composer(['essentials::layouts.partials.header_part'], function ($view) {
             $is_employee_allowed = false;
             $clock_in = null;
 
@@ -66,11 +68,11 @@ class EssentialsServiceProvider extends ServiceProvider
             $view->with(compact('is_employee_allowed', 'clock_in'));
         });
 
-        view::composer([
+        View::composer([
             'essentials::attendance.clock_in_clock_out_modal',
             'essentials::attendance.create',
         ], function ($view) {
-            $util = new \App\Utils\Util;
+            $util = new Util;
             $ip_address = $util->getUserIpAddr();
 
             $settings = session()->get('business.essentials_settings');
@@ -176,7 +178,7 @@ class EssentialsServiceProvider extends ServiceProvider
     protected function registerCommands()
     {
         $this->commands([
-            \Modules\Essentials\Console\AutoClockOutUser::class,
+            AutoClockOutUser::class,
         ]);
     }
 }

@@ -7,6 +7,7 @@ use App\InvoiceLayout;
 use App\InvoiceScheme;
 use App\Printer;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class LocationSettingsController extends Controller
 {
@@ -29,7 +30,7 @@ class LocationSettingsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index($location_id)
     {
@@ -64,7 +65,7 @@ class LocationSettingsController extends Controller
     /**
      * Update the settings
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function updateSettings($location_id, Request $request)
     {

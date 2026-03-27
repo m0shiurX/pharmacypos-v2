@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Warranty;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Yajra\DataTables\Facades\DataTables;
 
 class WarrantyController extends Controller
@@ -11,7 +12,7 @@ class WarrantyController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -21,7 +22,7 @@ class WarrantyController extends Controller
             $warranties = Warranty::where('business_id', $business_id)
                 ->select(['id', 'name', 'description', 'duration', 'duration_type']);
 
-            return Datatables::of($warranties)
+            return DataTables::of($warranties)
                 ->addColumn(
                     'action',
                     '<button data-href="{{action(\'App\Http\Controllers\WarrantyController@edit\', [$id])}}" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary btn-modal" data-container=".view_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>'
@@ -40,7 +41,7 @@ class WarrantyController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -50,7 +51,7 @@ class WarrantyController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -79,7 +80,7 @@ class WarrantyController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Warranty $warranty)
     {
@@ -89,8 +90,8 @@ class WarrantyController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Warranty  $warranty
-     * @return \Illuminate\Http\Response
+     * @param  Warranty  $warranty
+     * @return Response
      */
     public function edit($id)
     {
@@ -107,8 +108,8 @@ class WarrantyController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Warranty  $warranty
-     * @return \Illuminate\Http\Response
+     * @param  Warranty  $warranty
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -140,7 +141,7 @@ class WarrantyController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Warranty $warranty)
     {

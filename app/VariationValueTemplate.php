@@ -18,6 +18,6 @@ class VariationValueTemplate extends Model
      */
     public function variationTemplate()
     {
-        return $this->belongsTo(\App\VariationTemplate::class);
+        return $this->belongsTo(VariationTemplate::class);
     }
 }

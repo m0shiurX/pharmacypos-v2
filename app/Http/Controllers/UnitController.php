@@ -6,6 +6,7 @@ use App\Product;
 use App\Unit;
 use App\Utils\Util;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Yajra\DataTables\Facades\DataTables;
 
 class UnitController extends Controller
@@ -29,7 +30,7 @@ class UnitController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -45,7 +46,7 @@ class UnitController extends Controller
                 ->select(['actual_name', 'short_name', 'allow_decimal', 'id',
                     'base_unit_id', 'base_unit_multiplier', ]);
 
-            return Datatables::of($unit)
+            return DataTables::of($unit)
                 ->addColumn(
                     'action',
                     '@can("unit.update")
@@ -81,7 +82,7 @@ class UnitController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -105,7 +106,7 @@ class UnitController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -148,7 +149,7 @@ class UnitController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -159,7 +160,7 @@ class UnitController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -182,7 +183,7 @@ class UnitController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -233,7 +234,7 @@ class UnitController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

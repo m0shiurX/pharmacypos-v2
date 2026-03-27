@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Utils\Util;
 use Illuminate\Database\Eloquent\Model;
 
 class VariationGroupPrice extends Model
@@ -21,7 +22,7 @@ class VariationGroupPrice extends Model
         if (isset($this->price_type) && $this->price_type == 'percentage') {
             // calculate the price
             $variation = Variation::find($this->variation_id);
-            $utils = new \App\Utils\Util;
+            $utils = new Util;
             $price = $utils->calc_percentage($variation->sell_price_inc_tax, $this->price_inc_tax);
         } else {
             $price = $this->price_inc_tax;

@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PurchaseSellMismatch extends Exception
 {
@@ -21,8 +23,8 @@ class PurchaseSellMismatch extends Exception
     /**
      * Render the exception as an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function render($request)
     {

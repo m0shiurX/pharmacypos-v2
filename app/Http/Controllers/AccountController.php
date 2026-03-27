@@ -446,12 +446,12 @@ class AccountController extends Controller
                     $action = '';
                     if (auth()->user()->can('delete_account_transaction')) {
                         if ($row->sub_type == 'fund_transfer' || $row->sub_type == 'deposit') {
-                            $action .= '<button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-error delete_account_transaction" data-href="'.action([\App\Http\Controllers\AccountController::class, 'destroyAccountTransaction'], [$row->id]).'"><i class="fa fa-trash"></i> '.__('messages.delete').'</button>';
+                            $action .= '<button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-error delete_account_transaction" data-href="'.action([AccountController::class, 'destroyAccountTransaction'], [$row->id]).'"><i class="fa fa-trash"></i> '.__('messages.delete').'</button>';
                         }
                     }
                     if (auth()->user()->can('edit_account_transaction')) {
                         if ($row->sub_type == 'fund_transfer' || $row->sub_type == 'deposit' || $row->sub_type == 'opening_balance') {
-                            $action .= ' <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-primary btn-modal" data-container="#edit_account_transaction" data-href="'.action([\App\Http\Controllers\AccountController::class, 'editAccountTransaction'], [$row->id]).'"><i class="fa fa-edit"></i> '.__('messages.edit').'</button>';
+                            $action .= ' <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-primary btn-modal" data-container="#edit_account_transaction" data-href="'.action([AccountController::class, 'editAccountTransaction'], [$row->id]).'"><i class="fa fa-edit"></i> '.__('messages.edit').'</button>';
                         }
                     }
 
@@ -718,7 +718,7 @@ class AccountController extends Controller
             ];
         }
 
-        return redirect()->action([\App\Http\Controllers\AccountController::class, 'index'])->with('status', $output);
+        return redirect()->action([AccountController::class, 'index'])->with('status', $output);
     }
 
     /**
@@ -1098,13 +1098,13 @@ class AccountController extends Controller
             if (! empty($row->transaction->type)) {
                 if ($row->transaction->type == 'purchase') {
                     $details = __('lang_v1.purchase').'<br><b>'.__('purchase.supplier').':</b> '.$row->transaction->contact->full_name_with_business.'<br><b>'.
-                    __('purchase.ref_no').':</b> <a href="#" data-href="'.action([\App\Http\Controllers\PurchaseController::class, 'show'], [$row->transaction->id]).'" class="btn-modal" data-container=".view_modal">'.$row->transaction->ref_no.'</a>';
+                    __('purchase.ref_no').':</b> <a href="#" data-href="'.action([PurchaseController::class, 'show'], [$row->transaction->id]).'" class="btn-modal" data-container=".view_modal">'.$row->transaction->ref_no.'</a>';
                 } elseif ($row->transaction->type == 'expense') {
                     $details = __('lang_v1.expense').'<br><b>'.__('purchase.ref_no').':</b>'.$row->transaction->ref_no;
                 } elseif ($row->transaction->type == 'sell') {
                     $is_return = $row->is_return == 1 ? ' ('.__('lang_v1.change_return').')' : '';
                     $details = __('sale.sale').$is_return.'<br><b>'.__('contact.customer').':</b> '.$row->transaction->contact->full_name_with_business.'<br><b>'.
-                    __('sale.invoice_no').':</b> <a href="#" data-href="'.action([\App\Http\Controllers\SellController::class, 'show'], [$row->transaction->id]).'" class="btn-modal" data-container=".view_modal">'.$row->transaction->invoice_no.'</a>';
+                    __('sale.invoice_no').':</b> <a href="#" data-href="'.action([SellController::class, 'show'], [$row->transaction->id]).'" class="btn-modal" data-container=".view_modal">'.$row->transaction->invoice_no.'</a>';
                 }
             } else {
                 // for contact payment which is not advance

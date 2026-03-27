@@ -197,11 +197,11 @@ class DocumentController extends Controller
 
             if ($type == 'document') {
                 return redirect()
-                    ->action([\Modules\Essentials\Http\Controllers\DocumentController::class, 'index'])
+                    ->action([DocumentController::class, 'index'])
                     ->with('status', $output);
             } else {
                 return redirect()
-                    ->action([\Modules\Essentials\Http\Controllers\DocumentController::class, 'index'], ['type' => 'memos'])
+                    ->action([DocumentController::class, 'index'], ['type' => 'memos'])
                     ->with('status', $output);
             }
         } catch (\Exception $e) {

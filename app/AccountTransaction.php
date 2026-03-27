@@ -17,12 +17,12 @@ class AccountTransaction extends Model
 
     public function media()
     {
-        return $this->morphMany(\App\Media::class, 'model');
+        return $this->morphMany(Media::class, 'model');
     }
 
     public function transaction()
     {
-        return $this->belongsTo(\App\Transaction::class, 'transaction_id');
+        return $this->belongsTo(Transaction::class, 'transaction_id');
     }
 
     /**
@@ -119,11 +119,11 @@ class AccountTransaction extends Model
 
     public function transfer_transaction()
     {
-        return $this->belongsTo(\App\AccountTransaction::class, 'transfer_transaction_id');
+        return $this->belongsTo(AccountTransaction::class, 'transfer_transaction_id');
     }
 
     public function account()
     {
-        return $this->belongsTo(\App\Account::class, 'account_id');
+        return $this->belongsTo(Account::class, 'account_id');
     }
 }

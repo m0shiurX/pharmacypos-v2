@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Utils\ModuleUtil;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Yajra\DataTables\Facades\DataTables;
 
 class TaxonomyController extends Controller
@@ -28,7 +29,7 @@ class TaxonomyController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -74,15 +75,15 @@ class TaxonomyController extends Controller
                 }
             }
 
-            return Datatables::of($category)
+            return DataTables::of($category)
                 ->addColumn('action', function ($row) use ($can_edit, $can_delete, $category_type) {
                     $html = '';
                     if ($can_edit) {
-                        $html .= '<button data-href="'.action([\App\Http\Controllers\TaxonomyController::class, 'edit'], [$row->id]).'?type='.$category_type.'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary edit_category_button"><i class="glyphicon glyphicon-edit"></i> '.__('messages.edit').'</button>';
+                        $html .= '<button data-href="'.action([TaxonomyController::class, 'edit'], [$row->id]).'?type='.$category_type.'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary edit_category_button"><i class="glyphicon glyphicon-edit"></i> '.__('messages.edit').'</button>';
                     }
 
                     if ($can_delete) {
-                        $html .= '&nbsp;<button data-href="'.action([\App\Http\Controllers\TaxonomyController::class, 'destroy'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-outline tw-dw-btn-xs tw-dw-btn-error delete_category_button"><i class="glyphicon glyphicon-trash"></i> '.__('messages.delete').'</button>';
+                        $html .= '&nbsp;<button data-href="'.action([TaxonomyController::class, 'destroy'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-outline tw-dw-btn-xs tw-dw-btn-error delete_category_button"><i class="glyphicon glyphicon-trash"></i> '.__('messages.delete').'</button>';
                     }
 
                     return $html;
@@ -110,7 +111,7 @@ class TaxonomyController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -142,7 +143,7 @@ class TaxonomyController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -180,7 +181,7 @@ class TaxonomyController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Category $category)
     {
@@ -191,7 +192,7 @@ class TaxonomyController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -229,7 +230,7 @@ class TaxonomyController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -274,7 +275,7 @@ class TaxonomyController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
@@ -326,7 +327,7 @@ class TaxonomyController extends Controller
      * get taxonomy index page
      * through ajax
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getTaxonomyIndexPage(Request $request)
     {

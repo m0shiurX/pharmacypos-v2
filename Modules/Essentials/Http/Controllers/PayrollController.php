@@ -6,6 +6,7 @@ use App\AccountTransaction;
 use App\BusinessLocation;
 use App\Category;
 use App\Events\TransactionPaymentAdded;
+use App\Http\Controllers\TransactionPaymentController;
 use App\Transaction;
 use App\TransactionPayment;
 use App\User;
@@ -112,7 +113,7 @@ class PayrollController extends Controller
                 }
             }
 
-            return Datatables::of($payrolls)
+            return DataTables::of($payrolls)
                 ->addColumn(
                     'action',
                     function ($row) {
@@ -125,12 +126,12 @@ class PayrollController extends Controller
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right" role="menu">';
 
-                        $html .= '<li><a href="#" data-href="'.action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'show'], [$row->id]).'" data-container=".view_modal" class="btn-modal"><i class="fa fa-eye" aria-hidden="true"></i> '.__('messages.view').'</a></li>';
+                        $html .= '<li><a href="#" data-href="'.action([PayrollController::class, 'show'], [$row->id]).'" data-container=".view_modal" class="btn-modal"><i class="fa fa-eye" aria-hidden="true"></i> '.__('messages.view').'</a></li>';
 
                         // $html .= '<li><a href="' . action([\App\Http\Controllers\TransactionPaymentController::class, 'show'], [$row->id]) . '" class="view_payment_modal"><i class="fa fa-money"></i> ' . __("purchase.view_payments") . '</a></li>';
 
                         if (empty($row->payroll_group_id) && $row->payment_status != 'paid' && auth()->user()->can('essentials.create_payroll')) {
-                            $html .= '<li><a href="'.action([\App\Http\Controllers\TransactionPaymentController::class, 'addPayment'], [$row->id]).'" class="add_payment_modal"><i class="fa fa-money"></i> '.__('purchase.add_payment').'</a></li>';
+                            $html .= '<li><a href="'.action([TransactionPaymentController::class, 'addPayment'], [$row->id]).'" class="add_payment_modal"><i class="fa fa-money"></i> '.__('purchase.add_payment').'</a></li>';
                         }
 
                         $html .= '</ul></div>';
@@ -292,7 +293,7 @@ class PayrollController extends Controller
             return view('essentials::payroll.create')
                 ->with(compact('month_name', 'transaction_date', 'year', 'payrolls', 'action', 'location'));
         } else {
-            return redirect()->action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'index'])
+            return redirect()->action([PayrollController::class, 'index'])
                 ->with('status',
                     [
                         'success' => true,
@@ -381,7 +382,7 @@ class PayrollController extends Controller
             ];
         }
 
-        return redirect()->action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'index'])->with('status', $output);
+        return redirect()->action([PayrollController::class, 'index'])->with('status', $output);
     }
 
     private function getAllowanceAndDeductionJson($payroll)
@@ -591,7 +592,7 @@ class PayrollController extends Controller
             ];
         }
 
-        return redirect()->action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'index'])->with('status', $output);
+        return redirect()->action([PayrollController::class, 'index'])->with('status', $output);
     }
 
     /**
@@ -681,7 +682,7 @@ class PayrollController extends Controller
                 });
             }
 
-            return Datatables::of($payroll_groups)
+            return DataTables::of($payroll_groups)
                 ->addColumn(
                     'action',
                     function ($row) {
@@ -695,14 +696,14 @@ class PayrollController extends Controller
                                     <ul class="dropdown-menu dropdown-menu-right" role="menu">';
 
                         $html .= '<li>
-                                    <a href="'.action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'viewPayrollGroup'], [$row->id]).'" target="_blank">
+                                    <a href="'.action([PayrollController::class, 'viewPayrollGroup'], [$row->id]).'" target="_blank">
                                             <i class="fa fa-eye" aria-hidden="true"></i> '
                                             .__('messages.view').
                                     '</a>
                                 </li>';
                         if (auth()->user()->can('essentials.update_payroll')) {
                             $html .= '<li>
-                                        <a href="'.action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'getEditPayrollGroup'], [$row->id]).'" target="_blank">
+                                        <a href="'.action([PayrollController::class, 'getEditPayrollGroup'], [$row->id]).'" target="_blank">
                                                 <i class="fas fa-edit" aria-hidden="true"></i> '
                                                 .__('messages.edit').
                                         '</a>
@@ -710,12 +711,12 @@ class PayrollController extends Controller
                         }
 
                         if (auth()->user()->can('essentials.delete_payroll') && $row->status == 'draft') {
-                            $html .= '<li><a href="'.action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'destroy'], [$row->id]).'" class="delete-payroll"><i class="fa fa-trash" aria-hidden="true"></i> '.__('messages.delete').'</a></li>';
+                            $html .= '<li><a href="'.action([PayrollController::class, 'destroy'], [$row->id]).'" class="delete-payroll"><i class="fa fa-trash" aria-hidden="true"></i> '.__('messages.delete').'</a></li>';
                         }
 
                         if ($row->status == 'final' && $row->payment_status != 'paid') {
                             $html .= '<li>
-                                    <a href="'.action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'addPayment'], [$row->id]).'" target="_blank">
+                                    <a href="'.action([PayrollController::class, 'addPayment'], [$row->id]).'" target="_blank">
                                             <i class="fas fa-money-check" aria-hidden="true"></i> '
                                             .__('purchase.add_payment').
                                     '</a>
@@ -930,7 +931,7 @@ class PayrollController extends Controller
             ];
         }
 
-        return redirect()->action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'index'])->with('status', $output);
+        return redirect()->action([PayrollController::class, 'index'])->with('status', $output);
     }
 
     public function addPayment($id)
@@ -1054,7 +1055,7 @@ class PayrollController extends Controller
             ];
         }
 
-        return redirect()->action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'index'])->with('status', $output);
+        return redirect()->action([PayrollController::class, 'index'])->with('status', $output);
     }
 
     protected function _updatePayrollGroupPaymentStatus($payroll_group_id, $business_id)
@@ -1097,11 +1098,11 @@ class PayrollController extends Controller
 
             $payrolls->where('transactions.expense_for', auth()->user()->id);
 
-            return Datatables::of($payrolls)
+            return DataTables::of($payrolls)
                 ->addColumn(
                     'action',
                     function ($row) {
-                        $html = '<a href="#" data-href="'.action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'show'], [$row->id]).'" data-container=".view_modal" class="btn-modal btn-info btn btn-sm">
+                        $html = '<a href="#" data-href="'.action([PayrollController::class, 'show'], [$row->id]).'" data-container=".view_modal" class="btn-modal btn-info btn btn-sm">
                             <i class="fa fa-eye" aria-hidden="true"></i> '
                             .__('messages.view').
                             '</a>';

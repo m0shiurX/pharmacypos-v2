@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
@@ -84,7 +85,7 @@ class PermissionsTableSeeder extends Seeder
         ];
 
         $insert_data = [];
-        $time_stamp = \Carbon\Carbon::now()->toDateTimeString();
+        $time_stamp = Carbon::now()->toDateTimeString();
         foreach ($data as $d) {
             $d['guard_name'] = 'web';
             $d['created_at'] = $time_stamp;

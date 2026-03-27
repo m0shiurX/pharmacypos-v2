@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Brands;
 use App\Utils\ModuleUtil;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Yajra\DataTables\Facades\DataTables;
 
 class BrandController extends Controller
@@ -28,7 +29,7 @@ class BrandController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -42,7 +43,7 @@ class BrandController extends Controller
             $brands = Brands::where('business_id', $business_id)
                 ->select(['name', 'description', 'id']);
 
-            return Datatables::of($brands)
+            return DataTables::of($brands)
                 ->addColumn(
                     'action',
                     '@can("brand.update")
@@ -64,7 +65,7 @@ class BrandController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -86,7 +87,7 @@ class BrandController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -124,7 +125,7 @@ class BrandController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -135,7 +136,7 @@ class BrandController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -158,7 +159,7 @@ class BrandController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -200,7 +201,7 @@ class BrandController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

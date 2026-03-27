@@ -6,6 +6,7 @@ use App\Media;
 use App\User;
 use App\Utils\ModuleUtil;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -38,7 +39,7 @@ class UserController extends Controller
     /**
      * Shows profile of logged in user
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getProfile()
     {
@@ -56,7 +57,7 @@ class UserController extends Controller
     /**
      * updates user profile
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function updateProfile(Request $request)
     {
@@ -109,7 +110,7 @@ class UserController extends Controller
     /**
      * updates user password
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function updatePassword(Request $request)
     {

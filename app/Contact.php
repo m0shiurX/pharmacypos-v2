@@ -33,7 +33,7 @@ class Contact extends Authenticatable
      */
     public function business()
     {
-        return $this->belongsTo(\App\Business::class);
+        return $this->belongsTo(Business::class);
     }
 
     public function scopeActive($query)
@@ -108,7 +108,7 @@ class Contact extends Authenticatable
      */
     public function documentsAndnote()
     {
-        return $this->morphMany(\App\DocumentAndNote::class, 'notable');
+        return $this->morphMany(DocumentAndNote::class, 'notable');
     }
 
     /**
@@ -398,6 +398,6 @@ class Contact extends Authenticatable
      */
     public function userHavingAccess()
     {
-        return $this->belongsToMany(\App\User::class, 'user_contact_access');
+        return $this->belongsToMany(User::class, 'user_contact_access');
     }
 }

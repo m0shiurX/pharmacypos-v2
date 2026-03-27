@@ -7,6 +7,7 @@ use App\CashRegister;
 use App\Utils\CashRegisterUtil;
 use App\Utils\ModuleUtil;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CashRegisterController extends Controller
 {
@@ -31,7 +32,7 @@ class CashRegisterController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -41,7 +42,7 @@ class CashRegisterController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -50,7 +51,7 @@ class CashRegisterController extends Controller
 
         // Check if there is a open register, if yes then redirect to POS screen.
         if ($this->cashRegisterUtil->countOpenedRegister() != 0) {
-            return redirect()->action([\App\Http\Controllers\SellPosController::class, 'create'], ['sub_type' => $sub_type]);
+            return redirect()->action([SellPosController::class, 'create'], ['sub_type' => $sub_type]);
         }
         $business_id = request()->session()->get('user.business_id');
         $business_locations = BusinessLocation::forDropdown($business_id);
@@ -61,7 +62,7 @@ class CashRegisterController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -95,14 +96,14 @@ class CashRegisterController extends Controller
             \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
         }
 
-        return redirect()->action([\App\Http\Controllers\SellPosController::class, 'create'], ['sub_type' => $sub_type]);
+        return redirect()->action([SellPosController::class, 'create'], ['sub_type' => $sub_type]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\CashRegister  $cashRegister
-     * @return \Illuminate\Http\Response
+     * @param  CashRegister  $cashRegister
+     * @return Response
      */
     public function show($id)
     {
@@ -128,7 +129,7 @@ class CashRegisterController extends Controller
      * Shows register details modal.
      *
      * @param  void
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getRegisterDetails()
     {
@@ -158,7 +159,7 @@ class CashRegisterController extends Controller
      * Shows close register form.
      *
      * @param  void
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getCloseRegister($id = null)
     {
@@ -188,7 +189,7 @@ class CashRegisterController extends Controller
     /**
      * Closes currently opened register.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function postCloseRegister(Request $request)
     {
@@ -203,7 +204,7 @@ class CashRegisterController extends Controller
                     'msg' => 'Feature disabled in demo!!',
                 ];
 
-                return redirect()->action([\App\Http\Controllers\HomeController::class, 'index'])->with('status', $output);
+                return redirect()->action([HomeController::class, 'index'])->with('status', $output);
             }
 
             $input = $request->only(['closing_amount', 'total_card_slips', 'total_cheques', 'closing_note']);

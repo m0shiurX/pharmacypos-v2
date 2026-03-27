@@ -17,8 +17,10 @@ use App\Utils\Util;
 use Datatables;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Carbon;
+use Modules\Crm\Http\Controllers\DashboardController;
 
 class HomeController extends Controller
 {
@@ -61,13 +63,13 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
         $user = auth()->user();
         if ($user->user_type == 'user_customer') {
-            return redirect()->action([\Modules\Crm\Http\Controllers\DashboardController::class, 'index']);
+            return redirect()->action([DashboardController::class, 'index']);
         }
 
         $business_id = request()->session()->get('user.business_id');
@@ -216,7 +218,7 @@ class HomeController extends Controller
     /**
      * Retrieves purchase and sell details for a given time period.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getTotals()
     {
@@ -280,7 +282,7 @@ class HomeController extends Controller
     /**
      * Retrieves sell products whose available quntity is less than alert quntity.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getProductStockAlert()
     {
@@ -316,7 +318,7 @@ class HomeController extends Controller
     /**
      * Retrieves payment dues for the purchases.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getPurchasePaymentDues()
     {
@@ -374,7 +376,7 @@ class HomeController extends Controller
                 ->editColumn('supplier', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif {{$supplier}}')
                 ->editColumn('ref_no', function ($row) {
                     if (auth()->user()->can('purchase.view')) {
-                        return '<a href="#" data-href="'.action([\App\Http\Controllers\PurchaseController::class, 'show'], [$row->id]).'"
+                        return '<a href="#" data-href="'.action([PurchaseController::class, 'show'], [$row->id]).'"
                                     class="btn-modal" data-container=".view_modal">'.$row->ref_no.'</a>';
                     }
 
@@ -391,7 +393,7 @@ class HomeController extends Controller
     /**
      * Retrieves payment dues for the purchases.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getSalesPaymentDues()
     {
@@ -448,7 +450,7 @@ class HomeController extends Controller
                 })
                 ->editColumn('invoice_no', function ($row) {
                     if (auth()->user()->can('sell.view')) {
-                        return '<a href="#" data-href="'.action([\App\Http\Controllers\SellController::class, 'show'], [$row->id]).'"
+                        return '<a href="#" data-href="'.action([SellController::class, 'show'], [$row->id]).'"
                                     class="btn-modal" data-container=".view_modal">'.$row->invoice_no.'</a>';
                     }
 

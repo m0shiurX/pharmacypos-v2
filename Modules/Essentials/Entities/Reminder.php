@@ -3,6 +3,7 @@
 namespace Modules\Essentials\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\Essentials\Http\Controllers\ReminderController;
 
 class Reminder extends Model
 {
@@ -49,9 +50,9 @@ class Reminder extends Model
                         'name' => $reminder->name,
                         // 'time' => $time,
                         'repeat' => $reminder->repeat,
-                        'url' => action([\Modules\Essentials\Http\Controllers\ReminderController::class, 'show'], [$reminder->id]),
+                        'url' => action([ReminderController::class, 'show'], [$reminder->id]),
                         'allDay' => false,
-                        'event_url' => action([\Modules\Essentials\Http\Controllers\ReminderController::class, 'index']),
+                        'event_url' => action([ReminderController::class, 'index']),
                         'backgroundColor' => '#ff851b',
                         'borderColor' => '#ff851b',
                         'event_type' => 'reminder',
@@ -78,9 +79,9 @@ class Reminder extends Model
                     'name' => $reminder->name,
                     // 'time' => $time,
                     'repeat' => $reminder->repeat,
-                    'url' => action([\Modules\Essentials\Http\Controllers\ReminderController::class, 'show'], [$reminder->id]),
+                    'url' => action([ReminderController::class, 'show'], [$reminder->id]),
                     'allDay' => false,
-                    'event_url' => action([\Modules\Essentials\Http\Controllers\ReminderController::class, 'index']),
+                    'event_url' => action([ReminderController::class, 'index']),
                     'backgroundColor' => '#ff851b',
                     'borderColor' => '#ff851b',
                     'event_type' => 'reminder',

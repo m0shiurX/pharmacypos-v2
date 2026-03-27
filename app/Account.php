@@ -4,6 +4,7 @@ namespace App;
 
 use App\Utils\Util;
 use DB;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -91,8 +92,8 @@ class Account extends Model
     /**
      * Scope a query to only include not closed accounts.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeNotClosed($query)
     {
@@ -102,8 +103,8 @@ class Account extends Model
     /**
      * Scope a query to only include non capital accounts.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     // public function scopeNotCapital($query)
     // {
@@ -124,6 +125,6 @@ class Account extends Model
 
     public function account_type()
     {
-        return $this->belongsTo(\App\AccountType::class, 'account_type_id');
+        return $this->belongsTo(AccountType::class, 'account_type_id');
     }
 }

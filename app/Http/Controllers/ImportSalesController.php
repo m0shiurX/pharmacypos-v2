@@ -17,6 +17,7 @@ use App\Variation;
 use DB;
 use Excel;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ImportSalesController extends Controller
 {
@@ -52,7 +53,7 @@ class ImportSalesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -85,7 +86,7 @@ class ImportSalesController extends Controller
     /**
      * Preview imported data and map columns with sale fields
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function preview(Request $request)
     {
@@ -158,7 +159,7 @@ class ImportSalesController extends Controller
     /**
      * Import sales to database
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function import(Request $request)
     {
@@ -547,7 +548,7 @@ class ImportSalesController extends Controller
     /**
      * Deletes all sales from a batch
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function revertSaleImport($batch)
     {

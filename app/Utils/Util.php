@@ -2,9 +2,15 @@
 
 namespace App\Utils;
 
+use Aloha\Twilio\Twilio;
 use App\Business;
 use App\BusinessLocation;
 use App\Contact;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ManageUserController;
+use App\Http\Controllers\SellPosController;
+use App\Notifications\RecurringExpenseNotification;
+use App\Notifications\RecurringInvoiceNotification;
 use App\Product;
 use App\ReferenceCount;
 use App\System;
@@ -16,10 +22,13 @@ use App\VariationLocationDetails;
 use Config;
 use DB;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Spatie\Permission\Models\Role; // Add this at the top with other imports
+use Spatie\Permission\Models\Role;
+
+ // Add this at the top with other imports
 
 class Util
 {
@@ -431,7 +440,7 @@ class Util
                 'text' => $data['sms_body'],
             ]);
 
-            $request = new \GuzzleHttp\Psr7\Request('POST', 'https://rest.nexmo.com/sms/json', $headers, $body);
+            $request = new Request('POST', 'https://rest.nexmo.com/sms/json', $headers, $body);
 
             $response = $client->sendAsync($request)->wait();
         }
@@ -445,7 +454,7 @@ class Util
             return false;
         }
 
-        $twilio = new \Aloha\Twilio\Twilio($sms_settings['twilio_sid'], $sms_settings['twilio_token'], $sms_settings['twilio_from']);
+        $twilio = new Twilio($sms_settings['twilio_sid'], $sms_settings['twilio_token'], $sms_settings['twilio_from']);
 
         $numbers = explode(',', trim($data['mobile_number']));
         foreach ($numbers as $number) {
@@ -1438,13 +1447,13 @@ class Util
         $notifications_data = [];
         foreach ($notifications as $notification) {
             $data = $notification->data;
-            if (in_array($notification->type, [\App\Notifications\RecurringInvoiceNotification::class, \App\Notifications\RecurringExpenseNotification::class])) {
+            if (in_array($notification->type, [RecurringInvoiceNotification::class, RecurringExpenseNotification::class])) {
                 $msg = '';
                 $icon_class = '';
                 $link = '';
                 if (
                     $notification->type ==
-                    \App\Notifications\RecurringInvoiceNotification::class
+                    RecurringInvoiceNotification::class
                 ) {
                     $msg = ! empty($data['invoice_status']) && $data['invoice_status'] == 'draft' ?
                         __(
@@ -1456,17 +1465,17 @@ class Util
                             ['invoice_no' => ! empty($data['invoice_no']) ? $data['invoice_no'] : '', 'subscription_no' => ! empty($data['subscription_no']) ? $data['subscription_no'] : '']
                         );
                     $icon_class = ! empty($data['invoice_status']) && $data['invoice_status'] == 'draft' ? 'fas fa-exclamation-triangle bg-yellow' : 'fas fa-recycle bg-green';
-                    $link = action([\App\Http\Controllers\SellPosController::class, 'listSubscriptions']);
+                    $link = action([SellPosController::class, 'listSubscriptions']);
                 } elseif (
                     $notification->type ==
-                    \App\Notifications\RecurringExpenseNotification::class
+                    RecurringExpenseNotification::class
                 ) {
                     $msg = __(
                         'lang_v1.recurring_expense_message',
                         ['ref_no' => $data['ref_no']]
                     );
                     $icon_class = 'fas fa-recycle bg-green';
-                    $link = action([\App\Http\Controllers\ExpenseController::class, 'index']);
+                    $link = action([ExpenseController::class, 'index']);
                 }
 
                 $notifications_data[] = [
@@ -1477,7 +1486,7 @@ class Util
                     'created_at' => $notification->created_at->diffForHumans(),
                 ];
             } else {
-                $moduleUtil = new \App\Utils\ModuleUtil;
+                $moduleUtil = new ModuleUtil;
                 $module_notification_data = $moduleUtil->getModuleData('parse_notification', $notification);
                 if (! empty($module_notification_data)) {
                     foreach ($module_notification_data as $module_data) {
@@ -1793,11 +1802,11 @@ class Util
 
         // Check if subscribed or not, then check for users quota
         if ($user_details['user_type'] == 'user') {
-            $moduleUtil = new \App\Utils\ModuleUtil;
+            $moduleUtil = new ModuleUtil;
             if (! $moduleUtil->isSubscribed($business_id)) {
                 return $moduleUtil->expiredResponse();
             } elseif (! $moduleUtil->isQuotaAvailable('users', $business_id)) {
-                return $moduleUtil->quotaExpiredResponse('users', $business_id, action([\App\Http\Controllers\ManageUserController::class, 'index']));
+                return $moduleUtil->quotaExpiredResponse('users', $business_id, action([ManageUserController::class, 'index']));
             }
         }
 
@@ -1850,7 +1859,7 @@ class Util
             }
 
             // Save module fields for user
-            $moduleUtil = new \App\Utils\ModuleUtil;
+            $moduleUtil = new ModuleUtil;
             $moduleUtil->getModuleData('afterModelSaved', ['event' => 'user_saved', 'model_instance' => $user]);
             $this->activityLog($user, 'added', null, ['name' => $user->user_full_name], true, $business_id);
         }

@@ -47,7 +47,7 @@ class DataController extends Controller
             $notification_data = [
                 'msg' => $msg,
                 'icon_class' => 'fas fa-envelope bg-green',
-                'link' => action([\Modules\Essentials\Http\Controllers\EssentialsMessageController::class, 'index']),
+                'link' => action([EssentialsMessageController::class, 'index']),
                 'read_at' => $notification->read_at,
                 'created_at' => $notification->created_at->diffForHumans(),
             ];
@@ -63,7 +63,7 @@ class DataController extends Controller
                 $notification_data = [
                     'msg' => $msg,
                     'icon_class' => 'fas fa-user-times bg-green',
-                    'link' => action([\Modules\Essentials\Http\Controllers\EssentialsLeaveController::class, 'index']),
+                    'link' => action([EssentialsLeaveController::class, 'index']),
                     'read_at' => $notification->read_at,
                     'created_at' => $notification->created_at->diffForHumans(),
                 ];
@@ -80,7 +80,7 @@ class DataController extends Controller
                 $notification_data = [
                     'msg' => $msg,
                     'icon_class' => 'fas fa-user-times bg-green',
-                    'link' => action([\Modules\Essentials\Http\Controllers\EssentialsLeaveController::class, 'index']),
+                    'link' => action([EssentialsLeaveController::class, 'index']),
                     'read_at' => $notification->read_at,
                     'created_at' => $notification->created_at->diffForHumans(),
                 ];
@@ -105,7 +105,7 @@ class DataController extends Controller
                 $notification_data = [
                     'msg' => $msg,
                     'icon_class' => 'fas fa-money-bill-alt bg-green',
-                    'link' => action([\Modules\Essentials\Http\Controllers\PayrollController::class, 'index']),
+                    'link' => action([PayrollController::class, 'index']),
                     'read_at' => $notification->read_at,
                     'created_at' => $notification->created_at->diffForHumans(),
                 ];
@@ -122,7 +122,7 @@ class DataController extends Controller
                 $notification_data = [
                     'msg' => $msg,
                     'icon_class' => 'ion ion-clipboard bg-green',
-                    'link' => action([\Modules\Essentials\Http\Controllers\ToDoController::class, 'show'], $data['id']),
+                    'link' => action([ToDoController::class, 'show'], $data['id']),
                     'read_at' => $notification->read_at,
                     'created_at' => $notification->created_at->diffForHumans(),
                 ];
@@ -138,7 +138,7 @@ class DataController extends Controller
                 $notification_data = [
                     'msg' => $msg,
                     'icon_class' => 'fas fa-envelope bg-green',
-                    'link' => action([\Modules\Essentials\Http\Controllers\ToDoController::class, 'show'], $comment->task->id),
+                    'link' => action([ToDoController::class, 'show'], $comment->task->id),
                     'read_at' => $notification->read_at,
                     'created_at' => $notification->created_at->diffForHumans(),
                 ];
@@ -155,7 +155,7 @@ class DataController extends Controller
                 $notification_data = [
                     'msg' => $msg,
                     'icon_class' => 'fas fa-file bg-green',
-                    'link' => action([\Modules\Essentials\Http\Controllers\ToDoController::class, 'show'], $data['id']),
+                    'link' => action([ToDoController::class, 'show'], $data['id']),
                     'read_at' => $notification->read_at,
                     'created_at' => $notification->created_at->diffForHumans(),
                 ];
@@ -331,14 +331,14 @@ class DataController extends Controller
         if ($is_essentials_enabled) {
             Menu::modify('admin-sidebar-menu', function ($menu) {
                 $menu->url(
-                    action([\Modules\Essentials\Http\Controllers\DashboardController::class, 'hrmDashboard']),
+                    action([DashboardController::class, 'hrmDashboard']),
                     __('essentials::lang.hrm'),
                     ['icon' => 'fa fas fa-users', 'active' => request()->segment(1) == 'hrm', 'style' => config('app.env') == 'demo' ? 'background-color: #605ca8 !important;' : '']
                 )
                     ->order(87);
 
                 $menu->url(
-                    action([\Modules\Essentials\Http\Controllers\ToDoController::class, 'index']),
+                    action([ToDoController::class, 'index']),
                     __('essentials::lang.essentials'),
                     ['icon' => 'fa fas fa-check-circle', 'active' => request()->segment(1) == 'essentials', 'style' => config('app.env') == 'demo' ? 'background-color: #001f3f !important;' : '']
                 )
@@ -538,7 +538,7 @@ class DataController extends Controller
                     'title' => $todo->task,
                     'start' => $todo->date,
                     'end' => $todo->end_date,
-                    'url' => action([\Modules\Essentials\Http\Controllers\ToDoController::class, 'index']),
+                    'url' => action([ToDoController::class, 'index']),
                     'backgroundColor' => '#33006F',
                     'borderColor' => '#33006F',
                     'event_type' => 'todo',
@@ -575,7 +575,7 @@ class DataController extends Controller
                     'title' => $holiday->name,
                     'start' => $holiday->start_date,
                     'end' => $holiday->end_date,
-                    'url' => action([\Modules\Essentials\Http\Controllers\EssentialsHolidayController::class, 'index']),
+                    'url' => action([EssentialsHolidayController::class, 'index']),
                     'backgroundColor' => '#568203',
                     'borderColor' => '#568203',
                     'allDay' => true,
@@ -609,7 +609,7 @@ class DataController extends Controller
                     'title_html' => $leave->user.'<br>'.$leave->leave_type,
                     'start' => $leave->start_date,
                     'end' => $leave->end_date,
-                    'url' => action([\Modules\Essentials\Http\Controllers\EssentialsLeaveController::class, 'index']),
+                    'url' => action([EssentialsLeaveController::class, 'index']),
                     'backgroundColor' => '#BA0021',
                     'borderColor' => '#BA0021',
                     'allDay' => true,

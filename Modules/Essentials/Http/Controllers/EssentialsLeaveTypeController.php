@@ -48,7 +48,7 @@ class EssentialsLeaveTypeController extends Controller
             $leave_types = EssentialsLeaveType::where('business_id', $business_id)
                 ->select(['leave_type', 'max_leave_count', 'id']);
 
-            return Datatables::of($leave_types)
+            return DataTables::of($leave_types)
                 ->addColumn(
                     'action',
                     '<button data-href="{{action(\'\Modules\Essentials\Http\Controllers\EssentialsLeaveTypeController@edit\', [$id])}}" class="btn btn-xs btn-primary btn-modal" data-container=".view_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>'

@@ -2,6 +2,7 @@
 
 namespace Modules\Essentials\Entities;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class KnowledgeBase extends Model
@@ -25,11 +26,11 @@ class KnowledgeBase extends Model
      */
     public function children()
     {
-        return $this->hasMany(\Modules\Essentials\Entities\KnowledgeBase::class, 'parent_id');
+        return $this->hasMany(KnowledgeBase::class, 'parent_id');
     }
 
     public function users()
     {
-        return $this->belongsToMany(\App\User::class, 'essentials_kb_users', 'kb_id', 'user_id');
+        return $this->belongsToMany(User::class, 'essentials_kb_users', 'kb_id', 'user_id');
     }
 }

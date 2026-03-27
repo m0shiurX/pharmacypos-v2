@@ -2,6 +2,7 @@
 
 namespace Modules\Essentials\Entities;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -30,16 +31,16 @@ class EssentialsLeave extends Model
 
     public function user()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function leave_type()
     {
-        return $this->belongsTo(\Modules\Essentials\Entities\EssentialsLeaveType::class, 'essentials_leave_type_id');
+        return $this->belongsTo(EssentialsLeaveType::class, 'essentials_leave_type_id');
     }
 
     public function changed_by_user()
     {
-        return $this->belongsTo(\App\User::class, 'changed_by');
+        return $this->belongsTo(User::class, 'changed_by');
     }
 }

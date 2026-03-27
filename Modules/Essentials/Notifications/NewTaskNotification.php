@@ -4,7 +4,9 @@ namespace Modules\Essentials\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Modules\Essentials\Http\Controllers\ToDoController;
 
 class NewTaskNotification extends Notification
 {
@@ -42,7 +44,7 @@ class NewTaskNotification extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable) {}
 
@@ -72,7 +74,7 @@ class NewTaskNotification extends Notification
         return new BroadcastMessage([
             'title' => __('essentials::lang.new_task_added'),
             'body' => strip_tags(__('essentials::lang.new_task_notification', ['assigned_by' => $this->task->assigned_by->user_full_name, 'task_id' => $this->task->task_id])),
-            'link' => action([\Modules\Essentials\Http\Controllers\ToDoController::class, 'show'], $this->task->id),
+            'link' => action([ToDoController::class, 'show'], $this->task->id),
         ]);
     }
 }

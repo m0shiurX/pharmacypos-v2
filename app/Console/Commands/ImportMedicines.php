@@ -28,12 +28,14 @@ class ImportMedicines extends Command
 
         if (! file_exists($file)) {
             $this->error("CSV file not found: {$file}");
+
             return 1;
         }
 
         $business = Business::find($business_id);
         if (! $business) {
             $this->error("Business with ID {$business_id} not found. Run migrations and seeders first.");
+
             return 1;
         }
 
@@ -42,6 +44,7 @@ class ImportMedicines extends Command
 
         if (empty($locations)) {
             $this->error('No business locations found. Run seeders first.');
+
             return 1;
         }
 
@@ -58,6 +61,7 @@ class ImportMedicines extends Command
         $handle = fopen($file, 'r');
         if (! $handle) {
             $this->error('Cannot open CSV file.');
+
             return 1;
         }
 
@@ -100,8 +104,9 @@ class ImportMedicines extends Command
 
             // Need at least 37 columns
             if (count($row) < 37) {
-                $errors[] = "Row {$row_num}: insufficient columns (" . count($row) . ')';
+                $errors[] = "Row {$row_num}: insufficient columns (".count($row).')';
                 $bar->advance();
+
                 continue;
             }
 
@@ -109,6 +114,7 @@ class ImportMedicines extends Command
             if (empty($product_name)) {
                 $bar->advance();
                 $skipped++;
+
                 continue;
             }
 
@@ -163,12 +169,12 @@ class ImportMedicines extends Command
         $this->info("Import complete: {$imported} imported, {$skipped} skipped.");
 
         if (! empty($errors)) {
-            $this->warn('Errors (' . count($errors) . '):');
+            $this->warn('Errors ('.count($errors).'):');
             foreach (array_slice($errors, 0, 20) as $err) {
                 $this->line("  - {$err}");
             }
             if (count($errors) > 20) {
-                $this->line('  ... and ' . (count($errors) - 20) . ' more.');
+                $this->line('  ... and '.(count($errors) - 20).' more.');
             }
         }
 
@@ -217,6 +223,7 @@ class ImportMedicines extends Command
                 // Only handle single product type
                 if ($product_type !== 'single') {
                     $skipped++;
+
                     continue;
                 }
 
@@ -224,6 +231,7 @@ class ImportMedicines extends Command
                 if (empty($unit_name)) {
                     $errors[] = "Row {$row_num}: UNIT is required";
                     $skipped++;
+
                     continue;
                 }
 
@@ -279,7 +287,7 @@ class ImportMedicines extends Command
                 // Resolve sub-category
                 $sub_category_id = null;
                 if (! empty($sub_category_name) && $category_id) {
-                    $sub_key = strtolower($sub_category_name) . '_' . $category_id;
+                    $sub_key = strtolower($sub_category_name).'_'.$category_id;
                     if (! isset($category_cache[$sub_key])) {
                         $sub_category = Category::firstOrCreate(
                             ['business_id' => $business_id, 'name' => $sub_category_name, 'category_type' => 'product'],
@@ -324,7 +332,7 @@ class ImportMedicines extends Command
                 ]);
 
                 // Generate SKU
-                $generated_sku = $sku_prefix . str_pad($product->id, 4, '0', STR_PAD_LEFT);
+                $generated_sku = $sku_prefix.str_pad($product->id, 4, '0', STR_PAD_LEFT);
                 $product->sku = $generated_sku;
                 $product->save();
                 $existing_skus[$generated_sku] = true;

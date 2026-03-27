@@ -27,12 +27,12 @@ class Variation extends Model
 
     public function product_variation()
     {
-        return $this->belongsTo(\App\ProductVariation::class);
+        return $this->belongsTo(ProductVariation::class);
     }
 
     public function product()
     {
-        return $this->belongsTo(\App\Product::class, 'product_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     /**
@@ -40,7 +40,7 @@ class Variation extends Model
      */
     public function sell_lines()
     {
-        return $this->hasMany(\App\TransactionSellLine::class);
+        return $this->hasMany(TransactionSellLine::class);
     }
 
     /**
@@ -48,7 +48,7 @@ class Variation extends Model
      */
     public function variation_location_details()
     {
-        return $this->hasMany(\App\VariationLocationDetails::class);
+        return $this->hasMany(VariationLocationDetails::class);
     }
 
     /**
@@ -56,12 +56,12 @@ class Variation extends Model
      */
     public function group_prices()
     {
-        return $this->hasMany(\App\VariationGroupPrice::class, 'variation_id');
+        return $this->hasMany(VariationGroupPrice::class, 'variation_id');
     }
 
     public function media()
     {
-        return $this->morphMany(\App\Media::class, 'model');
+        return $this->morphMany(Media::class, 'model');
     }
 
     public function getFullNameAttribute()

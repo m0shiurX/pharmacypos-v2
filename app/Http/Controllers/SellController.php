@@ -393,53 +393,53 @@ class SellController extends Controller
                             if ($row->zatca_status == 'success') {
                                 return '<div class="btn-group">
                                 <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-info tw-w-max dropdown-toggle"
-                                    data-toggle="dropdown" aria-expanded="false">' .
-                                    __('messages.actions') .
+                                    data-toggle="dropdown" aria-expanded="false">'.
+                                    __('messages.actions').
                                     '<span class="caret"></span><span class="sr-only">Toggle Dropdown</span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-left" role="menu">
-                                    <li><a class="download-xml" href="' . action([ZatcaInvoiceController::class, 'downloadXml'], [$row->id]) . '">
-                                            <i class="fas fa-file-download"></i> ' . __('zatcaintegrationksa::lang.download_xml') . '
+                                    <li><a class="download-xml" href="'.action([ZatcaInvoiceController::class, 'downloadXml'], [$row->id]).'">
+                                            <i class="fas fa-file-download"></i> '.__('zatcaintegrationksa::lang.download_xml').'
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="download-a3-pdf" target="_blank" href="' . action([ZatcaInvoiceController::class, 'sale_print_pdf'], [$row->id]) . '">
-                                            <i class="fas fa-file-download"></i> ' . __('zatcaintegrationksa::lang.download_a3_pdf') . '
+                                        <a class="download-a3-pdf" target="_blank" href="'.action([ZatcaInvoiceController::class, 'sale_print_pdf'], [$row->id]).'">
+                                            <i class="fas fa-file-download"></i> '.__('zatcaintegrationksa::lang.download_a3_pdf').'
                                         </a>
                                     </li>
                                 </ul></div>';
                             } else {
-                                return '<a href="' . action([ZatcaInvoiceController::class, 'sycs_sale'], [$row->id]) . '" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-info tw-w-max sycs_sale">' . __('zatcaintegrationksa::lang.sync') . '</a>';
+                                return '<a href="'.action([ZatcaInvoiceController::class, 'sycs_sale'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-info tw-w-max sycs_sale">'.__('zatcaintegrationksa::lang.sync').'</a>';
                             }
                         }
                         $html = '<div class="btn-group">
                                     <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info tw-w-max dropdown-toggle"
-                                        data-toggle="dropdown" aria-expanded="false">' .
-                            __('messages.actions') .
+                                        data-toggle="dropdown" aria-expanded="false">'.
+                            __('messages.actions').
                             '<span class="caret"></span><span class="sr-only">Toggle Dropdown
                                         </span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-left" role="menu">';
 
                         if (auth()->user()->can('sell.view') || auth()->user()->can('direct_sell.view') || auth()->user()->can('view_own_sell_only')) {
-                            $html .= '<li><a href="#" data-href="' . action([SellController::class, 'show'], [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i> ' . __('messages.view') . '</a></li>';
+                            $html .= '<li><a href="#" data-href="'.action([SellController::class, 'show'], [$row->id]).'" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i> '.__('messages.view').'</a></li>';
                         }
                         if (! $only_shipments) {
                             if ($row->is_direct_sale == 0) {
                                 if (auth()->user()->can('sell.update')) {
-                                    $html .= '<li><a target="_blank" href="' . action([SellPosController::class, 'edit'], [$row->id]) . '"><i class="fas fa-edit"></i> ' . __('messages.edit') . '</a></li>';
+                                    $html .= '<li><a target="_blank" href="'.action([SellPosController::class, 'edit'], [$row->id]).'"><i class="fas fa-edit"></i> '.__('messages.edit').'</a></li>';
                                 }
                             } elseif ($row->type == 'sales_order') {
                                 if (auth()->user()->can('so.update')) {
-                                    $html .= '<li><a target="_blank" href="' . action([SellController::class, 'edit'], [$row->id]) . '"><i class="fas fa-edit"></i> ' . __('messages.edit') . '</a></li>';
+                                    $html .= '<li><a target="_blank" href="'.action([SellController::class, 'edit'], [$row->id]).'"><i class="fas fa-edit"></i> '.__('messages.edit').'</a></li>';
                                 }
                             } else {
                                 if (auth()->user()->can('direct_sell.update')) {
-                                    $html .= '<li><a target="_blank" href="' . action([SellController::class, 'edit'], [$row->id]) . '"><i class="fas fa-edit"></i> ' . __('messages.edit') . '</a></li>';
+                                    $html .= '<li><a target="_blank" href="'.action([SellController::class, 'edit'], [$row->id]).'"><i class="fas fa-edit"></i> '.__('messages.edit').'</a></li>';
                                 }
                             }
 
-                            $delete_link = '<li><a href="' . action([SellPosController::class, 'destroy'], [$row->id]) . '" class="delete-sale"><i class="fas fa-trash"></i> ' . __('messages.delete') . '</a></li>';
+                            $delete_link = '<li><a href="'.action([SellPosController::class, 'destroy'], [$row->id]).'" class="delete-sale"><i class="fas fa-trash"></i> '.__('messages.delete').'</a></li>';
                             if ($row->is_direct_sale == 0) {
                                 if (auth()->user()->can('sell.delete')) {
                                     $html .= $delete_link;
@@ -456,33 +456,33 @@ class SellController extends Controller
                         }
 
                         if (config('constants.enable_download_pdf') && auth()->user()->can('print_invoice') && $sale_type != 'sales_order') {
-                            $html .= '<li><a href="' . route('sell.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __('lang_v1.download_pdf') . '</a></li>';
+                            $html .= '<li><a href="'.route('sell.downloadPdf', [$row->id]).'" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> '.__('lang_v1.download_pdf').'</a></li>';
 
                             if (! empty($row->shipping_status)) {
-                                $html .= '<li><a href="' . route('packing.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __('lang_v1.download_paking_pdf') . '</a></li>';
+                                $html .= '<li><a href="'.route('packing.downloadPdf', [$row->id]).'" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> '.__('lang_v1.download_paking_pdf').'</a></li>';
                             }
                         }
 
                         if (auth()->user()->can('sell.view') || auth()->user()->can('direct_sell.access')) {
                             if (! empty($row->document)) {
                                 $document_name = ! empty(explode('_', $row->document, 2)[1]) ? explode('_', $row->document, 2)[1] : $row->document;
-                                $html .= '<li><a href="' . url('uploads/documents/' . $row->document) . '" download="' . $document_name . '"><i class="fas fa-download" aria-hidden="true"></i>' . __('purchase.download_document') . '</a></li>';
+                                $html .= '<li><a href="'.url('uploads/documents/'.$row->document).'" download="'.$document_name.'"><i class="fas fa-download" aria-hidden="true"></i>'.__('purchase.download_document').'</a></li>';
                                 if (isFileImage($document_name)) {
-                                    $html .= '<li><a href="#" data-href="' . url('uploads/documents/' . $row->document) . '" class="view_uploaded_document"><i class="fas fa-image" aria-hidden="true"></i>' . __('lang_v1.view_document') . '</a></li>';
+                                    $html .= '<li><a href="#" data-href="'.url('uploads/documents/'.$row->document).'" class="view_uploaded_document"><i class="fas fa-image" aria-hidden="true"></i>'.__('lang_v1.view_document').'</a></li>';
                                 }
                             }
                         }
 
                         if ($is_admin || auth()->user()->hasAnyPermission(['access_shipping', 'access_own_shipping', 'access_commission_agent_shipping'])) {
-                            $html .= '<li><a href="#" data-href="' . action([SellController::class, 'editShipping'], [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-truck" aria-hidden="true"></i>' . __('lang_v1.edit_shipping') . '</a></li>';
+                            $html .= '<li><a href="#" data-href="'.action([SellController::class, 'editShipping'], [$row->id]).'" class="btn-modal" data-container=".view_modal"><i class="fas fa-truck" aria-hidden="true"></i>'.__('lang_v1.edit_shipping').'</a></li>';
                         }
 
                         if ($row->type == 'sell') {
                             if (auth()->user()->can('print_invoice')) {
-                                $html .= '<li><a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i> ' . __('lang_v1.print_invoice') . '</a></li>
-                                    <li><a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '?package_slip=true"><i class="fas fa-file-alt" aria-hidden="true"></i> ' . __('lang_v1.packing_slip') . '</a></li>';
+                                $html .= '<li><a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'"><i class="fas fa-print" aria-hidden="true"></i> '.__('lang_v1.print_invoice').'</a></li>
+                                    <li><a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'?package_slip=true"><i class="fas fa-file-alt" aria-hidden="true"></i> '.__('lang_v1.packing_slip').'</a></li>';
 
-                                $html .= '<li><a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '?delivery_note=true"><i class="fas fa-file-alt" aria-hidden="true"></i> ' . __('lang_v1.delivery_note') . '</a></li>';
+                                $html .= '<li><a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'?delivery_note=true"><i class="fas fa-file-alt" aria-hidden="true"></i> '.__('lang_v1.delivery_note').'</a></li>';
                             }
                             $html .= '<li class="divider"></li>';
                             if (! $only_shipments) {
@@ -490,8 +490,8 @@ class SellController extends Controller
                                     $row->is_direct_sale == 0 && ! auth()->user()->can('sell.update') &&
                                     auth()->user()->can('edit_pos_payment')
                                 ) {
-                                    $html .= '<li><a href="' . route('edit-pos-payment', [$row->id]) . '" 
-                                    ><i class="fas fa-money-bill-alt"></i> ' . __('lang_v1.add_edit_payment') .
+                                    $html .= '<li><a href="'.route('edit-pos-payment', [$row->id]).'" 
+                                    ><i class="fas fa-money-bill-alt"></i> '.__('lang_v1.add_edit_payment').
                                         '</a></li>';
                                 }
 
@@ -501,24 +501,24 @@ class SellController extends Controller
                                     auth()->user()->can('delete_sell_payment')
                                 ) {
                                     if ($row->payment_status != 'paid') {
-                                        $html .= '<li><a href="' . action([TransactionPaymentController::class, 'addPayment'], [$row->id]) . '" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __('purchase.add_payment') . '</a></li>';
+                                        $html .= '<li><a href="'.action([TransactionPaymentController::class, 'addPayment'], [$row->id]).'" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i> '.__('purchase.add_payment').'</a></li>';
                                     }
 
-                                    $html .= '<li><a href="' . action([TransactionPaymentController::class, 'show'], [$row->id]) . '" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __('purchase.view_payments') . '</a></li>';
+                                    $html .= '<li><a href="'.action([TransactionPaymentController::class, 'show'], [$row->id]).'" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i> '.__('purchase.view_payments').'</a></li>';
                                 }
 
                                 if (auth()->user()->can('sell.create') || auth()->user()->can('direct_sell.access')) {
                                     // $html .= '<li><a href="' . action([\App\Http\Controllers\SellController::class, 'duplicateSell'], [$row->id]) . '"><i class="fas fa-copy"></i> ' . __("lang_v1.duplicate_sell") . '</a></li>';
 
-                                    $html .= '<li><a href="' . action([SellReturnController::class, 'add'], [$row->id]) . '"><i class="fas fa-undo"></i> ' . __('lang_v1.sell_return') . '</a></li>
+                                    $html .= '<li><a href="'.action([SellReturnController::class, 'add'], [$row->id]).'"><i class="fas fa-undo"></i> '.__('lang_v1.sell_return').'</a></li>
 
-                                    <li><a href="' . action([SellPosController::class, 'showInvoiceUrl'], [$row->id]) . '" class="view_invoice_url"><i class="fas fa-eye"></i> ' . __('lang_v1.view_invoice_url') . '</a></li>';
+                                    <li><a href="'.action([SellPosController::class, 'showInvoiceUrl'], [$row->id]).'" class="view_invoice_url"><i class="fas fa-eye"></i> '.__('lang_v1.view_invoice_url').'</a></li>';
                                 }
                             }
 
-                            $html .= '<li><a href="#" data-href="' . action([NotificationController::class, 'getTemplate'], ['transaction_id' => $row->id, 'template_for' => 'new_sale']) . '" class="btn-modal" data-container=".view_modal"><i class="fa fa-envelope" aria-hidden="true"></i>' . __('lang_v1.new_sale_notification') . '</a></li>';
+                            $html .= '<li><a href="#" data-href="'.action([NotificationController::class, 'getTemplate'], ['transaction_id' => $row->id, 'template_for' => 'new_sale']).'" class="btn-modal" data-container=".view_modal"><i class="fa fa-envelope" aria-hidden="true"></i>'.__('lang_v1.new_sale_notification').'</a></li>';
                         } else {
-                            $html .= '<li><a href="#" data-href="' . action([SellController::class, 'viewMedia'], ['model_id' => $row->id, 'model_type' => Transaction::class, 'model_media_type' => 'shipping_document']) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-paperclip" aria-hidden="true"></i>' . __('lang_v1.shipping_documents') . '</a></li>';
+                            $html .= '<li><a href="#" data-href="'.action([SellController::class, 'viewMedia'], ['model_id' => $row->id, 'model_type' => Transaction::class, 'model_media_type' => 'shipping_document']).'" class="btn-modal" data-container=".view_modal"><i class="fas fa-paperclip" aria-hidden="true"></i>'.__('lang_v1.shipping_documents').'</a></li>';
                         }
 
                         $html .= '</ul></div>';
@@ -551,7 +551,7 @@ class SellController extends Controller
                             $discount = $row->total_before_tax * ($discount / 100);
                         }
 
-                        return '<span class="total-discount" data-orig-value="' . $discount . '">' . $this->transactionUtil->num_f($discount, true) . '</span>';
+                        return '<span class="total-discount" data-orig-value="'.$discount.'">'.$this->transactionUtil->num_f($discount, true).'</span>';
                     }
                 )
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
@@ -569,7 +569,7 @@ class SellController extends Controller
                 )
                 ->addColumn('total_remaining', function ($row) {
                     $total_remaining = $row->final_total - $row->total_paid;
-                    $total_remaining_html = '<span class="payment_due" data-orig-value="' . $total_remaining . '">' . $this->transactionUtil->num_f($total_remaining, true) . '</span>';
+                    $total_remaining_html = '<span class="payment_due" data-orig-value="'.$total_remaining.'">'.$this->transactionUtil->num_f($total_remaining, true).'</span>';
 
                     return $total_remaining_html;
                 })
@@ -577,7 +577,7 @@ class SellController extends Controller
                     $return_due_html = '';
                     if (! empty($row->return_exists)) {
                         $return_due = $row->amount_return - $row->return_paid;
-                        $return_due_html .= '<a href="' . action([TransactionPaymentController::class, 'show'], [$row->return_transaction_id]) . '" class="view_purchase_return_payment_modal"><span class="sell_return_due" data-orig-value="' . $return_due . '">' . $this->transactionUtil->num_f($return_due, true) . '</span></a>';
+                        $return_due_html .= '<a href="'.action([TransactionPaymentController::class, 'show'], [$row->return_transaction_id]).'" class="view_purchase_return_payment_modal"><span class="sell_return_due" data-orig-value="'.$return_due.'">'.$this->transactionUtil->num_f($return_due, true).'</span></a>';
                     }
 
                     return $return_due_html;
@@ -585,32 +585,32 @@ class SellController extends Controller
                 ->editColumn('invoice_no', function ($row) use ($is_crm) {
                     $invoice_no = $row->invoice_no;
                     if (! empty($row->woocommerce_order_id)) {
-                        $invoice_no .= ' <i class="fab fa-wordpress text-primary no-print" title="' . __('lang_v1.synced_from_woocommerce') . '"></i>';
+                        $invoice_no .= ' <i class="fab fa-wordpress text-primary no-print" title="'.__('lang_v1.synced_from_woocommerce').'"></i>';
                     }
                     if (! empty($row->return_exists)) {
-                        $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.some_qty_returned_from_sell') . '"><i class="fas fa-undo"></i></small>';
+                        $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="'.__('lang_v1.some_qty_returned_from_sell').'"><i class="fas fa-undo"></i></small>';
                     }
                     if (! empty($row->is_recurring)) {
-                        $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.subscribed_invoice') . '"><i class="fas fa-recycle"></i></small>';
+                        $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="'.__('lang_v1.subscribed_invoice').'"><i class="fas fa-recycle"></i></small>';
                     }
 
                     if (! empty($row->recur_parent_id)) {
-                        $invoice_no .= ' &nbsp;<small class="label bg-info label-round no-print" title="' . __('lang_v1.subscription_invoice') . '"><i class="fas fa-recycle"></i></small>';
+                        $invoice_no .= ' &nbsp;<small class="label bg-info label-round no-print" title="'.__('lang_v1.subscription_invoice').'"><i class="fas fa-recycle"></i></small>';
                     }
 
                     if (! empty($row->is_export)) {
-                        $invoice_no .= '</br><small class="label label-default no-print" title="' . __('lang_v1.export') . '">' . __('lang_v1.export') . '</small>';
+                        $invoice_no .= '</br><small class="label label-default no-print" title="'.__('lang_v1.export').'">'.__('lang_v1.export').'</small>';
                     }
 
                     if ($is_crm && ! empty($row->crm_is_order_request)) {
-                        $invoice_no .= ' &nbsp;<small class="label bg-yellow label-round no-print" title="' . __('crm::lang.order_request') . '"><i class="fas fa-tasks"></i></small>';
+                        $invoice_no .= ' &nbsp;<small class="label bg-yellow label-round no-print" title="'.__('crm::lang.order_request').'"><i class="fas fa-tasks"></i></small>';
                     }
 
                     return $invoice_no;
                 })
                 ->editColumn('shipping_status', function ($row) use ($shipping_statuses) {
                     $status_color = ! empty($this->shipping_status_colors[$row->shipping_status]) ? $this->shipping_status_colors[$row->shipping_status] : 'bg-gray';
-                    $status = ! empty($row->shipping_status) ? '<a href="#" class="btn-modal" data-href="' . action([SellController::class, 'editShipping'], [$row->id]) . '" data-container=".view_modal"><span class="label ' . $status_color . '">' . $shipping_statuses[$row->shipping_status] . '</span></a>' : '';
+                    $status = ! empty($row->shipping_status) ? '<a href="#" class="btn-modal" data-href="'.action([SellController::class, 'editShipping'], [$row->id]).'" data-container=".view_modal"><span class="label '.$status_color.'">'.$shipping_statuses[$row->shipping_status].'</span></a>' : '';
 
                     return $status;
                 })
@@ -632,7 +632,7 @@ class SellController extends Controller
                         $payment_method = __('lang_v1.checkout_multi_pay');
                     }
 
-                    $html = ! empty($payment_method) ? '<span class="payment-method" data-orig-value="' . $payment_method . '" data-status-name="' . $payment_method . '">' . $payment_method . '</span>' : '';
+                    $html = ! empty($payment_method) ? '<span class="payment-method" data-orig-value="'.$payment_method.'" data-status-name="'.$payment_method.'">'.$payment_method.'</span>' : '';
 
                     return $html;
                 })
@@ -641,9 +641,9 @@ class SellController extends Controller
 
                     if ($row->type == 'sales_order') {
                         if ($is_admin && $row->status != 'completed') {
-                            $status = '<span class="edit-so-status label ' . $sales_order_statuses[$row->status]['class'] . '" data-href="' . action([SalesOrderController::class, 'getEditSalesOrderStatus'], ['id' => $row->id]) . '">' . $sales_order_statuses[$row->status]['label'] . '</span>';
+                            $status = '<span class="edit-so-status label '.$sales_order_statuses[$row->status]['class'].'" data-href="'.action([SalesOrderController::class, 'getEditSalesOrderStatus'], ['id' => $row->id]).'">'.$sales_order_statuses[$row->status]['label'].'</span>';
                         } else {
-                            $status = '<span class="label ' . $sales_order_statuses[$row->status]['class'] . '" >' . $sales_order_statuses[$row->status]['label'] . '</span>';
+                            $status = '<span class="label '.$sales_order_statuses[$row->status]['class'].'" >'.$sales_order_statuses[$row->status]['label'].'</span>';
                         }
                     }
 
@@ -653,9 +653,9 @@ class SellController extends Controller
                     $status = '';
                     if ($is_zatca) {
                         if (empty($row->zatca_status) || is_null($row->zatca_status)) {
-                            $status = '<small class="label bg-primary tw-dw-btn-xs no-print">' . __('zatcaintegrationksa::lang.pending') . '</small>';
+                            $status = '<small class="label bg-primary tw-dw-btn-xs no-print">'.__('zatcaintegrationksa::lang.pending').'</small>';
                         } elseif ($row->zatca_status == 'success') {
-                            $status = '<small class="label bg-light-green tw-dw-btn-xs no-print">' . ucfirst($row->zatca_status) . '</small>';
+                            $status = '<small class="label bg-light-green tw-dw-btn-xs no-print">'.ucfirst($row->zatca_status).'</small>';
                         } elseif ($row->zatca_status == 'failed') {
                             $lastDoc = ZatcaDocument::where('transaction_id', $row->id)
                                 ->where('sent_to_zatca_status', 'failed')
@@ -665,11 +665,11 @@ class SellController extends Controller
 
                             if ($lastDoc && $lastDoc->response_source == 'self' && ! empty($lastDoc->response)) {
                                 $safeMsg = htmlspecialchars($lastDoc->response, ENT_QUOTES, 'UTF-8');
-                                $status = '<small class="label bg-red tw-dw-btn-xs no-print mb-1">' . ucfirst($row->zatca_status) . '</small><br><span class="text-danger">' . $safeMsg . '</span>';
+                                $status = '<small class="label bg-red tw-dw-btn-xs no-print mb-1">'.ucfirst($row->zatca_status).'</small><br><span class="text-danger">'.$safeMsg.'</span>';
                             } elseif ($lastDoc) {
-                                $label = '<small class="label bg-red tw-dw-btn-xs no-print mb-5">' . ucfirst($row->zatca_status) . '</small>';
-                                $button = '<a href="' . action([ZatcaInvoiceController::class, 'showInvoiceError'], ['id' => $row->id]) . '" class="btn btn-xs btn-danger no-print mt-2 status_fail" style="margin-top: 10px;">' . e(__('zatcaintegrationksa::lang.view_error')) . '</a>';
-                                $status = $label . '<br>' . $button;
+                                $label = '<small class="label bg-red tw-dw-btn-xs no-print mb-5">'.ucfirst($row->zatca_status).'</small>';
+                                $button = '<a href="'.action([ZatcaInvoiceController::class, 'showInvoiceError'], ['id' => $row->id]).'" class="btn btn-xs btn-danger no-print mt-2 status_fail" style="margin-top: 10px;">'.e(__('zatcaintegrationksa::lang.view_error')).'</a>';
+                                $status = $label.'<br>'.$button;
                             }
                         }
                     }
@@ -1002,7 +1002,7 @@ class SellController extends Controller
         if ($this->transactionUtil->isReturnExist($id)) {
             return back()->with('status', [
                 'success' => 0,
-                'msg' => __('lang_v1.return_exist')
+                'msg' => __('lang_v1.return_exist'),
             ]);
         }
 
@@ -1022,7 +1022,7 @@ class SellController extends Controller
             if (! empty($transaction) && $transaction->zatca_status === 'success') {
                 return back()->with('status', [
                     'success' => 0,
-                    'msg' => __('lang_v1.invoice_synced_to_zatca_cannot_be_edited')
+                    'msg' => __('lang_v1.invoice_synced_to_zatca_cannot_be_edited'),
                 ]);
             }
         }
@@ -1442,78 +1442,78 @@ class SellController extends Controller
                     function ($row) {
                         $html = '<div class="btn-group">
                                 <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info tw-w-max dropdown-toggle" 
-                                    data-toggle="dropdown" aria-expanded="false">' .
-                            __('messages.actions') .
+                                    data-toggle="dropdown" aria-expanded="false">'.
+                            __('messages.actions').
                             '<span class="caret"></span><span class="sr-only">Toggle Dropdown
                                     </span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                     <li>
-                                    <a href="#" data-href="' . action([SellController::class, 'show'], [$row->id]) . '" class="btn-modal" data-container=".view_modal">
-                                        <i class="fas fa-eye" aria-hidden="true"></i>' . __('messages.view') . '
+                                    <a href="#" data-href="'.action([SellController::class, 'show'], [$row->id]).'" class="btn-modal" data-container=".view_modal">
+                                        <i class="fas fa-eye" aria-hidden="true"></i>'.__('messages.view').'
                                     </a>
                                     </li>';
 
                         if (auth()->user()->can('draft.update') || auth()->user()->can('quotation.update')) {
                             if ($row->is_direct_sale == 1) {
                                 $html .= '<li>
-                                            <a target="_blank" href="' . action([SellController::class, 'edit'], [$row->id]) . '">
-                                                <i class="fas fa-edit"></i>' . __('messages.edit') . '
+                                            <a target="_blank" href="'.action([SellController::class, 'edit'], [$row->id]).'">
+                                                <i class="fas fa-edit"></i>'.__('messages.edit').'
                                             </a>
                                         </li>';
                             } else {
                                 $html .= '<li>
-                                            <a target="_blank" href="' . action([SellPosController::class, 'edit'], [$row->id]) . '">
-                                                <i class="fas fa-edit"></i>' . __('messages.edit') . '
+                                            <a target="_blank" href="'.action([SellPosController::class, 'edit'], [$row->id]).'">
+                                                <i class="fas fa-edit"></i>'.__('messages.edit').'
                                             </a>
                                         </li>';
                             }
                         }
 
                         $html .= '<li>
-                                    <a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i>' . __('messages.print') . '</a>
+                                    <a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'"><i class="fas fa-print" aria-hidden="true"></i>'.__('messages.print').'</a>
                                 </li>';
 
                         if (config('constants.enable_download_pdf')) {
                             $sub_status = $row->sub_status == 'proforma' ? 'proforma' : '';
                             $html .= '<li>
-                                        <a href="' . route('quotation.downloadPdf', ['id' => $row->id, 'sub_status' => $sub_status]) . '" target="_blank">
-                                            <i class="fas fa-print" aria-hidden="true"></i>' . __('lang_v1.download_pdf') . '
+                                        <a href="'.route('quotation.downloadPdf', ['id' => $row->id, 'sub_status' => $sub_status]).'" target="_blank">
+                                            <i class="fas fa-print" aria-hidden="true"></i>'.__('lang_v1.download_pdf').'
                                         </a>
                                     </li>';
                         }
 
                         if ((auth()->user()->can('sell.create') || auth()->user()->can('direct_sell.access')) && config('constants.enable_convert_draft_to_invoice')) {
                             $html .= '<li>
-                                        <a href="' . action([SellPosController::class, 'convertToInvoice'], [$row->id]) . '" class="convert-draft"><i class="fas fa-sync-alt"></i>' . __('lang_v1.convert_to_invoice') . '</a>
+                                        <a href="'.action([SellPosController::class, 'convertToInvoice'], [$row->id]).'" class="convert-draft"><i class="fas fa-sync-alt"></i>'.__('lang_v1.convert_to_invoice').'</a>
                                     </li>';
                         }
 
                         if ($row->sub_status != 'proforma') {
                             $html .= '<li>
-                                        <a href="' . action([SellPosController::class, 'convertToProforma'], [$row->id]) . '" class="convert-to-proforma"><i class="fas fa-sync-alt"></i>' . __('lang_v1.convert_to_proforma') . '</a>
+                                        <a href="'.action([SellPosController::class, 'convertToProforma'], [$row->id]).'" class="convert-to-proforma"><i class="fas fa-sync-alt"></i>'.__('lang_v1.convert_to_proforma').'</a>
                                     </li>';
                         }
 
                         if (auth()->user()->can('draft.delete') || auth()->user()->can('quotation.delete')) {
                             $html .= '<li>
-                                <a href="' . action([SellPosController::class, 'destroy'], [$row->id]) . '" class="delete-sale"><i class="fas fa-trash"></i>' . __('messages.delete') . '</a>
+                                <a href="'.action([SellPosController::class, 'destroy'], [$row->id]).'" class="delete-sale"><i class="fas fa-trash"></i>'.__('messages.delete').'</a>
                                 </li>';
                         }
 
                         if ($row->sub_status == 'quotation') {
                             $html .= '<li>
-                                        <a href="' . action([SellPosController::class, 'copyQuotation'], [$row->id]) . '" 
-                                        class="copy_quotation"><i class="fas fa-copy"></i>' .
-                                __('lang_v1.copy_quotation') . '</a>
+                                        <a href="'.action([SellPosController::class, 'copyQuotation'], [$row->id]).'" 
+                                        class="copy_quotation"><i class="fas fa-copy"></i>'.
+                                __('lang_v1.copy_quotation').'</a>
                                     </li>
                                     <li>
-                                        <a href="#" data-href="' . action("\App\Http\Controllers\NotificationController@getTemplate", ['transaction_id' => $row->id, 'template_for' => 'new_quotation']) . '" class="btn-modal" data-container=".view_modal"><i class="fa fa-envelope" aria-hidden="true"></i>' . __('lang_v1.new_quotation_notification') . '
+                                        <a href="#" data-href="'.action("\App\Http\Controllers\NotificationController@getTemplate", ['transaction_id' => $row->id, 'template_for' => 'new_quotation']).'" class="btn-modal" data-container=".view_modal"><i class="fa fa-envelope" aria-hidden="true"></i>'.__('lang_v1.new_quotation_notification').'
                                         </a>
                                     </li>';
 
                             $html .= '<li>
-                                        <a href="' . action("\App\Http\Controllers\SellPosController@showInvoiceUrl", [$row->id]) . '" class="view_invoice_url"><i class="fas fa-eye"></i>' . __('lang_v1.view_quote_url') . '</a>
+                                        <a href="'.action("\App\Http\Controllers\SellPosController@showInvoiceUrl", [$row->id]).'" class="view_invoice_url"><i class="fas fa-eye"></i>'.__('lang_v1.view_quote_url').'</a>
                                     </li>';
                         }
 
@@ -1526,15 +1526,15 @@ class SellController extends Controller
                 ->editColumn('invoice_no', function ($row) {
                     $invoice_no = $row->invoice_no;
                     if (! empty($row->woocommerce_order_id)) {
-                        $invoice_no .= ' <i class="fab fa-wordpress text-primary no-print" title="' . __('lang_v1.synced_from_woocommerce') . '"></i>';
+                        $invoice_no .= ' <i class="fab fa-wordpress text-primary no-print" title="'.__('lang_v1.synced_from_woocommerce').'"></i>';
                     }
 
                     if ($row->sub_status == 'proforma') {
-                        $invoice_no .= '<br><span class="label bg-gray">' . __('lang_v1.proforma_invoice') . '</span>';
+                        $invoice_no .= '<br><span class="label bg-gray">'.__('lang_v1.proforma_invoice').'</span>';
                     }
 
                     if (! empty($row->is_export)) {
-                        $invoice_no .= '</br><small class="label label-default no-print" title="' . __('lang_v1.export') . '">' . __('lang_v1.export') . '</small>';
+                        $invoice_no .= '</br><small class="label label-default no-print" title="'.__('lang_v1.export').'">'.__('lang_v1.export').'</small>';
                     }
 
                     return $invoice_no;
@@ -1627,7 +1627,7 @@ class SellController extends Controller
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,
@@ -1725,7 +1725,7 @@ class SellController extends Controller
                 'msg' => trans('lang_v1.updated_success'),
             ];
         } catch (\Exception $e) {
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,

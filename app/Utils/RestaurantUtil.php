@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Http\Controllers\Restaurant\BookingController;
 use App\Restaurant\Booking;
 use App\Transaction;
 use App\TransactionSellLine;
@@ -274,8 +275,8 @@ class RestaurantUtil extends Util
                 'end' => $booking->booking_end,
                 'customer_name' => $customer_name,
                 'table' => $table_name,
-                'url' => action([\App\Http\Controllers\Restaurant\BookingController::class, 'show'], [$booking->id]),
-                'event_url' => action([\App\Http\Controllers\Restaurant\BookingController::class, 'index']),
+                'url' => action([BookingController::class, 'show'], [$booking->id]),
+                'event_url' => action([BookingController::class, 'index']),
                 // 'start_time' => $start_time,
                 // 'end_time' =>  $end_time,
                 'backgroundColor' => $backgroundColor,

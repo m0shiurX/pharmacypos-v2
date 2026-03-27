@@ -36,6 +36,8 @@ use App\Category;
 use App\Contact;
 use App\CustomerGroup;
 use App\Events\SellCreatedOrModified;
+use App\Exceptions\AdvanceBalanceNotAvailable;
+use App\Exceptions\PurchaseSellMismatch;
 use App\InvoiceLayout;
 use App\InvoiceScheme;
 use App\Media;
@@ -57,9 +59,13 @@ use App\Utils\TransactionUtil;
 use App\Variation;
 use App\Warranty;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
+use Modules\Repair\Http\Controllers\RepairController;
+use Mpdf\Mpdf;
 use Razorpay\Api\Api;
 use Stripe\Charge;
 use Stripe\Stripe;
@@ -128,7 +134,7 @@ class SellPosController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -168,7 +174,7 @@ class SellPosController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -180,9 +186,9 @@ class SellPosController extends Controller
 
         // Check if subscribed or not, then check for users quota
         if (! $this->moduleUtil->isSubscribed($business_id)) {
-            return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\HomeController::class, 'index']));
+            return $this->moduleUtil->expiredResponse(action([HomeController::class, 'index']));
         } elseif (! $this->moduleUtil->isQuotaAvailable('invoices', $business_id)) {
-            return $this->moduleUtil->quotaExpiredResponse('invoices', $business_id, action([\App\Http\Controllers\SellPosController::class, 'index']));
+            return $this->moduleUtil->quotaExpiredResponse('invoices', $business_id, action([SellPosController::class, 'index']));
         }
 
         // like:repair
@@ -190,7 +196,7 @@ class SellPosController extends Controller
 
         // Check if there is a open register, if no then redirect to Create Register screen.
         if ($this->cashRegisterUtil->countOpenedRegister() == 0) {
-            return redirect()->action([\App\Http\Controllers\CashRegisterController::class, 'create'], ['sub_type' => $sub_type]);
+            return redirect()->action([CashRegisterController::class, 'create'], ['sub_type' => $sub_type]);
         }
 
         $register_details = $this->cashRegisterUtil->getCurrentCashRegister(auth()->user()->id);
@@ -314,7 +320,7 @@ class SellPosController extends Controller
     /**
      * Display the POS screen.
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function posDisplay()
     {
@@ -328,7 +334,7 @@ class SellPosController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -343,7 +349,7 @@ class SellPosController extends Controller
 
         // Check if there is a open register, if no then redirect to Create Register screen.
         if (! $is_direct_sale && $this->cashRegisterUtil->countOpenedRegister() == 0) {
-            return redirect()->action([\App\Http\Controllers\CashRegisterController::class, 'create']);
+            return redirect()->action([CashRegisterController::class, 'create']);
         }
 
         try {
@@ -380,7 +386,7 @@ class SellPosController extends Controller
                     return $output;
                 } else {
                     return redirect()
-                        ->action([\App\Http\Controllers\SellController::class, 'index'])
+                        ->action([SellController::class, 'index'])
                         ->with('status', $output);
                 }
             }
@@ -392,7 +398,7 @@ class SellPosController extends Controller
                 if (! $this->moduleUtil->isSubscribed($business_id)) {
                     return $this->moduleUtil->expiredResponse();
                 } elseif (! $this->moduleUtil->isQuotaAvailable('invoices', $business_id)) {
-                    return $this->moduleUtil->quotaExpiredResponse('invoices', $business_id, action([\App\Http\Controllers\SellPosController::class, 'index']));
+                    return $this->moduleUtil->quotaExpiredResponse('invoices', $business_id, action([SellPosController::class, 'index']));
                 }
 
                 $user_id = $request->session()->get('user.id');
@@ -683,10 +689,10 @@ class SellPosController extends Controller
             \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
             $msg = trans('messages.something_went_wrong');
 
-            if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
+            if (get_class($e) == PurchaseSellMismatch::class) {
                 $msg = $e->getMessage();
             }
-            if (get_class($e) == \App\Exceptions\AdvanceBalanceNotAvailable::class) {
+            if (get_class($e) == AdvanceBalanceNotAvailable::class) {
                 $msg = $e->getMessage();
             }
 
@@ -702,31 +708,31 @@ class SellPosController extends Controller
             if ($input['status'] == 'draft') {
                 if (isset($input['is_quotation']) && $input['is_quotation'] == 1) {
                     return redirect()
-                        ->action([\App\Http\Controllers\SellController::class, 'getQuotations'])
+                        ->action([SellController::class, 'getQuotations'])
                         ->with('status', $output);
                 } else {
                     return redirect()
-                        ->action([\App\Http\Controllers\SellController::class, 'getDrafts'])
+                        ->action([SellController::class, 'getDrafts'])
                         ->with('status', $output);
                 }
             } elseif ($input['status'] == 'quotation') {
                 return redirect()
-                    ->action([\App\Http\Controllers\SellController::class, 'getQuotations'])
+                    ->action([SellController::class, 'getQuotations'])
                     ->with('status', $output);
             } elseif (isset($input['type']) && $input['type'] == 'sales_order') {
                 return redirect()
-                    ->action([\App\Http\Controllers\SalesOrderController::class, 'index'])
+                    ->action([SalesOrderController::class, 'index'])
                     ->with('status', $output);
             } else {
                 if (! empty($input['sub_type']) && $input['sub_type'] == 'repair') {
-                    $redirect_url = $input['print_label'] == 1 ? action([\Modules\Repair\Http\Controllers\RepairController::class, 'printLabel'], [$transaction->id]) : action([\Modules\Repair\Http\Controllers\RepairController::class, 'index']);
+                    $redirect_url = $input['print_label'] == 1 ? action([RepairController::class, 'printLabel'], [$transaction->id]) : action([RepairController::class, 'index']);
 
                     return redirect($redirect_url)
                         ->with('status', $output);
                 }
 
                 return redirect()
-                    ->action([\App\Http\Controllers\SellController::class, 'index'])
+                    ->action([SellController::class, 'index'])
                     ->with('status', $output);
             }
         }
@@ -931,7 +937,7 @@ class SellPosController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -942,7 +948,7 @@ class SellPosController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -967,7 +973,7 @@ class SellPosController extends Controller
 
         // Check if there is a open register, if no then redirect to Create Register screen.
         if ($this->cashRegisterUtil->countOpenedRegister() == 0) {
-            return redirect()->action([\App\Http\Controllers\CashRegisterController::class, 'create']);
+            return redirect()->action([CashRegisterController::class, 'create']);
         }
 
         // Check if return exist then not allowed
@@ -1289,7 +1295,7 @@ class SellPosController extends Controller
      * TODO: Add edit log.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -1363,14 +1369,14 @@ class SellPosController extends Controller
                         return $output;
                     } else {
                         return redirect()
-                            ->action([\App\Http\Controllers\SellController::class, 'index'])
+                            ->action([SellController::class, 'index'])
                             ->with('status', $output);
                     }
                 }
 
                 // Check if there is a open register, if no then redirect to Create Register screen.
                 if (! $is_direct_sale && $this->cashRegisterUtil->countOpenedRegister() == 0) {
-                    return redirect()->action([\App\Http\Controllers\CashRegisterController::class, 'create']);
+                    return redirect()->action([CashRegisterController::class, 'create']);
                 }
 
                 $business_id = $request->session()->get('user.business_id');
@@ -1684,28 +1690,28 @@ class SellPosController extends Controller
             if ($input['status'] == 'draft') {
                 if (isset($input['is_quotation']) && $input['is_quotation'] == 1) {
                     return redirect()
-                        ->action([\App\Http\Controllers\SellController::class, 'getQuotations'])
+                        ->action([SellController::class, 'getQuotations'])
                         ->with('status', $output);
                 } else {
                     return redirect()
-                        ->action([\App\Http\Controllers\SellController::class, 'getDrafts'])
+                        ->action([SellController::class, 'getDrafts'])
                         ->with('status', $output);
                 }
             } else {
                 if (! empty($transaction->sub_type) && $transaction->sub_type == 'repair') {
                     return redirect()
-                        ->action([\Modules\Repair\Http\Controllers\RepairController::class, 'index'])
+                        ->action([RepairController::class, 'index'])
                         ->with('status', $output);
                 }
 
                 if ($transaction->type == 'sales_order') {
                     return redirect()
-                        ->action([\App\Http\Controllers\SalesOrderController::class, 'index'])
+                        ->action([SalesOrderController::class, 'index'])
                         ->with('status', $output);
                 }
 
                 return redirect()
-                    ->action([\App\Http\Controllers\SellController::class, 'index'])
+                    ->action([SellController::class, 'index'])
                     ->with('status', $output);
             }
         }
@@ -1750,7 +1756,7 @@ class SellPosController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
@@ -1950,7 +1956,7 @@ class SellPosController extends Controller
      *
      * @param  int  $variation_id
      * @param  int  $location_id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getProductRow($variation_id, $location_id)
     {
@@ -2012,7 +2018,7 @@ class SellPosController extends Controller
     /**
      * Returns the HTML row for a payment in POS
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getPaymentRow(Request $request)
     {
@@ -2038,7 +2044,7 @@ class SellPosController extends Controller
     /**
      * Returns recent transactions
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getRecentTransactions(Request $request)
     {
@@ -2095,7 +2101,7 @@ class SellPosController extends Controller
     /**
      * Prints invoice for sell
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function printInvoice(Request $request, $transaction_id)
     {
@@ -2147,7 +2153,7 @@ class SellPosController extends Controller
     /**
      * Gives suggetion for product based on category
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getProductSuggestion(Request $request)
     {
@@ -2264,7 +2270,7 @@ class SellPosController extends Controller
      * Shows invoice url.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function showInvoiceUrl($id)
     {
@@ -2287,7 +2293,7 @@ class SellPosController extends Controller
      * Shows invoice to guest user.
      *
      * @param  string  $token
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function showInvoice($token)
     {
@@ -2327,7 +2333,7 @@ class SellPosController extends Controller
      * Allows payment for the invoice by guest user.
      *
      * @param  string  $token
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function invoicePayment($token)
     {
@@ -2458,7 +2464,7 @@ class SellPosController extends Controller
     /**
      * Display a listing of the recurring invoices.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function listSubscriptions()
     {
@@ -2512,7 +2518,7 @@ class SellPosController extends Controller
             if (! empty(request()->contact_id)) {
                 $sells->where('transactions.contact_id', request()->contact_id);
             }
-            $datatable = Datatables::of($sells)
+            $datatable = DataTables::of($sells)
                 ->addColumn(
                     'action',
                     function ($row) {
@@ -2522,16 +2528,16 @@ class SellPosController extends Controller
                             $link_text = ! empty($row->recur_stopped_on) ? __('lang_v1.start_subscription') : __('lang_v1.stop_subscription');
                             $link_class = ! empty($row->recur_stopped_on) ? 'btn-success' : 'btn-danger';
 
-                            $html .= '<a href="'.action([\App\Http\Controllers\SellPosController::class, 'toggleRecurringInvoices'], [$row->id]).'" class="toggle_recurring_invoice btn btn-xs '.$link_class.'"><i class="fa fa-power-off"></i> '.$link_text.'</a>';
+                            $html .= '<a href="'.action([SellPosController::class, 'toggleRecurringInvoices'], [$row->id]).'" class="toggle_recurring_invoice btn btn-xs '.$link_class.'"><i class="fa fa-power-off"></i> '.$link_text.'</a>';
 
                             if ($row->is_direct_sale == 0) {
-                                $html .= '<a target="_blank" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary" href="'.action([\App\Http\Controllers\SellPosController::class, 'edit'], [$row->id]).'"><i class="glyphicon glyphicon-edit"></i> '.__('messages.edit').'</a>';
+                                $html .= '<a target="_blank" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary" href="'.action([SellPosController::class, 'edit'], [$row->id]).'"><i class="glyphicon glyphicon-edit"></i> '.__('messages.edit').'</a>';
                             } else {
-                                $html .= '<a target="_blank" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary" href="'.action([\App\Http\Controllers\SellController::class, 'edit'], [$row->id]).'"><i class="glyphicon glyphicon-edit"></i> '.__('messages.edit').'</a>';
+                                $html .= '<a target="_blank" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-primary" href="'.action([SellController::class, 'edit'], [$row->id]).'"><i class="glyphicon glyphicon-edit"></i> '.__('messages.edit').'</a>';
                             }
 
                             if (auth()->user()->can('direct_sell.delete') || auth()->user()->can('sell.delete')) {
-                                $html .= '&nbsp;<a href="'.action([\App\Http\Controllers\SellPosController::class, 'destroy'], [$row->id]).'" class="delete-sale tw-dw-btn tw-dw-btn-outline tw-dw-btn-xs tw-dw-btn-error"><i class="fas fa-trash"></i> '.__('messages.delete').'</a>';
+                                $html .= '&nbsp;<a href="'.action([SellPosController::class, 'destroy'], [$row->id]).'" class="delete-sale tw-dw-btn tw-dw-btn-outline tw-dw-btn-xs tw-dw-btn-error"><i class="fas fa-trash"></i> '.__('messages.delete').'</a>';
                             }
                         }
 
@@ -2616,7 +2622,7 @@ class SellPosController extends Controller
      * Starts or stops a recurring invoice.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function toggleRecurringInvoices($id)
     {
@@ -2799,11 +2805,11 @@ class SellPosController extends Controller
             \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
             $msg = trans('messages.something_went_wrong');
 
-            if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
+            if (get_class($e) == PurchaseSellMismatch::class) {
                 $msg = $e->getMessage();
             }
 
-            if (get_class($e) == \App\Exceptions\AdvanceBalanceNotAvailable::class) {
+            if (get_class($e) == AdvanceBalanceNotAvailable::class) {
                 $msg = $e->getMessage();
             }
 
@@ -2983,7 +2989,7 @@ class SellPosController extends Controller
             DB::beginTransaction();
             // Check if there is a open register, if no then redirect to Create Register screen.
             if (! $is_direct_sale && $this->cashRegisterUtil->countOpenedRegister() == 0) {
-                return redirect()->action([\App\Http\Controllers\CashRegisterController::class, 'create']);
+                return redirect()->action([CashRegisterController::class, 'create']);
             }
 
             $invoice_no = $this->transactionUtil->getInvoiceNumber($business_id, 'final', $transaction->location_id);
@@ -3051,11 +3057,11 @@ class SellPosController extends Controller
                 \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
                 $msg = trans('messages.something_went_wrong');
 
-                if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
+                if (get_class($e) == PurchaseSellMismatch::class) {
                     $msg = $e->getMessage();
                 }
 
-                if (get_class($e) == \App\Exceptions\AdvanceBalanceNotAvailable::class) {
+                if (get_class($e) == AdvanceBalanceNotAvailable::class) {
                     $msg = $e->getMessage();
                 }
 
@@ -3065,7 +3071,7 @@ class SellPosController extends Controller
                 ];
 
                 return redirect()
-                    ->action([\App\Http\Controllers\SellController::class, 'index'])
+                    ->action([SellController::class, 'index'])
                     ->with('status', $output);
             }
 
@@ -3082,11 +3088,11 @@ class SellPosController extends Controller
             \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
             $msg = trans('messages.something_went_wrong');
 
-            if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
+            if (get_class($e) == PurchaseSellMismatch::class) {
                 $msg = $e->getMessage();
             }
 
-            if (get_class($e) == \App\Exceptions\AdvanceBalanceNotAvailable::class) {
+            if (get_class($e) == AdvanceBalanceNotAvailable::class) {
                 $msg = $e->getMessage();
             }
 
@@ -3097,7 +3103,7 @@ class SellPosController extends Controller
         }
 
         return redirect()
-            ->action([\App\Http\Controllers\SellController::class, 'index'])
+            ->action([SellController::class, 'index'])
             ->with('status', $output);
     }
 
@@ -3189,7 +3195,7 @@ class SellPosController extends Controller
             ];
         }
 
-        return redirect()->action([\App\Http\Controllers\SellController::class, 'getQuotations']);
+        return redirect()->action([SellController::class, 'getQuotations']);
     }
 
     /**
@@ -3218,7 +3224,7 @@ class SellPosController extends Controller
             ->with(compact('receipt_details', 'location_details', 'is_email_attachment'))
             ->render();
 
-        $mpdf = new \Mpdf\Mpdf([
+        $mpdf = new Mpdf([
             'tempDir' => public_path('uploads/temp'),
             'mode' => 'utf-8',
             'autoScriptToLang' => true,
@@ -3258,7 +3264,7 @@ class SellPosController extends Controller
             ->with(compact('receipt_details', 'location_details', 'sub_status'))
             ->render();
         $pdf_name = (! empty($sub_status) && $sub_status == 'proforma') ? __('lang_v1.proforma_invoice') : 'QUOTATION';
-        $mpdf = new \Mpdf\Mpdf([
+        $mpdf = new Mpdf([
             'tempDir' => public_path('uploads/temp'),
             'mode' => 'utf-8',
             'autoScriptToLang' => true,
@@ -3298,7 +3304,7 @@ class SellPosController extends Controller
             ->with(compact('receipt_details', 'location_details'))
             ->render();
 
-        $mpdf = new \Mpdf\Mpdf([
+        $mpdf = new Mpdf([
             'tempDir' => public_path('uploads/temp'),
             'mode' => 'utf-8',
             'autoScriptToLang' => true,

@@ -2,6 +2,7 @@
 
 namespace Modules\Essentials\Entities;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class EssentialsUserShift extends Model
@@ -15,6 +16,6 @@ class EssentialsUserShift extends Model
 
     public function user()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(User::class);
     }
 }

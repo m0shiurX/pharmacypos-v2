@@ -8,6 +8,7 @@ use App\SellingPriceGroup;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class LabelsController extends Controller
@@ -34,7 +35,7 @@ class LabelsController extends Controller
     /**
      * Display labels
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Request $request)
     {
@@ -73,7 +74,7 @@ class LabelsController extends Controller
     /**
      * Returns the html for product row
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function addProductRow(Request $request)
     {
@@ -99,7 +100,7 @@ class LabelsController extends Controller
     /**
      * Returns the html for labels preview
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function preview(Request $request)
     {

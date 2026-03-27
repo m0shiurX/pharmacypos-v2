@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Modules\Essentials\Http\Controllers\ToDoController;
 
 class NewTaskDocumentNotification extends Notification
 {
@@ -43,7 +44,7 @@ class NewTaskDocumentNotification extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {
@@ -79,7 +80,7 @@ class NewTaskDocumentNotification extends Notification
         return new BroadcastMessage([
             'title' => __('essentials::lang.new_document'),
             'body' => strip_tags(__('essentials::lang.new_task_document_notification', ['uploaded_by' => $this->document['uploaded_by_user_name'], 'task_id' => $this->document['task_id']])),
-            'link' => action([\Modules\Essentials\Http\Controllers\ToDoController::class, 'show'], $this->document['id']),
+            'link' => action([ToDoController::class, 'show'], $this->document['id']),
         ]);
     }
 }

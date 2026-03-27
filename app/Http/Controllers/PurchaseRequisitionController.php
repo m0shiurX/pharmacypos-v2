@@ -13,6 +13,7 @@ use App\Utils\Util;
 use App\VariationLocationDetails;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Yajra\DataTables\Facades\DataTables;
 
 class PurchaseRequisitionController extends Controller
@@ -50,7 +51,7 @@ class PurchaseRequisitionController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -116,7 +117,7 @@ class PurchaseRequisitionController extends Controller
                 $purchase_requisitions->where('transactions.status', '!=', 'completed');
             }
 
-            return Datatables::of($purchase_requisitions)
+            return DataTables::of($purchase_requisitions)
                 ->addColumn('action', function ($row) {
                     $html = '<div class="btn-group">
                             <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info tw-w-max  dropdown-toggle" 
@@ -126,10 +127,10 @@ class PurchaseRequisitionController extends Controller
                                 </span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-left" role="menu">';
-                    $html .= '<li><a href="#" data-href="'.action([\App\Http\Controllers\PurchaseRequisitionController::class, 'show'], [$row->id]).'" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i>'.__('messages.view').'</a></li>';
+                    $html .= '<li><a href="#" data-href="'.action([PurchaseRequisitionController::class, 'show'], [$row->id]).'" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i>'.__('messages.view').'</a></li>';
 
                     if (auth()->user()->can('purchase_requisition.delete')) {
-                        $html .= '<li><a href="'.action([\App\Http\Controllers\PurchaseRequisitionController::class, 'destroy'], [$row->id]).'" class="delete-purchase-requisition"><i class="fas fa-trash"></i>'.__('messages.delete').'</a></li>';
+                        $html .= '<li><a href="'.action([PurchaseRequisitionController::class, 'destroy'], [$row->id]).'" class="delete-purchase-requisition"><i class="fas fa-trash"></i>'.__('messages.delete').'</a></li>';
                     }
 
                     $html .= '</ul></div>';
@@ -151,7 +152,7 @@ class PurchaseRequisitionController extends Controller
                 })
                 ->setRowAttr([
                     'data-href' => function ($row) {
-                        return action([\App\Http\Controllers\PurchaseRequisitionController::class, 'show'], [$row->id]);
+                        return action([PurchaseRequisitionController::class, 'show'], [$row->id]);
                     }, ])
                 ->rawColumns(['status', 'action'])
                 ->make(true);
@@ -170,7 +171,7 @@ class PurchaseRequisitionController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -192,7 +193,7 @@ class PurchaseRequisitionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -258,14 +259,14 @@ class PurchaseRequisitionController extends Controller
             ];
         }
 
-        return redirect()->action([\App\Http\Controllers\PurchaseRequisitionController::class, 'index'])->with('status', $output);
+        return redirect()->action([PurchaseRequisitionController::class, 'index'])->with('status', $output);
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -299,7 +300,7 @@ class PurchaseRequisitionController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -310,7 +311,7 @@ class PurchaseRequisitionController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -321,7 +322,7 @@ class PurchaseRequisitionController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

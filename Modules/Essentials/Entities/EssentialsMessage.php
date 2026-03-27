@@ -2,6 +2,7 @@
 
 namespace Modules\Essentials\Entities;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class EssentialsMessage extends Model
@@ -18,6 +19,6 @@ class EssentialsMessage extends Model
      */
     public function sender()
     {
-        return $this->belongsTo(\App\User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountReportsController;
 use App\Http\Controllers\AccountTypeController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BackUpController;
 use App\Http\Controllers\BarcodeController;
 use App\Http\Controllers\BrandController;
@@ -58,6 +59,7 @@ use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VariationTemplateController;
 use App\Http\Controllers\WarrantyController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -98,10 +100,10 @@ Route::middleware(['setData'])->group(function () {
 
 // Routes for authenticated users only
 Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 'AdminSidebarMenu', 'CheckUserLogin'])->group(function () {
-    Route::post('change-language', function (\Illuminate\Http\Request $request) {
+    Route::post('change-language', function (Request $request) {
         $lang = $request->input('language');
         if (array_key_exists($lang, config('constants.langs'))) {
-            $user = \Illuminate\Support\Facades\Auth::user();
+            $user = Auth::user();
             $user->language = $lang;
             $user->save();
             $request->session()->put('user.language', $lang);
@@ -247,7 +249,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/reset-mapping', [SellController::class, 'resetMapping']);
     // pos display screen route
     Route::get('/customer-display', [SellPosController::class, 'posDisplay'])->name('pos_display');
-    Route::get('/pos/variation/{variation_id}/{location_id}', [\App\Http\Controllers\ProductController::class, 'getVarationDetail']);
+    Route::get('/pos/variation/{variation_id}/{location_id}', [ProductController::class, 'getVarationDetail']);
     // end pos display screen route
     Route::resource('pos', SellPosController::class);
 
@@ -523,7 +525,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
             Artisan::call('view:clear');
 
             return response()->json(['success' => true, 'message' => 'All caches cleared successfully.']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     })->name('maintenance.clear_all_caches');
@@ -541,7 +543,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 
 // common route
 Route::middleware(['auth'])->group(function () {
-    Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout']);
+    Route::get('/logout', [LoginController::class, 'logout']);
 });
 
 Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])->group(function () {

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Business;
 use App\Contact;
 use App\Events\TransactionPaymentAdded;
 use App\Events\TransactionPaymentUpdated;
 use App\Exceptions\AdvanceBalanceNotAvailable;
+use App\NotificationTemplate;
 use App\Transaction;
 use App\TransactionPayment;
 use App\Utils\ModuleUtil;
@@ -14,6 +16,7 @@ use App\Utils\TransactionUtil;
 use Datatables;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TransactionPaymentController extends Controller
 {
@@ -38,7 +41,7 @@ class TransactionPaymentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -48,7 +51,7 @@ class TransactionPaymentController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -58,7 +61,7 @@ class TransactionPaymentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -162,7 +165,7 @@ class TransactionPaymentController extends Controller
             DB::rollBack();
             $msg = __('messages.something_went_wrong');
 
-            if (get_class($e) == \App\Exceptions\AdvanceBalanceNotAvailable::class) {
+            if (get_class($e) == AdvanceBalanceNotAvailable::class) {
                 $msg = $e->getMessage();
             } else {
                 \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
@@ -181,7 +184,7 @@ class TransactionPaymentController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -214,7 +217,7 @@ class TransactionPaymentController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -246,7 +249,7 @@ class TransactionPaymentController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -347,7 +350,7 @@ class TransactionPaymentController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
@@ -414,7 +417,7 @@ class TransactionPaymentController extends Controller
      * Adds new payment to the given transaction.
      *
      * @param  int  $transaction_id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function addPayment($transaction_id)
     {
@@ -471,7 +474,7 @@ class TransactionPaymentController extends Controller
      * Shows contact's payment due modal
      *
      * @param  int  $contact_id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getPayContactDue($contact_id)
     {
@@ -572,7 +575,7 @@ class TransactionPaymentController extends Controller
     /**
      * Adds Payments for Contact due
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function postPayContactDue(Request $request)
     {
@@ -634,8 +637,8 @@ class TransactionPaymentController extends Controller
      * view details of single..,
      * payment.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function viewPayment($payment_id)
     {
@@ -678,8 +681,8 @@ class TransactionPaymentController extends Controller
      * Retrieves all the child payments of a parent payments
      * payment.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function showChildPayments($payment_id)
     {
@@ -712,7 +715,7 @@ class TransactionPaymentController extends Controller
      * Retrieves list of all opening balance payments.
      *
      * @param  int  $contact_id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getOpeningBalancePayments($contact_id)
     {
@@ -804,7 +807,7 @@ class TransactionPaymentController extends Controller
             }
 
             // Get notification template for payment_received
-            $notification_template = \App\NotificationTemplate::where('business_id', $business_id)
+            $notification_template = NotificationTemplate::where('business_id', $business_id)
                 ->where('template_for', 'payment_received')
                 ->first();
 
@@ -813,7 +816,7 @@ class TransactionPaymentController extends Controller
             }
 
             // Get business settings (with currency for formatting)
-            $business = \App\Business::with(['currency'])->findOrFail($business_id);
+            $business = Business::with(['currency'])->findOrFail($business_id);
             $sms_settings = $business->sms_settings;
 
             // Replace tags only in text fields
@@ -852,7 +855,7 @@ class TransactionPaymentController extends Controller
         try {
             $business_id = $request->session()->get('business.id');
             $contact_id = $request->input('contact_id');
-            $contact = \App\Contact::find($contact_id);
+            $contact = Contact::find($contact_id);
 
             // Only send SMS if contact has mobile number
             if (empty($contact) || empty($contact->mobile)) {
@@ -860,7 +863,7 @@ class TransactionPaymentController extends Controller
             }
 
             // Get notification template for payment_received
-            $notification_template = \App\NotificationTemplate::where('business_id', $business_id)
+            $notification_template = NotificationTemplate::where('business_id', $business_id)
                 ->where('template_for', 'payment_received')
                 ->first();
 
@@ -869,7 +872,7 @@ class TransactionPaymentController extends Controller
             }
 
             // Get business settings
-            $business = \App\Business::findOrFail($business_id);
+            $business = Business::findOrFail($business_id);
             $sms_settings = $business->sms_settings;
 
             // Create a mock transaction object for tag replacement

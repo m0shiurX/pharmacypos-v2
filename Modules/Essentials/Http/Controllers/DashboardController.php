@@ -201,7 +201,7 @@ class DashboardController extends Controller
 
         $query->groupBy('users.id');
 
-        return Datatables::of($query)
+        return DataTables::of($query)
             ->editColumn('total_sales_this_month', function ($row) {
                 return $this->transactionUtil->num_f($row->total_sales_this_month, true);
             })

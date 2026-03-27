@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\InvoiceLayout;
 use App\Utils\Util;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Validator;
 
 class InvoiceLayoutController extends Controller
@@ -19,7 +20,7 @@ class InvoiceLayoutController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -29,7 +30,7 @@ class InvoiceLayoutController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -47,7 +48,7 @@ class InvoiceLayoutController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -127,7 +128,7 @@ class InvoiceLayoutController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(InvoiceLayout $invoiceLayout)
     {
@@ -137,8 +138,8 @@ class InvoiceLayoutController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\InvoiceLayout  $invoiceLayout
-     * @return \Illuminate\Http\Response
+     * @param  InvoiceLayout  $invoiceLayout
+     * @return Response
      */
     public function edit($id)
     {
@@ -161,8 +162,8 @@ class InvoiceLayoutController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\InvoiceLayout  $invoiceLayout
-     * @return \Illuminate\Http\Response
+     * @param  InvoiceLayout  $invoiceLayout
+     * @return Response
      */
     public function update(Request $request, $id)
     {

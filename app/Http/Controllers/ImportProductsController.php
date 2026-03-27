@@ -16,6 +16,7 @@ use App\VariationValueTemplate;
 use DB;
 use Excel;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ImportProductsController extends Controller
 {
@@ -46,7 +47,7 @@ class ImportProductsController extends Controller
     /**
      * Display import product screen.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -73,7 +74,7 @@ class ImportProductsController extends Controller
     /**
      * Imports the uploaded file to database.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -114,7 +115,7 @@ class ImportProductsController extends Controller
                 if (! $this->moduleUtil->isSubscribed($business_id)) {
                     return $this->moduleUtil->expiredResponse();
                 } elseif (! $this->moduleUtil->isQuotaAvailable('products', $business_id, $total_rows)) {
-                    return $this->moduleUtil->quotaExpiredResponse('products', $business_id, action([\App\Http\Controllers\ImportProductsController::class, 'index']));
+                    return $this->moduleUtil->quotaExpiredResponse('products', $business_id, action([ImportProductsController::class, 'index']));
                 }
 
                 $business_locations = BusinessLocation::where('business_id', $business_id)->get();
@@ -150,8 +151,8 @@ class ImportProductsController extends Controller
                             $source_image = file_get_contents($image_name);
 
                             $path = parse_url($image_name, PHP_URL_PATH);
-                            $new_name = time() . '_' . basename($path);
-                            $dest_img = public_path() . '/uploads/' . config('constants.product_img_path') . '/' . $new_name;
+                            $new_name = time().'_'.basename($path);
+                            $dest_img = public_path().'/uploads/'.config('constants.product_img_path').'/'.$new_name;
                             file_put_contents($dest_img, $source_image);
                             $product_array['image'] = $new_name;
                         } else {
@@ -700,7 +701,7 @@ class ImportProductsController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
 
             $output = [
                 'success' => 0,

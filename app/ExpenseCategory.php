@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -23,14 +24,14 @@ class ExpenseCategory extends Model
 
     public function sub_categories()
     {
-        return $this->hasMany(\App\ExpenseCategory::class, 'parent_id');
+        return $this->hasMany(ExpenseCategory::class, 'parent_id');
     }
 
     /**
      * Scope a query to only include main categories.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeOnlyParent($query)
     {

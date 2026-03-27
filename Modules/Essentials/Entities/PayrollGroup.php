@@ -2,6 +2,9 @@
 
 namespace Modules\Essentials\Entities;
 
+use App\Business;
+use App\BusinessLocation;
+use App\Transaction;
 use Illuminate\Database\Eloquent\Model;
 
 class PayrollGroup extends Model
@@ -25,7 +28,7 @@ class PayrollGroup extends Model
      */
     public function payrollGroupTransactions()
     {
-        return $this->belongsToMany(\App\Transaction::class, 'essentials_payroll_group_transactions', 'payroll_group_id', 'transaction_id');
+        return $this->belongsToMany(Transaction::class, 'essentials_payroll_group_transactions', 'payroll_group_id', 'transaction_id');
     }
 
     /**
@@ -33,7 +36,7 @@ class PayrollGroup extends Model
      */
     public function businessLocation()
     {
-        return $this->belongsTo(\App\BusinessLocation::class, 'location_id');
+        return $this->belongsTo(BusinessLocation::class, 'location_id');
     }
 
     /**
@@ -41,6 +44,6 @@ class PayrollGroup extends Model
      */
     public function business()
     {
-        return $this->belongsTo(\App\Business::class, 'business_id');
+        return $this->belongsTo(Business::class, 'business_id');
     }
 }
