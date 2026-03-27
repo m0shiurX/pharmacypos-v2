@@ -322,7 +322,7 @@
 						}
 					@endphp
 					<div class="table-responsive">
-					<table class="table table-condensed table-bordered table-striped table-responsive" id="pos_table">
+					<table class="table table-condensed table-th-green table-bordered table-striped table-responsive" id="pos_table">
 						<thead>
 							<tr>
 								<th class="text-center">#</th>

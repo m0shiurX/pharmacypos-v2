@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th>@lang('messages.action')</th>
+            <th class="hide">ID</th>
             <th>@lang('messages.date')</th>
             <th>@lang('purchase.ref_no')</th>
             <th>@lang('purchase.location')</th>

@@ -67,6 +67,7 @@
                     <thead>
                         <tr>
                             <th>@lang('messages.action')</th>
+                            <th class="hide">ID</th>
                             <th>@lang('messages.date')</th>
                             <th>@lang('sale.invoice_no')</th>
                             <th>@lang('sale.customer_name')</th>
@@ -198,6 +199,12 @@
                         name: 'action',
                         orderable: false,
                         "searchable": false
+                    },
+                    {
+                        data: 'id',
+                        name: 'transactions.id',
+                        visible: false,
+                        searchable: false
                     },
                     {
                         data: 'transaction_date',
