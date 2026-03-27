@@ -2,6 +2,7 @@
     base_path = "{{ url('/') }}";
     //used for push notification
     APP = {};
+    APP.TIMEZONE = '{{ config('app.timezone') }}';
     APP.PUSHER_APP_KEY = '{{ config('broadcasting.connections.pusher.key') }}';
     APP.PUSHER_APP_CLUSTER = '{{ config('broadcasting.connections.pusher.options.cluster') }}';
     APP.INVOICE_SCHEME_SEPARATOR = '{{ config('constants.invoice_scheme_separator') }}';
@@ -55,7 +56,7 @@
 
 <script>
     Dropzone.autoDiscover = false;
-    moment.tz.setDefault('{{ Session::get('business.time_zone') }}');
+    moment.tz.setDefault(APP.TIMEZONE);
     $(document).ready(function() {
         $.ajaxSetup({
             headers: {

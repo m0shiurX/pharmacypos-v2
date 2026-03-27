@@ -28,10 +28,64 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
- // Add this at the top with other imports
+// Add this at the top with other imports
 
 class Util
 {
+    protected function businessTimezone($business_details = null): string
+    {
+        if (! empty($business_details) && ! empty($business_details->time_zone)) {
+            return $business_details->time_zone;
+        }
+
+        return session('business.time_zone', config('app.timezone'));
+    }
+
+    protected function resolveDateTime($date, $business_details = null): ?\Illuminate\Support\Carbon
+    {
+        if (empty($date)) {
+            return null;
+        }
+
+        $timezone = $this->businessTimezone($business_details);
+
+        if ($date instanceof \DateTimeInterface) {
+            return \Illuminate\Support\Carbon::instance($date)->setTimezone($timezone);
+        }
+
+        $date = trim((string) $date);
+        if ($date === '') {
+            return null;
+        }
+
+        if (strtolower($date) === 'now') {
+            return \Illuminate\Support\Carbon::now($timezone);
+        }
+
+        if (preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $date) === 1) {
+            $format = strlen($date) === 5 ? 'H:i' : 'H:i:s';
+
+            return \Illuminate\Support\Carbon::createFromFormat($format, $date, $timezone);
+        }
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) === 1) {
+            return \Illuminate\Support\Carbon::createFromFormat('Y-m-d', $date, $timezone);
+        }
+
+        if (preg_match('/\d{1,2}:\d{2}/', $date) !== 1) {
+            return \Illuminate\Support\Carbon::parse($date, $timezone);
+        }
+
+        $hasExplicitTimezone = preg_match('/(?:Z|[+\-]\d{2}:?\d{2})$/', $date) === 1;
+        if ($hasExplicitTimezone) {
+            return \Illuminate\Support\Carbon::parse($date)->setTimezone($timezone);
+        }
+
+        return \Illuminate\Support\Carbon::parse($date, $timezone);
+
+        return $parsedDate->setTimezone($timezone);
+    }
+
     /**
      * This function unformats a number and returns them in plain eng format
      *
@@ -282,7 +336,9 @@ class Util
             $time_format = 'h:i A';
         }
 
-        return ! empty($time) ? \Carbon::createFromFormat('H:i:s', $time)->format($time_format) : null;
+        $resolvedTime = $this->resolveDateTime($time);
+
+        return ! empty($resolvedTime) ? $resolvedTime->format($time_format) : null;
     }
 
     /**
@@ -304,7 +360,9 @@ class Util
             }
         }
 
-        return ! empty($date) ? \Carbon::createFromTimestamp(strtotime($date))->format($format) : null;
+        $resolvedDate = $this->resolveDateTime($date, $business_details);
+
+        return ! empty($resolvedDate) ? $resolvedDate->format($format) : null;
     }
 
     /**
