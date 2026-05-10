@@ -342,7 +342,7 @@
                     <th class="text-right" width="15%">{{ $receipt_details->table_subtotal_label }}</th>
                 </tr>
             </thead>
-            <tbody style="border-bottom: 1px solid #000000 !important;">
+            <tbody style="">
                 @forelse($receipt_details->lines as $line)
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
@@ -351,7 +351,7 @@
                                 <img src="{{ $line['image'] }}" alt="Image" width="50"
                                     style="float: left; margin-right: 8px;">
                             @endif
-                            <strong>{{ $line['name'] }}</strong> {{ $line['product_variation'] }}
+                            <span>{{ $line['name'] }}</span> {{ $line['product_variation'] }}
                             {{ $line['variation'] }}
                             @if (!empty($line['sub_sku']))
                                 , {{ $line['sub_sku'] }}
