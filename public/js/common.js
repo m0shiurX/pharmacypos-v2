@@ -96,7 +96,9 @@ $(document).ready(function () {
         'max-value',
         function (value, element, param) {
             var is_draft = false;
+            var is_pos_form = $('form#add_pos_sell_form').length > 0 || $('form#edit_pos_sell_form').length > 0;
             if (
+                is_pos_form &&
                 $(element).hasClass('pos_quantity') &&
                 $('select#status').length &&
                 $('select#status').val() !== 'final'
@@ -146,16 +148,16 @@ $(document).ready(function () {
         if (typeof str !== 'string') {
             str = String(str);
         }
-        
+
         // HTML REMOVAL: Simple regex to remove HTML tags
-        str = str.replace(/<[^>]*>/g, ''); 
-        
+        str = str.replace(/<[^>]*>/g, '');
+
         // Check 1: Variable exists, Check 2: Has value, Check 3: Symbol present in string
         if (typeof __currency_symbol !== 'undefined' && __currency_symbol && str.includes(__currency_symbol)) {
             // SIMPLE REPLACEMENT: Replace all occurrences of currency symbol with empty string
-            str = str.split(__currency_symbol).join('');  
+            str = str.split(__currency_symbol).join('');
         }
-        
+
         return str.trim();
     }
 
@@ -176,11 +178,11 @@ $(document).ready(function () {
             exportOptions: {
                 columns: ':visible',
                 format: {
-                    body: function(data, row, column, node) {
+                    body: function (data, row, column, node) {
                         // Remove currency symbol from the cell data
                         return __remove_currency_symbol(data);
                     },
-                    footer: function(data, row, column, node) {
+                    footer: function (data, row, column, node) {
                         // Remove currency symbol from the footer data
                         return __remove_currency_symbol(data);
                     }
@@ -195,11 +197,11 @@ $(document).ready(function () {
             exportOptions: {
                 columns: ':visible',
                 format: {
-                    body: function(data, row, column, node) {
+                    body: function (data, row, column, node) {
                         // Remove currency symbol from the cell data
                         return __remove_currency_symbol(data);
                     },
-                    footer: function(data, row, column, node) {
+                    footer: function (data, row, column, node) {
                         // Remove currency symbol from the footer data
                         return __remove_currency_symbol(data);
                     }
@@ -283,7 +285,7 @@ $(document).ready(function () {
         },
     });
 
-   
+
 
     if ($('input#iraqi_selling_price_adjustment').length > 0) {
         iraqi_selling_price_adjustment = true;
@@ -371,8 +373,8 @@ ranges[LANG.last_financial_year] = [
 ];
 
 var dateRangeSettings = {
-    showDropdowns : true,
-    linkedCalendars : false,
+    showDropdowns: true,
+    linkedCalendars: false,
     ranges: ranges,
     startDate: financial_year.start,
     endDate: financial_year.end,
@@ -400,7 +402,7 @@ $(document).on('keypress', 'input.input_number', function (event) {
     }
 
     // Check for no negative values
-    if(is_decimal == 'no_neg'){
+    if (is_decimal == 'no_neg') {
         var regex = new RegExp(/^[0-9.,]+$/);
     }
 

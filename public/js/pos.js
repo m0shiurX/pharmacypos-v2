@@ -308,10 +308,9 @@ $(document).ready(function () {
 
     //Update line total and check for quantity not greater than max quantity
     $('table#pos_table tbody').on('change', 'input.pos_quantity', function () {
-        // comment line becouse it validate form at increment and decrement item
-        // if (sell_form_validator) {
-        //     sell_form.valid();
-        // }
+        if (sell_form_validator) {
+            sell_form_validator.element($(this));
+        }
         if (pos_form_validator) {
             pos_form_validator.element($(this));
         }
