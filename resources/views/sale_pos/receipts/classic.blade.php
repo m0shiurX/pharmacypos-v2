@@ -342,8 +342,26 @@
                     <th class="text-right" width="15%">{{ $receipt_details->table_subtotal_label }}</th>
                 </tr>
             </thead>
+            @php
+                $sorted_lines = collect($receipt_details->lines ?? [])
+                    ->sortBy(
+                        function ($line) {
+                            $sort_key = trim(
+                                implode(' ', [
+                                    $line['name'] ?? '',
+                                    $line['product_variation'] ?? '',
+                                    $line['variation'] ?? '',
+                                ]),
+                            );
+
+                            return $sort_key;
+                        },
+                        SORT_NATURAL | SORT_FLAG_CASE,
+                    )
+                    ->values();
+            @endphp
             <tbody style="">
-                @forelse($receipt_details->lines as $line)
+                @forelse($sorted_lines as $line)
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
                         <td>
