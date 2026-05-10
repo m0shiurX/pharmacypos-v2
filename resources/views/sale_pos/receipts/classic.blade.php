@@ -469,8 +469,8 @@
 </div>
 
 <div class="row" style="color: #000000 !important;">
-    <div class="col-xs-8"></div>
-    <div class="col-xs-4">
+    <div class="col-xs-6"></div>
+    <div class="col-xs-6">
         <table class="table table-slim">
             <tbody>
                 @if (!empty($receipt_details->total_quantity_label))
