@@ -324,7 +324,6 @@ class HomeController extends Controller
     {
         if (request()->ajax()) {
             $business_id = request()->session()->get('user.business_id');
-            $today = Carbon::now()->format('Y-m-d H:i:s');
 
             $query = Transaction::join(
                 'contacts as c',
@@ -340,8 +339,7 @@ class HomeController extends Controller
                 )
                 ->where('transactions.business_id', $business_id)
                 ->where('transactions.type', 'purchase')
-                ->where('transactions.payment_status', '!=', 'paid')
-                ->whereRaw("DATEDIFF( DATE_ADD( transaction_date, INTERVAL IF(transactions.pay_term_type = 'days', transactions.pay_term_number, 30 * transactions.pay_term_number) DAY), '$today') <= 7");
+                ->where('transactions.payment_status', '!=', 'paid');
 
             // Check for permitted locations of a user
             $permitted_locations = auth()->user()->permitted_locations();
@@ -399,7 +397,6 @@ class HomeController extends Controller
     {
         if (request()->ajax()) {
             $business_id = request()->session()->get('user.business_id');
-            $today = Carbon::now()->format('Y-m-d H:i:s');
 
             $query = Transaction::join(
                 'contacts as c',
@@ -415,10 +412,7 @@ class HomeController extends Controller
                 )
                 ->where('transactions.business_id', $business_id)
                 ->where('transactions.type', 'sell')
-                ->where('transactions.payment_status', '!=', 'paid')
-                ->whereNotNull('transactions.pay_term_number')
-                ->whereNotNull('transactions.pay_term_type')
-                ->whereRaw("DATEDIFF( DATE_ADD( transaction_date, INTERVAL IF(transactions.pay_term_type = 'days', transactions.pay_term_number, 30 * transactions.pay_term_number) DAY), '$today') <= 7");
+                ->where('transactions.payment_status', '!=', 'paid');
 
             // Check for permitted locations of a user
             $permitted_locations = auth()->user()->permitted_locations();
