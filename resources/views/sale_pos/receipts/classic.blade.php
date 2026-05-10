@@ -486,7 +486,7 @@
     </div>
 </div>
 
-<div class="row" style="color: #000000 !important;">
+<div class="row border-top" style="color: #000000 !important; border-top: 2px solid #ddd !important;">
     <div class="col-xs-6"></div>
     <div class="col-xs-6">
         <table class="table table-slim">
