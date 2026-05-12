@@ -268,6 +268,7 @@ class HomeController extends Controller
 
             $output['total_sell'] = $total_sell_inc_tax;
             $output['total_sell_return'] = $total_sell_return_inc_tax;
+            $output['total_due_recovery'] = $this->transactionUtil->getTotalSellDueRecovery($business_id, $start, $end, $location_id, $created_by);
 
             $output['invoice_due'] = $sell_details['invoice_due'] - $total_ledger_discount['total_sell_discount'];
             $output['total_expense'] = $transaction_totals['total_expense'];
@@ -294,15 +295,15 @@ class HomeController extends Controller
             return Datatables::of($products)
                 ->editColumn('product', function ($row) {
                     if ($row->type == 'single') {
-                        return $row->product.' ('.$row->sku.')';
+                        return $row->product . ' (' . $row->sku . ')';
                     } else {
-                        return $row->product.' - '.$row->product_variation.' - '.$row->variation.' ('.$row->sub_sku.')';
+                        return $row->product . ' - ' . $row->product_variation . ' - ' . $row->variation . ' (' . $row->sub_sku . ')';
                     }
                 })
                 ->editColumn('stock', function ($row) {
                     $stock = $row->stock ? $row->stock : 0;
 
-                    return '<span data-is_quantity="true" class="display_currency" data-currency_symbol=false>'.(float) $stock.'</span> '.$row->unit;
+                    return '<span data-is_quantity="true" class="display_currency" data-currency_symbol=false>' . (float) $stock . '</span> ' . $row->unit;
                 })
                 ->removeColumn('sku')
                 ->removeColumn('sub_sku')
@@ -366,16 +367,16 @@ class HomeController extends Controller
                     $total_paid = ! empty($row->total_paid) ? $row->total_paid : 0;
                     $due = $row->final_total - $total_paid;
 
-                    return '<span class="display_currency" data-currency_symbol="true">'.
-                        $due.'</span>';
+                    return '<span class="display_currency" data-currency_symbol="true">' .
+                        $due . '</span>';
                 })
                 ->addColumn('action', '@can("purchase.create") <a href="{{action([\App\Http\Controllers\TransactionPaymentController::class, \'addPayment\'], [$id])}}" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-accent add_payment_modal"><i class="fas fa-money-bill-alt"></i> @lang("purchase.add_payment")</a> @endcan')
                 ->removeColumn('supplier_business_name')
                 ->editColumn('supplier', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif {{$supplier}}')
                 ->editColumn('ref_no', function ($row) {
                     if (auth()->user()->can('purchase.view')) {
-                        return '<a href="#" data-href="'.action([PurchaseController::class, 'show'], [$row->id]).'"
-                                    class="btn-modal" data-container=".view_modal">'.$row->ref_no.'</a>';
+                        return '<a href="#" data-href="' . action([PurchaseController::class, 'show'], [$row->id]) . '"
+                                    class="btn-modal" data-container=".view_modal">' . $row->ref_no . '</a>';
                     }
 
                     return $row->ref_no;
@@ -439,13 +440,13 @@ class HomeController extends Controller
                     $total_paid = ! empty($row->total_paid) ? $row->total_paid : 0;
                     $due = $row->final_total - $total_paid;
 
-                    return '<span class="display_currency" data-currency_symbol="true">'.
-                        $due.'</span>';
+                    return '<span class="display_currency" data-currency_symbol="true">' .
+                        $due . '</span>';
                 })
                 ->editColumn('invoice_no', function ($row) {
                     if (auth()->user()->can('sell.view')) {
-                        return '<a href="#" data-href="'.action([SellController::class, 'show'], [$row->id]).'"
-                                    class="btn-modal" data-container=".view_modal">'.$row->invoice_no.'</a>';
+                        return '<a href="#" data-href="' . action([SellController::class, 'show'], [$row->id]) . '"
+                                    class="btn-modal" data-container=".view_modal">' . $row->invoice_no . '</a>';
                     }
 
                     return $row->invoice_no;
@@ -609,7 +610,7 @@ class HomeController extends Controller
             } catch (Exception $e) {
                 DB::rollBack();
 
-                \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+                \Log::emergency('File:' . $e->getFile() . 'Line:' . $e->getLine() . 'Message:' . $e->getMessage());
 
                 $output = [
                     'success' => false,
