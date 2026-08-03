@@ -67,6 +67,9 @@
             </div>
         </div>
         @include('sale_pos.partials.pos_form_actions')
+        <!-- Must stay the last field of the form. If it is missing from the request the
+        payload was truncated by PHP (max_input_vars / max_multipart_body_parts). -->
+        {!! Form::hidden('form_end_marker', 1) !!}
         {!! Form::close() !!}
     </section>
 

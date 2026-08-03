@@ -87,6 +87,25 @@ class Util
     }
 
     /**
+     * Transaction forms post one input per column per line item, so a transaction with many
+     * lines can exceed PHP's max_input_vars / max_multipart_body_parts. PHP then silently
+     * drops everything past the limit, and because error_reporting is off in production
+     * (see AppServiceProvider) the missing keys read as null instead of raising. The totals
+     * are rendered after the line items, so they used to be saved as zero.
+     *
+     * Every such form ends with a marker field: if it did not arrive, the request is
+     * incomplete and must not be persisted.
+     *
+     * @throws \Exception
+     */
+    public function abortIfRequestWasTruncated($request)
+    {
+        if (! $request->has('form_end_marker')) {
+            throw new \Exception(__('lang_v1.form_too_large_to_submit'));
+        }
+    }
+
+    /**
      * This function unformats a number and returns them in plain eng format
      *
      * @param  int  $input_number

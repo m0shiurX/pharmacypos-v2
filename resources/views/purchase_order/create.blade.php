@@ -495,6 +495,9 @@
 			</div>
 		</div>
 
+	<!-- Must stay the last field of the form. If it is missing from the request the
+	payload was truncated by PHP (max_input_vars / max_multipart_body_parts). -->
+	{!! Form::hidden('form_end_marker', 1) !!}
 {!! Form::close() !!}
 </section>
 <!-- quick product modal -->

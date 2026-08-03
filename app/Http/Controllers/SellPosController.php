@@ -353,6 +353,8 @@ class SellPosController extends Controller
         }
 
         try {
+            $this->transactionUtil->abortIfRequestWasTruncated($request);
+
             $input = $request->except('_token');
 
             $input['is_quotation'] = 0;
@@ -1307,6 +1309,8 @@ class SellPosController extends Controller
         }
 
         try {
+            $this->transactionUtil->abortIfRequestWasTruncated($request);
+
             $input = $request->except('_token');
 
             // status is send as quotation from edit sales screen.

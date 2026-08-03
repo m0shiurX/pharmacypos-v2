@@ -85,7 +85,7 @@ class ProductUtil extends Util
             if (empty($variation_template_id)) {
                 if ($variation_template_name != 'DUMMY') {
                     $variation_template = VariationTemplate::where('business_id', $business_id)
-                        ->whereRaw('LOWER(name)="' . strtolower($variation_template_name) . '"')
+                        ->whereRaw('LOWER(name)="'.strtolower($variation_template_name).'"')
                         ->with(['values'])
                         ->first();
                     if (empty($variation_template)) {
@@ -136,7 +136,7 @@ class ProductUtil extends Util
                     } else {
                         if (! empty($variation_template)) {
                             $variation_value = VariationValueTemplate::where('variation_template_id', $variation_template->id)
-                                ->whereRaw('LOWER(name)="' . $variation_value_name . '"')
+                                ->whereRaw('LOWER(name)="'.$variation_value_name.'"')
                                 ->first();
                             if (empty($variation_value)) {
                                 $variation_value = VariationValueTemplate::create([
@@ -164,7 +164,7 @@ class ProductUtil extends Util
                         'sell_price_inc_tax' => $this->num_uf($v['sell_price_inc_tax']),
                     ];
                     $c++;
-                    $images[] = 'variation_images_' . $key . '_' . $k;
+                    $images[] = 'variation_images_'.$key.'_'.$k;
                 }
                 $variations = $product_variation->variations()->createMany($variation_data);
 
@@ -217,7 +217,7 @@ class ProductUtil extends Util
 
                     $variation->update($data);
 
-                    Media::uploadMedia($product->business_id, $variation, request(), 'edit_variation_images_' . $key . '_' . $k);
+                    Media::uploadMedia($product->business_id, $variation, request(), 'edit_variation_images_'.$key.'_'.$k);
 
                     $variations_ids[] = $k;
                 }
@@ -238,7 +238,7 @@ class ProductUtil extends Util
 
                     if (! empty($product_variation->variation_template_id)) {
                         $variation_value = VariationValueTemplate::where('variation_template_id', $product_variation->variation_template_id)
-                            ->whereRaw('LOWER(name)="' . $v['value'] . '"')
+                            ->whereRaw('LOWER(name)="'.$v['value'].'"')
                             ->first();
                         if (empty($variation_value)) {
                             $variation_value = VariationValueTemplate::create([
@@ -262,7 +262,7 @@ class ProductUtil extends Util
                         'sell_price_inc_tax' => $this->num_uf($v['sell_price_inc_tax']),
                     ];
                     $c++;
-                    $media[] = 'variation_images_' . $key . '_' . $k;
+                    $media[] = 'variation_images_'.$key.'_'.$k;
                 }
                 $new_variations = $product_variation->variations()->createMany($variation_data);
 
@@ -684,7 +684,7 @@ class ProductUtil extends Util
         $business_id = request()->session()->get('user.business_id');
         $sku_prefix = Business::where('id', $business_id)->value('sku_prefix');
 
-        return $sku_prefix . str_pad($string, 4, '0', STR_PAD_LEFT);
+        return $sku_prefix.str_pad($string, 4, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -922,18 +922,18 @@ class ProductUtil extends Util
         // old formate
         if ($sku_type == 'with_out_variation') {
 
-            $sub_sku = $sku . $c;
+            $sub_sku = $sku.$c;
 
             if (in_array($barcode_type, ['C128', 'C39'])) {
-                $sub_sku = $sku . '-' . $c;
+                $sub_sku = $sku.'-'.$c;
             }
         } else {
 
             // new formate
-            $sub_sku = $sku . preg_replace('/[^a-zA-Z0-9]/', '', $value);
+            $sub_sku = $sku.preg_replace('/[^a-zA-Z0-9]/', '', $value);
 
             if (in_array($barcode_type, ['C128', 'C39'])) {
-                $sub_sku = $sku . preg_replace('/[^a-zA-Z0-9]/', '', $value);
+                $sub_sku = $sku.preg_replace('/[^a-zA-Z0-9]/', '', $value);
             }
         }
 
@@ -1486,13 +1486,13 @@ class ProductUtil extends Util
                 // update sell line purchase line mapping
                 $sell_line_purchase_lines =
                     TransactionSellLinesPurchaseLines::where('purchase_line_id', 0)
-                    ->join('transaction_sell_lines as tsl', 'tsl.id', '=', 'transaction_sell_lines_purchase_lines.sell_line_id')
-                    ->join('transactions as t', 'tsl.transaction_id', '=', 't.id')
-                    ->where('t.location_id', $transaction->location_id)
-                    ->where('tsl.variation_id', $purchase_line->variation_id)
-                    ->where('tsl.product_id', $purchase_line->product_id)
-                    ->select('transaction_sell_lines_purchase_lines.*')
-                    ->get();
+                        ->join('transaction_sell_lines as tsl', 'tsl.id', '=', 'transaction_sell_lines_purchase_lines.sell_line_id')
+                        ->join('transactions as t', 'tsl.transaction_id', '=', 't.id')
+                        ->where('t.location_id', $transaction->location_id)
+                        ->where('tsl.variation_id', $purchase_line->variation_id)
+                        ->where('tsl.product_id', $purchase_line->product_id)
+                        ->select('transaction_sell_lines_purchase_lines.*')
+                        ->get();
 
                 foreach ($sell_line_purchase_lines as $slpl) {
                     if ($purchase_line_qty_avlbl > 0) {
@@ -1553,8 +1553,8 @@ class ProductUtil extends Util
                     }
                 })
                     ->orWhere(function ($sub_q) use ($product) {
-                        $sub_q->whereRaw('(brand_id="' . $product->brand_id . '" AND category_id IS NULL)')
-                            ->orWhereRaw('(category_id="' . $product->category_id . '" AND brand_id IS NULL)');
+                        $sub_q->whereRaw('(brand_id="'.$product->brand_id.'" AND category_id IS NULL)')
+                            ->orWhereRaw('(category_id="'.$product->category_id.'" AND brand_id IS NULL)');
                     });
 
                 if (! empty($variation_id)) {
@@ -1648,32 +1648,32 @@ class ProductUtil extends Util
             if ($search_type == 'like') {
                 $query->where(function ($query) use ($search_term, $search_fields) {
                     if (in_array('name', $search_fields)) {
-                        $query->where('products.name', 'like', '%' . $search_term . '%');
+                        $query->where('products.name', 'like', '%'.$search_term.'%');
                     }
 
                     if (in_array('sku', $search_fields)) {
-                        $query->orWhere('sku', 'like', '%' . $search_term . '%');
+                        $query->orWhere('sku', 'like', '%'.$search_term.'%');
                     }
 
                     if (in_array('sub_sku', $search_fields)) {
-                        $query->orWhere('sub_sku', 'like', '%' . $search_term . '%');
+                        $query->orWhere('sub_sku', 'like', '%'.$search_term.'%');
                     }
 
                     if (in_array('lot', $search_fields)) {
-                        $query->orWhere('pl.lot_number', 'like', '%' . $search_term . '%');
+                        $query->orWhere('pl.lot_number', 'like', '%'.$search_term.'%');
                     }
 
                     if (in_array('product_custom_field1', $search_fields)) {
-                        $query->orWhere('product_custom_field1', 'like', '%' . $search_term . '%');
+                        $query->orWhere('product_custom_field1', 'like', '%'.$search_term.'%');
                     }
                     if (in_array('product_custom_field2', $search_fields)) {
-                        $query->orWhere('product_custom_field2', 'like', '%' . $search_term . '%');
+                        $query->orWhere('product_custom_field2', 'like', '%'.$search_term.'%');
                     }
                     if (in_array('product_custom_field3', $search_fields)) {
-                        $query->orWhere('product_custom_field3', 'like', '%' . $search_term . '%');
+                        $query->orWhere('product_custom_field3', 'like', '%'.$search_term.'%');
                     }
                     if (in_array('product_custom_field4', $search_fields)) {
-                        $query->orWhere('product_custom_field4', 'like', '%' . $search_term . '%');
+                        $query->orWhere('product_custom_field4', 'like', '%'.$search_term.'%');
                     }
                 });
             }
@@ -1920,7 +1920,7 @@ class ProductUtil extends Util
         foreach ($combo_variations as $key => $value) {
             $combo_variations[$key]['variation'] =
                 Variation::with(['product'])
-                ->find($value['variation_id']);
+                    ->find($value['variation_id']);
 
             $combo_variations[$key]['sub_units'] = $this->getSubUnits($business_id, $combo_variations[$key]['variation']['product']->unit_id, true);
 
@@ -1990,9 +1990,9 @@ class ProductUtil extends Util
             ->first();
 
         if ($purchase_details->type == 'variable') {
-            $product_name = $purchase_details->product . ' - ' . $purchase_details->product_variation . ' - ' . $purchase_details->variation_name . ' (' . $purchase_details->sub_sku . ')';
+            $product_name = $purchase_details->product.' - '.$purchase_details->product_variation.' - '.$purchase_details->variation_name.' ('.$purchase_details->sub_sku.')';
         } else {
-            $product_name = $purchase_details->product . ' (' . $purchase_details->sku . ')';
+            $product_name = $purchase_details->product.' ('.$purchase_details->sku.')';
         }
 
         $output = [
@@ -2157,7 +2157,7 @@ class ProductUtil extends Util
                     'quantity_change' => $quantity_change,
                     'stock' => $this->roundQuantity($stock),
                     'type' => 'sell_transfer',
-                    'type_label' => __('lang_v1.stock_transfers') . ' (' . __('lang_v1.out') . ')',
+                    'type_label' => __('lang_v1.stock_transfers').' ('.__('lang_v1.out').')',
                     'ref_no' => $stock_line->ref_no,
                     'stock_in_second_unit' => $this->roundQuantity($stock_in_second_unit),
                 ]);
@@ -2172,7 +2172,7 @@ class ProductUtil extends Util
                     'quantity_change' => $quantity_change,
                     'stock' => $this->roundQuantity($stock),
                     'type' => 'purchase_transfer',
-                    'type_label' => __('lang_v1.stock_transfers') . ' (' . __('lang_v1.in') . ')',
+                    'type_label' => __('lang_v1.stock_transfers').' ('.__('lang_v1.in').')',
                     'ref_no' => $stock_line->ref_no,
                     'stock_in_second_unit' => $this->roundQuantity($stock_in_second_unit),
                 ]);

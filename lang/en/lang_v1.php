@@ -1626,4 +1626,5 @@ return [
     'wholesale' => 'Wholesale',
     'discount_type' => 'Discount Type',
     'discount_amount' => 'Discount Amount',
+    'form_too_large_to_submit' => 'This form is too large to be submitted and was cut off by the server, so nothing was saved. Please split it into smaller entries or ask your administrator to increase the PHP max_input_vars and max_multipart_body_parts limits.',
 ];

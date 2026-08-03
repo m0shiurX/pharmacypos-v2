@@ -318,6 +318,8 @@ class PurchaseController extends Controller
                 return $this->moduleUtil->expiredResponse(action([PurchaseController::class, 'index']));
             }
 
+            $this->transactionUtil->abortIfRequestWasTruncated($request);
+
             $transaction_data = $request->only(['ref_no', 'status', 'contact_id', 'transaction_date', 'total_before_tax', 'location_id', 'discount_type', 'discount_amount', 'tax_id', 'tax_amount', 'shipping_details', 'shipping_charges', 'final_total', 'additional_notes', 'exchange_rate', 'pay_term_number', 'pay_term_type', 'purchase_order_ids']);
 
             $exchange_rate = $transaction_data['exchange_rate'];
@@ -669,8 +671,15 @@ class PurchaseController extends Controller
         try {
             $transaction = Transaction::findOrFail($id);
 
+            $this->transactionUtil->abortIfRequestWasTruncated($request);
+
             // Validate document size
             $request->validate([
+                'status' => 'required',
+                'contact_id' => 'required',
+                'transaction_date' => 'required',
+                'total_before_tax' => 'required',
+                'final_total' => 'required',
                 'document' => 'file|max:'.(config('constants.document_size_limit') / 1000),
             ]);
 
