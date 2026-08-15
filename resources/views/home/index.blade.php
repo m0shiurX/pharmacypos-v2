@@ -68,7 +68,7 @@
                     </div>
                     @if (auth()->user()->can('dashboard.data'))
                         @if ($is_admin)
-                            <div class="tw-grid tw-grid-cols-1 tw-gap-4 tw-mt-6 sm:tw-grid-cols-2 xl:tw-grid-cols-5 sm:tw-gap-5">
+                            <div class="tw-grid tw-grid-cols-1 tw-gap-4 tw-mt-4 sm:tw-mt-6 sm:tw-grid-cols-2 xl:tw-grid-cols-4 sm:tw-gap-5">
                             
                                 <div
                                     class="tw-transition-all tw-duration-200 tw-bg-white tw-shadow-sm hover:tw-shadow-md tw-rounded-xl  tw-ring-1 tw-ring-gray-200">
@@ -91,6 +91,10 @@
                                                 <p
                                                     class="tw-text-sm tw-font-medium tw-text-gray-500 tw-truncate tw-whitespace-nowrap">
                                                     {{ __('home.total_sell') }}
+                                                    <i class="fa fa-info-circle text-info hover-q no-print" aria-hidden="true" data-container="body"
+                                                    data-toggle="popover" data-placement="auto bottom" id="total_sell_info"
+                                                    data-value="{{ __('lang_v1.gross_sell') }}|{{ __('lang_v1.total_sell_return') }}|{{ __('home.total_sell') }}"
+                                                    data-content="" data-html="true" data-trigger="hover"></i>
                                                 </p>
                                                 <p
                                                     class="total_sell tw-mt-0.5 tw-text-gray-900 tw-text-xl tw-truncate tw-font-semibold tw-tracking-tight tw-font-mono">
@@ -172,36 +176,6 @@
                                     <div class="tw-p-4 sm:tw-p-5">
                                         <div class="tw-flex tw-items-center tw-gap-4">
                                             <div
-                                                class="tw-inline-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-emerald-500 tw-bg-emerald-100 tw-rounded-full sm:tw-w-12 sm:tw-h-12 shrink-0">
-                                                <svg aria-hidden="true" class="tw-w-6 tw-h-6" xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                                    stroke-linecap="round" stroke-linejoin="round">
-                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                    <path d="M17 8l4 4l-4 4" />
-                                                    <path d="M3 12h18" />
-                                                    <path d="M3 7v-1a2 2 0 0 1 2 -2h10" />
-                                                    <path d="M3 17v1a2 2 0 0 0 2 2h10" />
-                                                </svg>
-                                            </div>
-
-                                            <div class="tw-flex-1 tw-min-w-0">
-                                                <p
-                                                    class="tw-text-sm tw-font-medium tw-text-gray-500 tw-truncate tw-whitespace-nowrap">
-                                                    {{ __('home.due_recovery') }}
-                                                </p>
-                                                <p
-                                                    class="total_due_recovery tw-mt-0.5 tw-text-gray-900 tw-text-xl tw-truncate tw-font-semibold tw-tracking-tight tw-font-mono">
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div
-                                    class="tw-transition-all tw-duration-200 tw-bg-white tw-shadow-sm hover:tw-shadow-md tw-rounded-xl hover:tw--translate-y-0.5 tw-ring-1 tw-ring-gray-200">
-                                    <div class="tw-p-4 sm:tw-p-5">
-                                        <div class="tw-flex tw-items-center tw-gap-4">
-                                            <div
                                                 class="tw-inline-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-red-500 tw-bg-red-100 tw-rounded-full sm:tw-w-12 sm:tw-h-12 shrink-0">
                                                 <svg aria-hidden="true" class="tw-w-6 tw-h-6" xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -221,7 +195,7 @@
                                                     {{ __('lang_v1.total_sell_return') }}
                                                     <i class="fa fa-info-circle text-info hover-q no-print" aria-hidden="true" data-container="body"
                                                     data-toggle="popover" data-placement="auto bottom" id="total_srp"
-                                                    data-value="{{ __('lang_v1.total_sell_return') }}-{{ __('lang_v1.total_sell_return_paid') }}"
+                                                    data-value="{{ __('lang_v1.total_sell_return') }}|{{ __('lang_v1.total_sell_return_paid') }}|{{ __('lang_v1.total_sell_return_due') }}"
                                                     data-content="" data-html="true" data-trigger="hover"></i>
                                                 </p>
                                                 <p
@@ -334,7 +308,7 @@
                                                 {{ __('lang_v1.total_purchase_return') }}
                                                 <i class="fa fa-info-circle text-info hover-q no-print" aria-hidden="true" data-container="body"
                                                 data-toggle="popover" data-placement="auto bottom" id="total_prp"
-                                                data-value="{{ __('lang_v1.total_purchase_return') }}-{{ __('lang_v1.total_purchase_return_paid') }}"
+                                                data-value="{{ __('lang_v1.total_purchase_return') }}|{{ __('lang_v1.total_purchase_return_paid') }}|{{ __('lang_v1.total_purchase_return_due') }}"
                                                 data-content="" data-html="true" data-trigger="hover"></i>
                                             </p>
                                             <p
@@ -352,6 +326,38 @@
 
                             <div
                                 class="tw-transition-all tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl hover:tw-shadow-md hover:tw--translate-y-0.5 tw-ring-1 tw-ring-gray-200">
+                                <div class="tw-p-4 sm:tw-p-5">
+                                    <div class="tw-flex tw-items-center tw-gap-4">
+                                        <div
+                                            class="tw-inline-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-emerald-500 tw-bg-emerald-100 tw-rounded-full sm:tw-w-12 sm:tw-h-12 shrink-0">
+                                            <svg aria-hidden="true" class="tw-w-6 tw-h-6"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"
+                                                stroke="currentColor" fill="none" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M17 8l4 4l-4 4" />
+                                                <path d="M3 12h18" />
+                                                <path d="M3 7v-1a2 2 0 0 1 2 -2h10" />
+                                                <path d="M3 17v1a2 2 0 0 0 2 2h10" />
+                                            </svg>
+                                        </div>
+
+                                        <div class="tw-flex-1 tw-min-w-0">
+                                            <p
+                                                class="tw-text-sm tw-font-medium tw-text-gray-500 tw-truncate tw-whitespace-nowrap">
+                                                {{ __('home.due_recovery') }}
+                                            </p>
+                                            <p
+                                                class="total_due_recovery tw-mt-0.5 tw-text-gray-900 tw-text-xl tw-truncate tw-font-semibold tw-tracking-tight tw-font-mono">
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Expense card hidden per client request (unused). Value still fetched and used in NET. --}}
+                            <div
+                                class="tw-hidden tw-transition-all tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl hover:tw-shadow-md hover:tw--translate-y-0.5 tw-ring-1 tw-ring-gray-200">
                                 <div class="tw-p-4 sm:tw-p-5">
                                     <div class="tw-flex tw-items-center tw-gap-4">
                                         <div

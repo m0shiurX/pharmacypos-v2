@@ -202,30 +202,54 @@ function update_statistics(start, end) {
             $('.invoice_due').html(__currency_trans_from_en(data.invoice_due, true));
             //expense details
             $('.total_expense').html(__currency_trans_from_en(data.total_expense, true));
-            var total_purchase_return = data.total_purchase_return - data.total_purchase_return_paid;
-            $('.total_purchase_return').html(__currency_trans_from_en(total_purchase_return, true));
-            var total_sell_return_due = data.total_sell_return - data.total_sell_return_paid;
-            $('.total_sell_return').html(__currency_trans_from_en(total_sell_return_due, true));
+            //returns show the full amount (paid + unpaid); breakup is in the tooltip
+            $('.total_purchase_return').html(__currency_trans_from_en(data.total_purchase_return, true));
+            $('.total_sell_return').html(__currency_trans_from_en(data.total_sell_return, true));
             $('.total_sr').html(__currency_trans_from_en(data.total_sell_return, true));
             $('.total_srp').html(__currency_trans_from_en(data.total_sell_return_paid, true));
             $('.total_pr').html(__currency_trans_from_en(data.total_purchase_return, true));
             $('.total_prp').html(__currency_trans_from_en(data.total_purchase_return_paid, true));
             $('.net').html(__currency_trans_from_en(data.net, true));
 
-            // assign tooltip total_sell_return 
-            var lang = $('#total_srp').data('value');
-            var splitlang = lang.split('-');
-
-            var newContent = "<p class='mb-0 text-muted fs-10 mt-5'>" + splitlang[0] + ": <span class=''>" + __currency_trans_from_en(data.total_sell_return, true) + "</span><br>" + splitlang[1] + ": <span class=''>" + __currency_trans_from_en(data.total_sell_return_paid, true) + "</span></p>";
-            $('#total_srp').attr('data-content', newContent)
-            // assign tooltip total_purchase_return 
-            var lang = $('#total_prp').data('value');
-            var splitlang = lang.split('-');
-
-            var newContent = "<p class='mb-0 text-muted fs-10 mt-5'>" + splitlang[0] + ": <span class=''>" + __currency_trans_from_en(data.total_purchase_return, true) + "</span><br>" + splitlang[1] + ": <span class=''>" + __currency_trans_from_en(data.total_purchase_return_paid, true) + "</span></p>";
-
-            $('#total_prp').attr('data-content', newContent);
+            // assign tooltip total_sell_return: total / paid / due
+            set_breakup_tooltip('#total_srp', [
+                data.total_sell_return,
+                data.total_sell_return_paid,
+                data.total_sell_return - data.total_sell_return_paid
+            ]);
+            // assign tooltip total_purchase_return: total / paid / due
+            set_breakup_tooltip('#total_prp', [
+                data.total_purchase_return,
+                data.total_purchase_return_paid,
+                data.total_purchase_return - data.total_purchase_return_paid
+            ]);
+            // assign tooltip total_sell: gross sales / sell return / total sales
+            set_breakup_tooltip('#total_sell_info', [
+                data.total_sell_gross,
+                data.total_sell_return,
+                data.total_sell
+            ]);
 
         },
     });
+}
+
+/**
+ * Fills a card info-icon popover with a labelled breakup.
+ * Labels come from the icon's data-value, pipe separated, in the same order as values.
+ */
+function set_breakup_tooltip(selector, values) {
+    var $icon = $(selector);
+    if ($icon.length === 0) {
+        return;
+    }
+    var labels = String($icon.data('value')).split('|');
+    var rows = '';
+    labels.forEach(function (label, i) {
+        rows += label + ": <span class=''>" + __currency_trans_from_en(values[i] || 0, true) + "</span>";
+        if (i < labels.length - 1) {
+            rows += '<br>';
+        }
+    });
+    $icon.attr('data-content', "<p class='mb-0 text-muted fs-10 mt-5'>" + rows + "</p>");
 }

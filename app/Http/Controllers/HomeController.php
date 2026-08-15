@@ -266,7 +266,9 @@ class HomeController extends Controller
             $total_sell_return_inc_tax = ! empty($transaction_totals['total_sell_return_inc_tax']) ? $transaction_totals['total_sell_return_inc_tax'] : 0;
             $output['total_sell_return_paid'] = $this->transactionUtil->getTotalSellReturnPaid($business_id, $start, $end, $location_id);
 
-            $output['total_sell'] = $total_sell_inc_tax;
+            // TOTAL SALES = GROSS SALES - SELL RETURN
+            $output['total_sell_gross'] = $total_sell_inc_tax;
+            $output['total_sell'] = $total_sell_inc_tax - $total_sell_return_inc_tax;
             $output['total_sell_return'] = $total_sell_return_inc_tax;
             $output['total_due_recovery'] = $this->transactionUtil->getTotalSellDueRecovery($business_id, $start, $end, $location_id, $created_by);
 

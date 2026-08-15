@@ -17,7 +17,7 @@
 
         <i class="fa fa-info-circle text-info hover-q no-print" aria-hidden="true" data-container="body"
         data-toggle="popover" data-placement="auto bottom" id="total_prp_{{$dashboard_detail->index}}"
-        data-value="{{ __('lang_v1.total_purchase_return') }}-{{ __('lang_v1.total_purchase_return_paid') }}"
+        data-value="{{ __('lang_v1.total_purchase_return') }}|{{ __('lang_v1.total_purchase_return_paid') }}|{{ __('lang_v1.total_purchase_return_due') }}"
         data-content="" data-html="true" data-trigger="hover"></i>
     </p>
     @if (isset($dashboard_detail))

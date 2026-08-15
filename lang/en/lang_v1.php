@@ -690,6 +690,7 @@ return [
     'price' => 'Price',
     'auto_backup_instruction' => 'To enable auto backup and backup clean you must setup a cron job with this command',
     'gross_profit' => 'Gross Profit',
+    'gross_sell' => 'Gross Sales',
     'single' => 'Single',
     'variable' => 'Variable',
     'total_purchase_price' => 'Total purchase price',
