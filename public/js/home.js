@@ -211,15 +211,13 @@ function update_statistics(start, end) {
             $('.total_prp').html(__currency_trans_from_en(data.total_purchase_return_paid, true));
             $('.net').html(__currency_trans_from_en(data.net, true));
 
-            // assign tooltip total_sell_return: total / paid / due
+            // assign tooltip total_sell_return: paid / due
             set_breakup_tooltip('#total_srp', [
-                data.total_sell_return,
                 data.total_sell_return_paid,
                 data.total_sell_return - data.total_sell_return_paid
             ]);
-            // assign tooltip total_purchase_return: total / paid / due
+            // assign tooltip total_purchase_return: paid / due
             set_breakup_tooltip('#total_prp', [
-                data.total_purchase_return,
                 data.total_purchase_return_paid,
                 data.total_purchase_return - data.total_purchase_return_paid
             ]);
@@ -243,13 +241,24 @@ function set_breakup_tooltip(selector, values) {
     if ($icon.length === 0) {
         return;
     }
-    var labels = String($icon.data('value')).split('|');
+    var rawValue = $icon.attr('data-value') || $icon.data('value') || '';
+    var labels = String(rawValue).split('|');
     var rows = '';
     labels.forEach(function (label, i) {
-        rows += label + ": <span class=''>" + __currency_trans_from_en(values[i] || 0, true) + "</span>";
+        if (!label || label.trim() === '') {
+            return;
+        }
+        var val = (values && values[i] !== undefined) ? values[i] : 0;
+        rows += label.trim() + ": <span class=''>" + __currency_trans_from_en(val, true) + "</span>";
         if (i < labels.length - 1) {
             rows += '<br>';
         }
     });
-    $icon.attr('data-content', "<p class='mb-0 text-muted fs-10 mt-5'>" + rows + "</p>");
+    var contentHtml = "<p class='mb-0 text-muted fs-10 mt-5'>" + rows + "</p>";
+    $icon.attr('data-content', contentHtml);
+    $icon.data('content', contentHtml);
+    var popover = $icon.data('bs.popover');
+    if (popover) {
+        popover.options.content = contentHtml;
+    }
 }
