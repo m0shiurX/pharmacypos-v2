@@ -487,7 +487,23 @@
 </div>
 
 <div class="row border-top" style="color: #000000 !important; border-top: 2px solid #ddd !important;">
-    <div class="col-xs-6"></div>
+    <div class="col-xs-6">
+        @if (!empty($receipt_details->total_in_words))
+            <p style="margin: 5px 0; font-size: 12px; line-height: 1.4;">
+                <b>{{ $receipt_details->in_words_label ?? __('In Words') }}:</b>
+                <span style="text-transform: capitalize;">
+                    @php
+                        $currency_text = $receipt_details->currency_name ?? ($receipt_details->currency_code ?? null);
+                        $words_display = ucfirst($receipt_details->total_in_words);
+                        if (!empty($currency_text)) {
+                            $words_display .= ' ' . strtoupper($currency_text);
+                        }
+                    @endphp
+                    {{ $words_display }}
+                </span>
+            </p>
+        @endif
+    </div>
     <div class="col-xs-6">
         <table class="table table-slim">
             <tbody>
@@ -579,16 +595,6 @@
                 <tr>
                     <th>{!! $receipt_details->total_label !!}</th>
                     <td class="text-right">
-                        @if (!empty($receipt_details->total_in_words))
-                            <small style="text-transform: capitalize;">(  
-                                {{ ucfirst($receipt_details->total_in_words) }}
-                                @php $currency_text = $receipt_details->currency_name ?? ($receipt_details->currency_code ?? null); @endphp
-                                @if (!empty($currency_text))
-                                    {{ ' ' . strtoupper($currency_text) }}
-                                @endif
-                                )
-                            </small>
-                        @endif
                         {{ $receipt_details->total }}
                     </td>
                 </tr>
