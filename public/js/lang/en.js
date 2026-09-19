@@ -1,8 +1,10 @@
 LANG = {
     'unauthorized': 'Unauthorized action.',
     'session_expired': 'Session expired',
-    'session_expired_help': 'Your login session has expired, so this action was not saved. Please reload the page and sign in again.',
-    'reload': 'Reload page',
+    'session_expired_help': 'Your login session has expired, so this action was not saved. Sign in again in the new tab, then come back here and save again - nothing you have entered will be lost.',
+    'session_restored': 'You are signed in again.',
+    'sign_in_again': 'Sign in again',
+    'stay_on_this_page': 'Stay on this page',
     'required': 'Required',
     'sure': 'Are you sure ?',
     'remove_product': 'Are you sure to remove the product?',

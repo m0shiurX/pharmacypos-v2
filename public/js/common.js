@@ -700,6 +700,9 @@ function escapeHtml(str) {
 //Guards against showing the "session expired" prompt more than once.
 var __session_expired_notified = false;
 
+//Timestamp of the last keep-alive ping, used to avoid pinging twice in a row.
+var __last_keep_alive_at = 0;
+
 /**
  * Catches every failed ajax request in the application.
  *
@@ -754,8 +757,13 @@ function __register_ajax_failure_handler() {
 }
 
 /**
- * Tells the user their login has expired and offers to reload, instead of leaving
- * the screen in a permanently disabled state.
+ * Tells the user their login has expired, instead of leaving the screen in a
+ * permanently disabled state.
+ *
+ * Signing in happens in a separate tab on purpose: reloading this one would throw away
+ * an order the operator may have spent half an hour building. Once they are signed in,
+ * returning to this tab triggers a keep-alive ping that picks up a fresh CSRF token,
+ * and the part-finished order can simply be saved again.
  */
 function __notify_session_expired() {
     if (__session_expired_notified) {
@@ -767,20 +775,29 @@ function __notify_session_expired() {
         title: LANG.session_expired || 'Session expired',
         text:
             LANG.session_expired_help ||
-            'Your login session has expired, so this action was not saved. Please reload the page and sign in again.',
+            'Your login session has expired, so this action was not saved. Sign in again in the new tab, then come back here and save again - nothing you have entered will be lost.',
         icon: 'warning',
-        buttons: [false, LANG.reload || 'Reload page'],
+        buttons: {
+            cancel: LANG.stay_on_this_page || 'Stay on this page',
+            confirm: LANG.sign_in_again || 'Sign in again',
+        },
         closeOnClickOutside: false,
-    }).then(function () {
-        window.location.reload();
+    }).then(function (confirmed) {
+        if (confirmed) {
+            window.open(base_path + '/login', '_blank');
+        }
     });
 }
 
 /**
- * Pings the server periodically so a POS or purchase screen that stays open for hours
- * does not have its session garbage collected while the operator is still working.
- * The refreshed CSRF token is written back into the page so already rendered forms
- * keep submitting a valid token.
+ * Pings the server periodically so a screen that stays open for a long time - a POS tab
+ * parked while the customer fetches something, for example - does not have its session
+ * garbage collected. The refreshed CSRF token is written back into the page so forms
+ * that were rendered long ago keep submitting a valid token.
+ *
+ * The ping deliberately runs while the tab is hidden too: a half finished order is the
+ * exact case we must not lose. Browsers throttle background timers, so we also ping
+ * immediately whenever the operator switches back to the tab.
  */
 function __start_session_heartbeat() {
     if (!$('meta[name="csrf-token"]').length) {
@@ -790,28 +807,54 @@ function __start_session_heartbeat() {
     //Well below the shortest sensible SESSION_LIFETIME.
     var heartbeat_interval = 5 * 60 * 1000;
 
-    setInterval(function () {
-        if (!__is_online() || document.hidden) {
-            return;
-        }
+    setInterval(__send_keep_alive, heartbeat_interval);
 
-        $.ajax({
-            method: 'GET',
-            url: '/keep-alive',
-            dataType: 'json',
-            global: false,
-            success: function (result) {
-                if (result && result.csrf_token) {
-                    __refresh_csrf_token(result.csrf_token);
-                }
-            },
-            error: function (jqXHR) {
-                if (jqXHR.status === 401 || jqXHR.status === 419) {
-                    __notify_session_expired();
-                }
-            },
-        });
-    }, heartbeat_interval);
+    //Background tabs may have had their timers throttled or frozen entirely, so refresh
+    //the session and the CSRF token the moment the tab is looked at again - before the
+    //operator can click save with a stale token.
+    $(document).on('visibilitychange', function () {
+        if (!document.hidden) {
+            __send_keep_alive();
+        }
+    });
+}
+
+/**
+ * Sends a single keep-alive ping, unless one went out moments ago.
+ */
+function __send_keep_alive() {
+    if (!__is_online()) {
+        return;
+    }
+
+    var now = Date.now();
+    if (now - __last_keep_alive_at < 30 * 1000) {
+        return;
+    }
+    __last_keep_alive_at = now;
+
+    $.ajax({
+        method: 'GET',
+        url: '/keep-alive',
+        dataType: 'json',
+        global: false,
+        success: function (result) {
+            if (result && result.csrf_token) {
+                __refresh_csrf_token(result.csrf_token);
+            }
+
+            //The operator signed back in elsewhere, so this tab works again.
+            if (__session_expired_notified) {
+                __session_expired_notified = false;
+                toastr.success(LANG.session_restored || 'You are signed in again.');
+            }
+        },
+        error: function (jqXHR) {
+            if (jqXHR.status === 401 || jqXHR.status === 419) {
+                __notify_session_expired();
+            }
+        },
+    });
 }
 
 /**
