@@ -544,6 +544,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 // common route
 Route::middleware(['auth'])->group(function () {
     Route::get('/logout', [LoginController::class, 'logout']);
+    Route::get('/keep-alive', [HomeController::class, 'keepAlive'])->name('keep-alive');
 });
 
 Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])->group(function () {

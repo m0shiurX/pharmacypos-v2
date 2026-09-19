@@ -24,6 +24,9 @@ $(document).ready(function () {
         },
     });
 
+    __register_ajax_failure_handler();
+    __start_session_heartbeat();
+
     update_font_size();
     if ($('#status_span').length) {
         var status = $('#status_span').attr('data-status');
@@ -692,4 +695,131 @@ function escapeHtml(str) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
+}
+
+//Guards against showing the "session expired" prompt more than once.
+var __session_expired_notified = false;
+
+/**
+ * Catches every failed ajax request in the application.
+ *
+ * Individual ajax calls in this codebase mostly define only a `success` callback, so
+ * without this handler a 401/419/500 response leaves the screen silently stuck - buttons
+ * stay disabled and nothing happens until the user reloads the page.
+ */
+function __register_ajax_failure_handler() {
+    $(document).ajaxError(function (event, jqXHR, settings, thrownError) {
+        //Requests cancelled by the browser or by DataTables are not real failures.
+        if (jqXHR.statusText === 'abort' || thrownError === 'abort') {
+            return;
+        }
+
+        var status = jqXHR.status;
+
+        //Session or CSRF token expired - the only recovery is a fresh page.
+        if (status === 401 || status === 419) {
+            __notify_session_expired();
+            return;
+        }
+
+        if (status === 0) {
+            toastr.error(LANG.not_connected_to_a_network);
+            return;
+        }
+
+        if (status === 403) {
+            toastr.error(LANG.unauthorized || 'Unauthorized action.');
+            return;
+        }
+
+        if (status === 422) {
+            var errors = jqXHR.responseJSON && jqXHR.responseJSON.errors ? jqXHR.responseJSON.errors : {};
+            var shown = false;
+            for (var field in errors) {
+                if (errors.hasOwnProperty(field) && errors[field].length) {
+                    toastr.error(errors[field][0]);
+                    shown = true;
+                }
+            }
+            if (!shown) {
+                toastr.error(LANG.something_went_wrong || 'Something went wrong, please try again.');
+            }
+            return;
+        }
+
+        toastr.error(
+            (LANG.something_went_wrong || 'Something went wrong, please try again.') + ' (' + status + ')'
+        );
+    });
+}
+
+/**
+ * Tells the user their login has expired and offers to reload, instead of leaving
+ * the screen in a permanently disabled state.
+ */
+function __notify_session_expired() {
+    if (__session_expired_notified) {
+        return;
+    }
+    __session_expired_notified = true;
+
+    swal({
+        title: LANG.session_expired || 'Session expired',
+        text:
+            LANG.session_expired_help ||
+            'Your login session has expired, so this action was not saved. Please reload the page and sign in again.',
+        icon: 'warning',
+        buttons: [false, LANG.reload || 'Reload page'],
+        closeOnClickOutside: false,
+    }).then(function () {
+        window.location.reload();
+    });
+}
+
+/**
+ * Pings the server periodically so a POS or purchase screen that stays open for hours
+ * does not have its session garbage collected while the operator is still working.
+ * The refreshed CSRF token is written back into the page so already rendered forms
+ * keep submitting a valid token.
+ */
+function __start_session_heartbeat() {
+    if (!$('meta[name="csrf-token"]').length) {
+        return;
+    }
+
+    //Well below the shortest sensible SESSION_LIFETIME.
+    var heartbeat_interval = 5 * 60 * 1000;
+
+    setInterval(function () {
+        if (!__is_online() || document.hidden) {
+            return;
+        }
+
+        $.ajax({
+            method: 'GET',
+            url: '/keep-alive',
+            dataType: 'json',
+            global: false,
+            success: function (result) {
+                if (result && result.csrf_token) {
+                    __refresh_csrf_token(result.csrf_token);
+                }
+            },
+            error: function (jqXHR) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    __notify_session_expired();
+                }
+            },
+        });
+    }, heartbeat_interval);
+}
+
+/**
+ * Replaces the CSRF token in the meta tag and in every rendered form.
+ *
+ * @param {string} token
+ */
+function __refresh_csrf_token(token) {
+    $('meta[name="csrf-token"]').attr('content', token);
+    $('input[name="_token"]').val(token);
 }

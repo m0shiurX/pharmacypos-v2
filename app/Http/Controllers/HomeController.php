@@ -16,6 +16,7 @@ use App\Utils\TransactionUtil;
 use App\Utils\Util;
 use Datatables;
 use DB;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Notifications\DatabaseNotification;
@@ -474,6 +475,18 @@ class HomeController extends Controller
         $notifications_data = $this->commonUtil->parseNotifications($notifications);
 
         return view('layouts.partials.notification_list', compact('notifications_data'));
+    }
+
+    /**
+     * Keeps the authenticated session alive for long-running screens (POS, purchase entry)
+     * and hands back the current CSRF token so an idle tab never posts a stale one.
+     */
+    public function keepAlive(Request $request): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'csrf_token' => $request->session()->token(),
+        ]);
     }
 
     /**

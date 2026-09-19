@@ -545,13 +545,16 @@ $(document).ready(function () {
             data: data,
             dataType: 'json',
             success: function (result) {
-                enable_pos_form_actions();
                 if (result.success == 1) {
                     reset_pos_form();
                     toastr.success(result.msg);
                 } else {
                     toastr.error(result.msg);
                 }
+            },
+            //Runs on success AND on failure so the screen never stays locked.
+            complete: function () {
+                enable_pos_form_actions();
             },
         });
     });
@@ -580,7 +583,6 @@ $(document).ready(function () {
             data: data,
             dataType: 'json',
             success: function (result) {
-                enable_pos_form_actions();
                 if (result.success == 1) {
                     reset_pos_form();
                     toastr.success(result.msg);
@@ -592,6 +594,10 @@ $(document).ready(function () {
                 } else {
                     toastr.error(result.msg);
                 }
+            },
+            //Runs on success AND on failure so the screen never stays locked.
+            complete: function () {
+                enable_pos_form_actions();
             },
         });
     });
@@ -851,7 +857,9 @@ $(document).ready(function () {
                         } else {
                             toastr.error(result.msg);
                         }
-
+                    },
+                    //Runs on success AND on failure so the screen never stays locked.
+                    complete: function () {
                         enable_pos_form_actions();
                     },
                 });
