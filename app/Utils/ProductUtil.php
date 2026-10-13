@@ -813,7 +813,7 @@ class ProductUtil extends Util
         if ($status_before == 'final' && $transaction->status == 'draft') {
             foreach ($input['products'] as $product) {
                 if (! empty($product['transaction_sell_lines_id'])) {
-                    $this->updateProductQuantity($input['location_id'], $product['product_id'], $product['variation_id'], $product['quantity'], 0, null, false);
+                    $this->updateProductQuantity($input['location_id'], $product['product_id'], $product['variation_id'], $this->getInvoiceLineBaseUnitQuantity($product, $uf_data), 0, null, false);
 
                     // Adjust quantity for combo items.
                     if (isset($product['product_type']) && $product['product_type'] == 'combo') {
@@ -828,7 +828,7 @@ class ProductUtil extends Util
             }
         } elseif ($status_before == 'draft' && $transaction->status == 'final') {
             foreach ($input['products'] as $product) {
-                $uf_quantity = $uf_data ? $this->num_uf($product['quantity']) : $product['quantity'];
+                $uf_quantity = $this->getInvoiceLineBaseUnitQuantity($product, $uf_data);
 
                 $this->decreaseProductQuantity(
                     $product['product_id'],
@@ -847,7 +847,7 @@ class ProductUtil extends Util
         } elseif ($status_before == 'final' && $transaction->status == 'final') {
             foreach ($input['products'] as $product) {
                 if (empty($product['transaction_sell_lines_id'])) {
-                    $uf_quantity = $uf_data ? $this->num_uf($product['quantity']) : $product['quantity'];
+                    $uf_quantity = $this->getInvoiceLineBaseUnitQuantity($product, $uf_data);
                     $this->decreaseProductQuantity(
                         $product['product_id'],
                         $product['variation_id'],
@@ -864,6 +864,28 @@ class ProductUtil extends Util
                 }
             }
         }
+    }
+
+    /**
+     * Quantity of an invoice product row converted to the product's base unit.
+     *
+     * The sell screen posts the quantity in the selected unit (e.g. boxes) along
+     * with its multiplier, while stock is always kept in the base unit (e.g. pieces).
+     *
+     * @param  array{quantity: mixed, sub_unit_id?: mixed, product_unit_id?: mixed, base_unit_multiplier?: mixed}  $product
+     */
+    private function getInvoiceLineBaseUnitQuantity(array $product, bool $uf_data = true): float
+    {
+        $quantity = (float) ($uf_data ? $this->num_uf($product['quantity']) : $product['quantity']);
+
+        $is_sub_unit_selected = ! empty($product['sub_unit_id'])
+            && (! isset($product['product_unit_id']) || $product['sub_unit_id'] != $product['product_unit_id']);
+
+        if ($is_sub_unit_selected && ! empty($product['base_unit_multiplier'])) {
+            return $quantity * (float) $product['base_unit_multiplier'];
+        }
+
+        return $quantity;
     }
 
     /**
