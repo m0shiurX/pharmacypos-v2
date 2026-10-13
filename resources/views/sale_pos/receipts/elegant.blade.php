@@ -552,7 +552,7 @@
                                         @endif
 
                                         <td class="text-right">
-                                            {{ $line['quantity'] }} {{ $line['units'] }}
+                                            {{ $line['quantity'] }} {{ $line['units'] }}@if (! empty($line['base_unit_quantity'])) ({{ $line['base_unit_quantity'] }})@endif
 
                                             @if ($receipt_details->show_base_unit_details && $line['quantity'] && $line['base_unit_multiplier'] !== 1)
                                                 <br><small>

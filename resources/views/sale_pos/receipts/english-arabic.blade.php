@@ -169,7 +169,7 @@
                             <br><small>{!!$line['sell_line_note']!!}</small>
                         @endif
                     </td>
-                    <td class="print-red" style="text-align: center;">{{$line['quantity']}} {{$line['units']}}</td>
+                    <td class="print-red" style="text-align: center;">{{$line['quantity']}} {{$line['units']}}@if (! empty($line['base_unit_quantity'])) ({{ $line['base_unit_quantity'] }})@endif</td>
                     <td class="print-red" style=" text-align: center;">{{$line['unit_price_before_discount']}}</td>
                     <td class="print-red" style=" text-align: center;">{{$line['line_total_exc_tax']}}</td>
                     <td class="print-red" style=" text-align: center;">

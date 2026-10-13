@@ -446,7 +446,7 @@
                                     </small>
                                 @endif
                     </td>
-                    <td class="quantity text-right">{{ $line['quantity'] }} {{ $line['units'] }} @if ($receipt_details->show_base_unit_details && $line['quantity'] && $line['base_unit_multiplier'] !== 1)
+                    <td class="quantity text-right">{{ $line['quantity'] }} {{ $line['units'] }}@if (! empty($line['base_unit_quantity'])) ({{ $line['base_unit_quantity'] }})@endif @if ($receipt_details->show_base_unit_details && $line['quantity'] && $line['base_unit_multiplier'] !== 1)
                             <br><small>
                                 {{ $line['quantity'] }} x {{ $line['base_unit_multiplier'] }} =
                                 {{ $line['orig_quantity'] }} {{ $line['base_unit_name'] }}

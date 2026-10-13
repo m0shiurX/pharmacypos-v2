@@ -187,7 +187,7 @@
 	                    @endif
 
 						<td class="text-right">
-							{{$line['quantity']}} {{$line['units']}}
+							{{$line['quantity']}} {{$line['units']}}@if (! empty($line['base_unit_quantity'])) ({{ $line['base_unit_quantity'] }})@endif
 						</td>
 						<td class="text-right">
 							{{$line['unit_price_exc_tax']}}

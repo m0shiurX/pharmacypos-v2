@@ -2052,6 +2052,7 @@ class TransactionUtil extends Util
                 'base_unit_name' => $base_unit_name,
                 'base_unit_multiplier' => ! empty($line->multiplier) && $line->multiplier != 1 ? $this->num_f($line->multiplier, false, $business_details) : 1,
                 'orig_quantity' => $this->num_f($line->orig_quantity, false, $business_details, true),
+                'base_unit_quantity' => $base_unit_multiplier != 1 ? $this->num_f($line->orig_quantity, false, $business_details, true).' '.$base_unit_name : null,
                 'unit_price' => $this->num_f($line->unit_price, false, $business_details),
                 'unit_price_uf' => $line->unit_price,
                 'tax' => $this->num_f($line->item_tax, false, $business_details),

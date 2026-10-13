@@ -166,7 +166,7 @@
                             @if(!empty($line['product_expiry'])), {{$line['product_expiry_label']}}:  {{$line['product_expiry']}} @endif 
                         </td>
 						<td class="text-right">
-							{{$line['quantity']}} {{$line['units']}}
+							{{$line['quantity']}} {{$line['units']}}@if (! empty($line['base_unit_quantity'])) ({{ $line['base_unit_quantity'] }})@endif
 						</td>
 					</tr>
 					@if(!empty($line['modifiers']))
