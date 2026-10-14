@@ -97,7 +97,7 @@
                 @else
                     <span class="display_currency" data-currency_symbol="true">{{ $sell_line->get_discount_amount() }}</span>
                 @endif
-                @if($sell_line->line_discount_type == 'percentage') ({{$sell_line->line_discount_amount}}%) @endif
+                @if($sell_line->line_discount_type == 'percentage') ({{ @num_format($sell_line->line_discount_amount) }}%) @endif
             </td>
             <td>
                 @if(!empty($for_ledger))
