@@ -124,6 +124,11 @@ class AppServiceProvider extends ServiceProvider
             return "number_format($expression, session('business.quantity_precision', 2), session('currency')['decimal_separator'], session('currency')['thousand_separator'])";
         });
 
+        // Blade directive to format quantity values without trailing decimal zeros.
+        Blade::directive('format_quantity_trimmed', function ($expression) {
+            return "<?php echo e(app(\App\Utils\Util::class)->formatQuantityWithoutTrailingZeros($expression)); ?>";
+        });
+
         // Blade directive to return appropiate class according to transaction status
         Blade::directive('transaction_status', function ($status) {
             return "<?php if($status == 'ordered'){

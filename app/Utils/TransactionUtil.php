@@ -1356,7 +1356,7 @@ class TransactionUtil extends Util
 
             if (! empty($il->common_settings['total_quantity_label'])) {
                 $output['total_quantity_label'] = $il->common_settings['total_quantity_label'];
-                $output['total_quantity'] = $this->num_f($total_quantity, false, $business_details, true);
+                $output['total_quantity'] = $this->formatQuantityWithoutTrailingZeros($total_quantity, $business_details);
             }
 
             if (! empty($il->common_settings['total_items_label'])) {
@@ -2045,14 +2045,14 @@ class TransactionUtil extends Util
                 'variation' => (empty($variation->name) || $variation->name == 'DUMMY') ? '' : $variation->name,
                 'product_variation' => (empty($product_variation->name) || $product_variation->name == 'DUMMY') ? '' : $product_variation->name,
                 // Field for 2nd column
-                'quantity' => $this->num_f($line->quantity, false, $business_details, true),
+                'quantity' => $this->formatQuantityWithoutTrailingZeros($line->quantity, $business_details),
                 'quantity_uf' => $line->quantity,
                 'units' => $unit_name,
 
                 'base_unit_name' => $base_unit_name,
                 'base_unit_multiplier' => ! empty($line->multiplier) && $line->multiplier != 1 ? $this->num_f($line->multiplier, false, $business_details) : 1,
-                'orig_quantity' => $this->num_f($line->orig_quantity, false, $business_details, true),
-                'base_unit_quantity' => $base_unit_multiplier != 1 ? (floor($base_unit_multiplier) == $base_unit_multiplier ? (string) (int) $base_unit_multiplier : $this->num_f($base_unit_multiplier, false, $business_details, true)) : null,
+                'orig_quantity' => $this->formatQuantityWithoutTrailingZeros($line->orig_quantity, $business_details),
+                'base_unit_quantity' => $base_unit_multiplier != 1 ? $this->formatQuantityWithoutTrailingZeros($base_unit_multiplier, $business_details) : null,
                 'unit_price' => $this->num_f($line->unit_price, false, $business_details),
                 'unit_price_uf' => $line->unit_price,
                 'tax' => $this->num_f($line->item_tax, false, $business_details),
@@ -2191,7 +2191,7 @@ class TransactionUtil extends Util
                         'name' => $product->name,
                         'variation' => (empty($variation->name) || $variation->name == 'DUMMY') ? '' : $variation->name,
                         // Field for 2nd column
-                        'quantity' => $this->num_f($modifier_line->quantity, false, $business_details),
+                        'quantity' => $this->formatQuantityWithoutTrailingZeros($modifier_line->quantity, $business_details),
                         'units' => ! empty($unit->short_name) ? $unit->short_name : '',
 
                         // Field for 3rd column
@@ -2272,7 +2272,7 @@ class TransactionUtil extends Util
                 'name' => $product->name,
                 'variation' => (empty($variation->name) || $variation->name == 'DUMMY') ? '' : $variation->name,
                 // Field for 2nd column
-                'quantity' => $this->num_f($line->quantity_returned, false, $business_details, true),
+                'quantity' => $this->formatQuantityWithoutTrailingZeros($line->quantity_returned, $business_details),
                 'units' => $unit_name,
                 'tax_unformatted' => $line->item_tax,
                 'unit_price' => $this->num_f($line->unit_price, false, $business_details),

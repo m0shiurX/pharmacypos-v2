@@ -167,6 +167,24 @@ class Util
     }
 
     /**
+     * Formats a quantity without trailing decimal zeros (e.g. 10.00 => 10, 2.50 => 2.5).
+     *
+     * @param  object|null  $business_details
+     */
+    public function formatQuantityWithoutTrailingZeros(float|int|string|null $quantity, $business_details = null): string
+    {
+        $formatted = $this->num_f($quantity ?? 0, false, $business_details, true);
+
+        $decimal_separator = ! empty($business_details) ? $business_details->decimal_separator : session('currency')['decimal_separator'];
+
+        if ($decimal_separator === '' || $decimal_separator === null || ! str_contains($formatted, $decimal_separator)) {
+            return $formatted;
+        }
+
+        return rtrim(rtrim($formatted, '0'), $decimal_separator);
+    }
+
+    /**
      * Calculates percentage for a given number
      *
      * @param  int  $number

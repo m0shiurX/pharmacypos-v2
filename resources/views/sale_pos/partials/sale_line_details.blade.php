@@ -63,7 +63,7 @@
             @endif
             <td>
                 @if(!empty($for_ledger))
-                    {{@format_quantity($sell_line->quantity)}}
+                    @format_quantity_trimmed($sell_line->quantity)
                 @else
                     <span class="display_currency" data-currency_symbol="false" data-is_quantity="true">{{ $sell_line->quantity }}</span> 
                 @endif
@@ -72,7 +72,7 @@
                 @if(!empty($sell_line->product->second_unit) && $sell_line->secondary_unit_quantity != 0)
                     <br>
                     @if(!empty($for_ledger))
-                        {{@format_quantity($sell_line->secondary_unit_quantity)}}
+                        @format_quantity_trimmed($sell_line->secondary_unit_quantity)
                     @else
                         <span class="display_currency" data-is_quantity="true" data-currency_symbol="false">{{ $sell_line->secondary_unit_quantity }}</span> 
                     @endif
